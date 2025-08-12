@@ -4,6 +4,8 @@ import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+    // Define "src" as project root so Vite can locate index.html
+  root: 'src',
   plugins: [
     react({
       // Ativa a transformação automática de JSX com React 17+
@@ -27,7 +29,8 @@ export default defineConfig({
     strictPort: true,
   },
   build: {
-    outDir: 'dist',
+    // Saída para o diretório "dist" na raiz do projeto
+    outDir: '../dist',
     sourcemap: true,
     rollupOptions: {
       output: {
