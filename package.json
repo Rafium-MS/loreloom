@@ -1,27 +1,54 @@
 {
   "name": "loreloom",
   "version": "1.0.0",
-  "description": "",
+  "description": "Ferramenta de criação e gerenciamento de universos de ficção, incluindo personagens, locais, enredo, magia e linha do tempo.",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"No tests\""
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "format": "prettier --write .",
+    "type-check": "tsc --noEmit",
+    "test": "vitest",
+    "test:watch": "vitest --watch"
   },
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "lucide-react": "^0.294.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.19",
     "@types/react": "^18.2.28",
     "@types/react-dom": "^18.2.10",
     "@types/uuid": "^9.0.4",
-    "typescript": "^5.2.2"
+    "@vitejs/plugin-react": "^4.0.0",
+    "typescript": "^5.2.2",
+    "vite": "^5.0.0",
+    "eslint": "^8.54.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-react": "^7.33.2",
+    "prettier": "^3.2.5",
+    "vitest": "^1.2.0",
+    "@testing-library/react": "^14.2.1",
+    "@testing-library/jest-dom": "^6.1.4"
   },
-  "keywords": ["bookmark, book, loreloom, react, typescript, web app, productivity, organization,"],
+  "keywords": [
+    "react",
+    "worldbuilding",
+    "storytelling",
+    "fiction",
+    "universe-creator",
+    "timeline",
+    "magic-system",
+    "quest-manager"
+  ],
   "author": "Rafium-MS",
   "license": "ISC",
-  "type": "commonjs",
   "bugs": {
     "url": "https://github.com/Rafium-MS/loreloom/issues"
   },
