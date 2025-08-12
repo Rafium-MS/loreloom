@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador de Relacionamentos</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .controls {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .control-group label {
+            font-weight: 600;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        input, select, button {
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .timeline {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .timeline input[type="range"] {
+            flex: 1;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            outline: none;
+        }
+
+        .timeline input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #667eea;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .visualization {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            min-height: 600px;
+        }
+
+        .network-container {
+            width: 100%;
+            height: 600px;
+            border: 2px dashed #e0e0e0;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .node {
+            cursor: pointer;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+            transition: all 0.3s ease;
+        }
+
+        .node:hover {
+            transform: scale(1.1);
+        }
+
+        .node circle {
+            stroke-width: 3px;
+            stroke: #fff;
+        }
+
+        .node text {
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            fill: #333;
+            text-anchor: middle;
+            dominant-baseline: central;
+        }
+
+        .link {
+            stroke-width: 2px;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+
+        .link:hover {
+            opacity: 1;
+            stroke-width: 4px;
+        }
+
+        .legend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            font-size: 12px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 3px;
+            border-radius: 2px;
+        }
+
+        .character-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .character-tag {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .character-tag:hover {
+            transform: scale(1.05);
+        }
+
+        .info-panel {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-width: 250px;
+            font-size: 12px;
+            display: none;
+        }
+
+        .relationship-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .type-button {
+            padding: 8px 12px;
+            font-size: 12px;
+            border-radius: 20px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .type-button.active {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                grid-template-columns: 1fr;
+            }
+            
+            .input-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Visualizador de Relacionamentos</h1>
+            <p>Mapeie e explore as conexões entre personagens da sua história</p>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label>👥 Adicionar Personagem</label>
+                <div class="input-row">
+                    <input type="text" id="characterName" placeholder="Nome do personagem">
+                    <button onclick="addCharacter()">Adicionar</button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label>🔗 Criar Relacionamento</label>
+                <div class="input-row">
+                    <select id="char1"></select>
+                    <select id="char2"></select>
+                </div>
+                <div class="input-row">
+                    <select id="relationshipType">
+                        <option value="family">👨‍👩‍👧‍👦 Família</option>
+                        <option value="romance">💕 Romance</option>
+                        <option value="friendship">🤝 Amizade</option>
+                        <option value="enemy">⚔️ Inimizade</option>
+                        <option value="alliance">🤜🤛 Aliança</option>
+                        <option value="mentor">🎓 Mentor</option>
+                        <option value="rival">🏆 Rival</option>
+                    </select>
+                    <input type="range" id="intensity" min="1" max="10" value="5" title="Intensidade">
+                    <button onclick="addRelationship()">Conectar</button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label>📈 Linha do Tempo</label>
+                <div class="timeline">
+                    <span>Início</span>
+                    <input type="range" id="timeSlider" min="0" max="10" value="10" onchange="updateTimeline()">
+                    <span>Fim</span>
+                    <span id="timeDisplay">Capítulo 10</span>
+                </div>
+                <div class="relationship-types">
+                    <button class="type-button active" onclick="toggleRelationType('all')">Todos</button>
+                    <button class="type-button" onclick="toggleRelationType('family')">Família</button>
+                    <button class="type-button" onclick="toggleRelationType('romance')">Romance</button>
+                    <button class="type-button" onclick="toggleRelationType('enemy')">Conflitos</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="visualization">
+            <div class="network-container" id="networkContainer">
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ff6b6b;"></div>
+                        <span>Família</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ff69b4;"></div>
+                        <span>Romance</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #4ecdc4;"></div>
+                        <span>Amizade</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ff4757;"></div>
+                        <span>Inimizade</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #3742fa;"></div>
+                        <span>Aliança</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ffa502;"></div>
+                        <span>Mentor</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ff6348;"></div>
+                        <span>Rival</span>
+                    </div>
+                </div>
+                
+                <div class="info-panel" id="infoPanel">
+                    <div id="panelContent"></div>
+                </div>
+            </div>
+            
+            <div class="character-list" id="characterList"></div>
+        </div>
+    </div>
+
+    <script>
+        let characters = [];
+        let relationships = [];
+        let currentTimeChapter = 10;
+        let activeFilter = 'all';
+        let simulation;
+        
+        // Cores para diferentes tipos de relacionamento
+        const relationshipColors = {
+            family: '#ff6b6b',
+            romance: '#ff69b4',
+            friendship: '#4ecdc4',
+            enemy: '#ff4757',
+            alliance: '#3742fa',
+            mentor: '#ffa502',
+            rival: '#ff6348'
+        };
+
+        // Dados de exemplo
+        const exampleData = {
+            characters: [
+                { name: 'Elena Starwind', color: '#667eea' },
+                { name: 'Marcus Shadowbane', color: '#764ba2' },
+                { name: 'Aria Moonwhisper', color: '#f093fb' },
+                { name: 'Daemon Ironforge', color: '#f5576c' },
+                { name: 'Lyra Nightfall', color: '#4facfe' },
+                { name: 'Kael Stormborn', color: '#43e97b' }
+            ],
+            relationships: [
+                { source: 'Elena Starwind', target: 'Marcus Shadowbane', type: 'romance', intensity: 8, chapter: 3 },
+                { source: 'Elena Starwind', target: 'Aria Moonwhisper', type: 'friendship', intensity: 7, chapter: 1 },
+                { source: 'Marcus Shadowbane', target: 'Daemon Ironforge', type: 'enemy', intensity: 9, chapter: 2 },
+                { source: 'Aria Moonwhisper', target: 'Lyra Nightfall', type: 'family', intensity: 10, chapter: 1 },
+                { source: 'Daemon Ironforge', target: 'Kael Stormborn', type: 'alliance', intensity: 6, chapter: 5 },
+                { source: 'Elena Starwind', target: 'Kael Stormborn', type: 'mentor', intensity: 7, chapter: 4 },
+                { source: 'Marcus Shadowbane', target: 'Lyra Nightfall', type: 'rival', intensity: 5, chapter: 6 }
+            ]
+        };
+
+        // Inicialização
+        function init() {
+            // Carregar dados de exemplo
+            characters = [...exampleData.characters];
+            relationships = [...exampleData.relationships];
+            
+            updateCharacterSelects();
+            updateCharacterList();
+            createVisualization();
+        }
+
+        function addCharacter() {
+            const name = document.getElementById('characterName').value.trim();
+            if (!name || characters.find(c => c.name === name)) return;
+            
+            const colors = ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe', '#43e97b', '#ffa502', '#ff6348'];
+            const color = colors[characters.length % colors.length];
+            
+            characters.push({ name, color });
+            document.getElementById('characterName').value = '';
+            
+            updateCharacterSelects();
+            updateCharacterList();
+            createVisualization();
+        }
+
+        function addRelationship() {
+            const char1 = document.getElementById('char1').value;
+            const char2 = document.getElementById('char2').value;
+            const type = document.getElementById('relationshipType').value;
+            const intensity = parseInt(document.getElementById('intensity').value);
+            
+            if (!char1 || !char2 || char1 === char2) return;
+            
+            // Verificar se já existe
+            const existing = relationships.find(r => 
+                (r.source === char1 && r.target === char2) || 
+                (r.source === char2 && r.target === char1)
+            );
+            
+            if (existing) {
+                existing.type = type;
+                existing.intensity = intensity;
+            } else {
+                relationships.push({
+                    source: char1,
+                    target: char2,
+                    type,
+                    intensity,
+                    chapter: Math.floor(Math.random() * 10) + 1
+                });
+            }
+            
+            createVisualization();
+        }
+
+        function updateCharacterSelects() {
+            const selects = ['char1', 'char2'];
+            selects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                select.innerHTML = '<option value="">Selecione...</option>';
+                characters.forEach(char => {
+                    select.innerHTML += `<option value="${char.name}">${char.name}</option>`;
+                });
+            });
+        }
+
+        function updateCharacterList() {
+            const list = document.getElementById('characterList');
+            list.innerHTML = characters.map(char => 
+                `<div class="character-tag" style="background: ${char.color}" onclick="highlightCharacter('${char.name}')">${char.name}</div>`
+            ).join('');
+        }
+
+        function updateTimeline() {
+            currentTimeChapter = parseInt(document.getElementById('timeSlider').value);
+            document.getElementById('timeDisplay').textContent = `Capítulo ${currentTimeChapter}`;
+            createVisualization();
+        }
+
+        function toggleRelationType(type) {
+            activeFilter = type;
+            
+            // Atualizar botões
+            document.querySelectorAll('.type-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            createVisualization();
+        }
+
+        function createVisualization() {
+            const container = document.getElementById('networkContainer');
+            container.innerHTML = container.querySelector('.legend').outerHTML + container.querySelector('.info-panel').outerHTML;
+            
+            if (characters.length === 0) return;
+            
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            
+            // Filtrar relacionamentos
+            const filteredRelationships = relationships.filter(r => {
+                const timeFilter = r.chapter <= currentTimeChapter;
+                const typeFilter = activeFilter === 'all' || r.type === activeFilter;
+                return timeFilter && typeFilter;
+            });
+            
+            // Criar SVG
+            const svg = d3.select(container)
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height);
+            
+            // Força de simulação
+            simulation = d3.forceSimulation(characters)
+                .force('link', d3.forceLink(filteredRelationships).id(d => d.name).distance(d => 150 - d.intensity * 10))
+                .force('charge', d3.forceManyBody().strength(-300))
+                .force('center', d3.forceCenter(width / 2, height / 2))
+                .force('collision', d3.forceCollide().radius(40));
+            
+            // Links
+            const link = svg.append('g')
+                .selectAll('line')
+                .data(filteredRelationships)
+                .join('line')
+                .attr('class', 'link')
+                .attr('stroke', d => relationshipColors[d.type])
+                .attr('stroke-width', d => d.intensity / 2)
+                .on('mouseover', function(event, d) {
+                    showInfo(event, `${d.source.name} ↔ ${d.target.name}`, 
+                        `Tipo: ${getRelationshipLabel(d.type)}<br>Intensidade: ${d.intensity}/10<br>Desde: Capítulo ${d.chapter}`);
+                })
+                .on('mouseout', hideInfo);
+            
+            // Nós
+            const node = svg.append('g')
+                .selectAll('g')
+                .data(characters)
+                .join('g')
+                .attr('class', 'node')
+                .call(d3.drag()
+                    .on('start', dragstarted)
+                    .on('drag', dragged)
+                    .on('end', dragended))
+                .on('mouseover', function(event, d) {
+                    const connections = filteredRelationships.filter(r => r.source.name === d.name || r.target.name === d.name);
+                    showInfo(event, d.name, `Conexões: ${connections.length}<br>Relacionamentos ativos no capítulo ${currentTimeChapter}`);
+                })
+                .on('mouseout', hideInfo);
+            
+            // Círculos dos nós
+            node.append('circle')
+                .attr('r', d => {
+                    const connections = filteredRelationships.filter(r => r.source.name === d.name || r.target.name === d.name);
+                    return Math.max(20, 15 + connections.length * 3);
+                })
+                .attr('fill', d => d.color);
+            
+            // Texto dos nós
+            node.append('text')
+                .text(d => d.name.split(' ')[0])
+                .attr('dy', 4);
+            
+            // Atualização da simulação
+            simulation.on('tick', () => {
+                link
+                    .attr('x1', d => d.source.x)
+                    .attr('y1', d => d.source.y)
+                    .attr('x2', d => d.target.x)
+                    .attr('y2', d => d.target.y);
+                
+                node
+                    .attr('transform', d => `translate(${d.x},${d.y})`);
+            });
+        }
+        
+        function getRelationshipLabel(type) {
+            const labels = {
+                family: '👨‍👩‍👧‍👦 Família',
+                romance: '💕 Romance',
+                friendship: '🤝 Amizade',
+                enemy: '⚔️ Inimizade',
+                alliance: '🤜🤛 Aliança',
+                mentor: '🎓 Mentor',
+                rival: '🏆 Rival'
+            };
+            return labels[type] || type;
+        }
+        
+        function showInfo(event, title, content) {
+            const panel = document.getElementById('infoPanel');
+            const panelContent = document.getElementById('panelContent');
+            panelContent.innerHTML = `<strong>${title}</strong><br>${content}`;
+            panel.style.display = 'block';
+        }
+        
+        function hideInfo() {
+            document.getElementById('infoPanel').style.display = 'none';
+        }
+        
+        function highlightCharacter(name) {
+            // Implementar destaque do personagem
+            if (simulation) {
+                const node = simulation.nodes().find(n => n.name === name);
+                if (node) {
+                    node.fx = null;
+                    node.fy = null;
+                    simulation.alpha(0.3).restart();
+                }
+            }
+        }
+        
+        // Funções de drag
+        function dragstarted(event) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            event.subject.fx = event.subject.x;
+            event.subject.fy = event.subject.y;
+        }
+        
+        function dragged(event) {
+            event.subject.fx = event.x;
+            event.subject.fy = event.y;
+        }
+        
+        function dragended(event) {
+            if (!event.active) simulation.alphaTarget(0);
+            event.subject.fx = null;
+            event.subject.fy = null;
+        }
+        
+        // Inicializar quando a página carregar
+        window.addEventListener('load', init);
+        window.addEventListener('resize', () => {
+            setTimeout(createVisualization, 100);
+        });
+    </script>
+</body>
+</html>
