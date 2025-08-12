@@ -1,5 +1,12 @@
 # 📚 LoreLoom
 
+[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](LICENSE)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D18-green.svg)](https://nodejs.org/)
+[![React](https://img.shields.io/badge/React-18.2.0-blue.svg)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Vite-5.x-purple.svg)](https://vitejs.dev/)
+[![Status](https://img.shields.io/badge/status-em%20desenvolvimento-orange.svg)]()
+[![Issues](https://img.shields.io/github/issues/Rafium-MS/loreloom)](https://github.com/Rafium-MS/loreloom/issues)
+
 **LoreLoom** é uma aplicação web para **criação, organização e gerenciamento de universos fictícios**.  
 Voltada para escritores, roteiristas e mestres de RPG, a ferramenta oferece módulos especializados para **personagens, locais, enredos, sistemas de magia, linha do tempo histórica e missões**.
 
