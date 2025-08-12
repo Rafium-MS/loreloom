@@ -9,7 +9,7 @@ import PlotManagerPage from '../modules/plot/pages/PlotManagerPage';
 import MagicSystemPage from '../modules/magic/pages/MagicSystemPage';
 import TechSystemPage from '../modules/tech/pages/TechSystemPage';
 import TimelinePage from '../modules/timeline/pages/TimelinePage';
-import RelationshipVisualizerPage from '../modules/relationships/pages/RelationshipVisualizerPage';
+import RelationshipVisualizerPage from '../modules/relationships/RelationshipVisualizerPage';
 
 const AppRoutes: React.FC = () => (
   <Routes>
