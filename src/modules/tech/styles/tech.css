@@ -1,0 +1,16 @@
+.tech-section {
+  margin-bottom: 1rem;
+}
+
+.tech-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.tech-section li {
+  margin-bottom: 0.5rem;
+}
+
+.tech-system-page {
+  padding: 1rem;
+}
