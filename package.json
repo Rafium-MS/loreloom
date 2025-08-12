@@ -1,0 +1,27 @@
+{
+  "name": "loreloom",
+  "version": "1.0.0",
+  "description": "Loreloom modular application",
+  "main": "App.js",
+  "scripts": {
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "uuid": "^9.0.0"
+  }
+,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rafium-MS/loreloom.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Rafium-MS/loreloom/issues"
+  },
+  "homepage": "https://github.com/Rafium-MS/loreloom#readme"
+}
