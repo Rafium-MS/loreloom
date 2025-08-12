@@ -4,14 +4,22 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"No tests\""
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Rafium-MS/loreloom.git"
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "uuid": "^9.0.0"
   },
-  "keywords": [],
-  "author": "",
+  "devDependencies": {
+    "@types/node": "^20.11.19",
+    "@types/react": "^18.2.28",
+    "@types/react-dom": "^18.2.10",
+    "@types/uuid": "^9.0.4",
+    "typescript": "^5.2.2"
+  },
+  "keywords": ["bookmark, book, loreloom, react, typescript, web app, productivity, organization,"],
+  "author": "Rafium-MS",
   "license": "ISC",
   "type": "commonjs",
   "bugs": {
