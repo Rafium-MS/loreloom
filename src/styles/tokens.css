@@ -1,0 +1,21 @@
+/* src/styles/tokens.css */
+:root{
+  --color-bg: #0b0c10;
+  --color-panel: #111218;
+  --color-text: #e6e6e6;
+  --color-muted: #9aa0a6;
+  --primary: #7c5cff;
+  --primary-contrast:#0b0c10;
+  --radius: 14px;
+  --spacing-1: 4px; --spacing-2: 8px; --spacing-3: 12px; --spacing-4: 16px; --spacing-6: 24px;
+}
+[data-theme="light"]{
+  --color-bg: #fafafa;
+  --color-panel: #ffffff;
+  --color-text: #1f2328;
+  --color-muted: #6b7280;
+  --primary: #6b5cff;
+}
+/* src/styles/globals.css (importar no main.tsx) */
+*{box-sizing:border-box} html,body,#root{height:100%}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font:14px/1.45 Inter,system-ui,sans-serif}
