@@ -3,9 +3,10 @@ import { Character } from '../types';
 import CharacterForm from '../components/CharacterForm';
 import CharacterList from '../components/CharacterList';
 import { addCharacter, deleteCharacter, getCharacters, updateCharacter } from '../services/characterRepository';
-import Skeleton from '../../../core/ui/Skeleton';
-import EmptyState from '../../../core/ui/EmptyState';
-import { useToast } from '../../../core/ui/Toast';
+import Skeleton from '../../../app/core/ui/Skeleton';
+import EmptyState from '../../../app/core/ui/EmptyState';
+import { useToast } from '../../../app/core/ui/Toast';
+
 
 const CharactersPage: React.FC = () => {
   const [characters, setCharacters] = useState<Character[]>([]);

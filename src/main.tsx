@@ -5,7 +5,8 @@ import App from './app/App';
 import "./styles/tokens.css";
 import "./styles/globals.css";
 import { ThemeProvider } from "./app/core/ui/ThemeProvider";
-import { ToastProvider } from './core/ui/Toast';
+import { ToastProvider } from './app/core/ui/Toast';
+
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   

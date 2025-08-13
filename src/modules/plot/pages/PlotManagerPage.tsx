@@ -5,9 +5,10 @@ import ArcForm from '../components/ArcForm';
 import QuestCard from '../components/QuestCard';
 import QuestForm from '../components/QuestForm';
 import '../styles/plot.css';
-import Skeleton from '../../../core/ui/Skeleton';
-import EmptyState from '../../../core/ui/EmptyState';
-import { useToast } from '../../../core/ui/Toast';
+import Skeleton from '../../../app/core/ui/Skeleton';
+import EmptyState from '../../../app/core/ui/EmptyState';
+import { useToast } from '../../../app/core/ui/Toast';
+
 
 type Arc = {
   id: string;
@@ -141,6 +142,7 @@ const PlotManagerPage: React.FC = () => {
             onAction={() => { setEditingArc(null); setShowArcForm(true); }}
           />
         ) : (
+
           arcs.map(arc => (
             <ArcCard
               key={arc.id}

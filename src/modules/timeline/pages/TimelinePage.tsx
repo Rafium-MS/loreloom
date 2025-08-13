@@ -18,9 +18,10 @@ import {
   updateEvent,
   deleteEvent,
 } from '../services/timelineRepository';
-import Skeleton from '../../../core/ui/Skeleton';
-import EmptyState from '../../../core/ui/EmptyState';
-import { useToast } from '../../../core/ui/Toast';
+
+import Skeleton from '../../../app/core/ui/Skeleton';
+import EmptyState from '../../../app/core/ui/EmptyState';
+import { useToast } from '../../../app/core/ui/Toast';
 
 const TimelinePage: React.FC = () => {
   const [eras, setEras] = useState<Era[]>([]);
