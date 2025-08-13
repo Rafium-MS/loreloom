@@ -8,6 +8,7 @@ interface Props {
 const StatusBar: React.FC<Props> = ({ wordCount }) => {
   const lastSaved = useAppState((s) => s.lastSaved);
   const [text, setText] = useState('');
+  const readingTime = wordCount ? Math.ceil(wordCount / 200) : 0;
 
   useEffect(() => {
     const update = () => {
@@ -25,7 +26,9 @@ const StatusBar: React.FC<Props> = ({ wordCount }) => {
 
   return (
     <footer className="border-t px-4 py-1 text-sm flex justify-between bg-gray-50 dark:bg-gray-900">
-      <span>{wordCount != null ? `${wordCount} palavras` : ''}</span>
+      <span>
+        {wordCount != null ? `${wordCount} palavras · ${readingTime} min` : ''}
+      </span>
       <span>{text}</span>
     </footer>
   );

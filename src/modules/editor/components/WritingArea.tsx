@@ -8,7 +8,7 @@ interface Props {
 
 const modeClasses: Record<string, string> = {
   normal: 'bg-white text-gray-900',
-  focus: 'bg-amber-50 text-gray-800',
+  focus: 'bg-amber-50 text-gray-800 max-w-3xl mx-auto leading-relaxed',
   dark: 'bg-gray-900 text-gray-100',
 };
 

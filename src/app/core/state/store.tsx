@@ -4,6 +4,8 @@ import { create, StoreApi } from 'zustand';
 interface AppState {
   lastSaved: number | null;
   setLastSaved: (ts: number) => void;
+  focusMode: boolean;
+  setFocusMode: (focus: boolean) => void;
 }
 
 const AppStateContext = createContext<StoreApi<AppState> | null>(null);
@@ -14,6 +16,8 @@ export const AppStateProvider: React.FC<{ children: ReactNode }> = ({ children }
       create<AppState>((set) => ({
         lastSaved: null,
         setLastSaved: (ts) => set({ lastSaved: ts }),
+        focusMode: false,
+        setFocusMode: (focus) => set({ focusMode: focus }),
       })),
     [],
   );
