@@ -1,5 +1,5 @@
 import React, { createContext, useContext, ReactNode, useMemo } from 'react';
-import { create, StoreApi } from 'zustand';
+import { create, StoreApi, UseBoundStore } from 'zustand';
 
 interface AppState {
   lastSaved: number | null;
@@ -8,7 +8,8 @@ interface AppState {
   setFocusMode: (focus: boolean) => void;
 }
 
-const AppStateContext = createContext<StoreApi<AppState> | null>(null);
+const AppStateContext =
+  createContext<UseBoundStore<StoreApi<AppState>> | null>(null);
 
 export const AppStateProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const store = useMemo(
@@ -24,8 +25,8 @@ export const AppStateProvider: React.FC<{ children: ReactNode }> = ({ children }
   return <AppStateContext.Provider value={store}>{children}</AppStateContext.Provider>;
 };
 
-export const useAppState = () => {
+export const useAppState = <T,>(selector: (state: AppState) => T) => {
   const store = useContext(AppStateContext);
   if (!store) throw new Error('AppStateProvider is missing');
-  return store;
+  return store(selector);
 };
