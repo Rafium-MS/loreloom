@@ -17,7 +17,7 @@ const DeviceList: React.FC<DeviceListProps> = ({ devices, onAdd, onUpdate, onRem
     requirements: '',
   });
 
-  const updateForm = (field: keyof Omit<Device, 'id'>, value: any) => {
+  const updateForm = <K extends keyof Omit<Device, 'id'>>(field: K, value: Omit<Device, 'id'>[K]) => {
     setForm(prev => ({ ...prev, [field]: value }));
   };
 

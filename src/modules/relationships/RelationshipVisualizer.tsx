@@ -1,15 +1,15 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 
-export interface RelationshipNode {
+export interface RelationshipNode extends d3.SimulationNodeDatum {
   id: string;
   name: string;
   group?: string;
 }
 
-export interface RelationshipLink {
-  source: string;
-  target: string;
+export interface RelationshipLink extends d3.SimulationLinkDatum<RelationshipNode> {
+  source: string | RelationshipNode;
+  target: string | RelationshipNode;
   value?: number;
 }
 
@@ -81,16 +81,21 @@ export const RelationshipVisualizer: React.FC<RelationshipVisualizerProps> = ({ 
 
     node.append('title').text(d => d.name);
 
+    const getX = (n: string | RelationshipNode) =>
+      typeof n === 'object' && n.x !== undefined ? n.x : 0;
+    const getY = (n: string | RelationshipNode) =>
+      typeof n === 'object' && n.y !== undefined ? n.y : 0;
+
     simulation.on('tick', () => {
       link
-        .attr('x1', d => (d.source as any).x)
-        .attr('y1', d => (d.source as any).y)
-        .attr('x2', d => (d.target as any).x)
-        .attr('y2', d => (d.target as any).y);
+        .attr('x1', d => getX(d.source))
+        .attr('y1', d => getY(d.source))
+        .attr('x2', d => getX(d.target))
+        .attr('y2', d => getY(d.target));
 
       node
-        .attr('cx', d => (d as any).x)
-        .attr('cy', d => (d as any).y);
+        .attr('cx', d => d.x ?? 0)
+        .attr('cy', d => d.y ?? 0);
     });
   }, [data, width, height]);
 

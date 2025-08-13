@@ -1,18 +1,6 @@
 import React from 'react';
 import styles from './ArcCard.module.css';
-
-type Arc = {
-  id: string;
-  title: string;
-  description: string;
-  act1: string;
-  act2: string;
-  act3: string;
-  consequences: string;
-  progress: number;
-  status: string;
-  quests: any[];
-};
+import type { Arc } from '../services/plotRepository';
 
 interface ArcCardProps {
   arc: Arc;

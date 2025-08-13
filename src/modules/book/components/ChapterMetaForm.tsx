@@ -9,7 +9,7 @@ interface ChapterMetaFormProps {
 const ChapterMetaForm: React.FC<ChapterMetaFormProps> = ({ chapter, onSave }) => {
   const [draft, setDraft] = useState<Chapter>(chapter);
 
-  const update = (field: keyof Chapter, value: any) => {
+  const update = <K extends keyof Chapter>(field: K, value: Chapter[K]) => {
     setDraft(prev => ({ ...prev, [field]: value }));
   };
 

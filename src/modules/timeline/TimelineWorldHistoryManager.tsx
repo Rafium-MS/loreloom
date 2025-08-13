@@ -49,7 +49,6 @@ export const TimelineWorldHistoryManager: React.FC<TimelineProps> = ({ eras, eve
   useEffect(() => {
     const svg = d3.select(svgRef.current);
     const width = +svg.attr('width');
-    const height = +svg.attr('height');
     svg.selectAll('*').remove();
 
     if (events.length === 0) return;
@@ -78,8 +77,9 @@ export const TimelineWorldHistoryManager: React.FC<TimelineProps> = ({ eras, eve
 
     // Draw events as circles
     const eventGroup = svg.append('g').attr('class', 'events');
-    const eventSelection = eventGroup.selectAll('circle')
-      .data(filteredEvents, (d: any) => d.id);
+    const eventSelection = eventGroup
+      .selectAll<SVGCircleElement, TimelineEvent>('circle')
+      .data(filteredEvents, d => d.id);
 
     const entered = eventSelection.enter();
 
