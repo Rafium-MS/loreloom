@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from './ArcCard.module.css';
 
 type Arc = {
   id: string;
@@ -23,14 +24,14 @@ interface ArcCardProps {
 
 const ArcCard: React.FC<ArcCardProps> = ({ arc, isActive, onSelect, onEdit, onDelete }) => {
   return (
-    <div className={`plot-arc-card ${isActive ? 'active' : ''}`}>
+    <div className={`${styles.arcCard} ${isActive ? styles.active : ''}`}>
       <h3>{arc.title}</h3>
       <p>{arc.description}</p>
-      <div className="plot-progress-bar">
+      <div className={styles.progressBar}>
         <div style={{ width: `${arc.progress}%` }}></div>
       </div>
       <p>Status: {arc.status}</p>
-      <div className="plot-act-structure">
+      <div className={styles.actStructure}>
         <div>
           <strong>Act 1:</strong> {arc.act1}
         </div>

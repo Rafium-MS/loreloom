@@ -1,5 +1,6 @@
 import React from 'react';
 import { Objective } from '../services/plotRepository';
+import styles from './ObjectiveItem.module.css';
 
 interface ObjectiveItemProps {
   objective: Objective;
@@ -9,7 +10,7 @@ interface ObjectiveItemProps {
 
 const ObjectiveItem: React.FC<ObjectiveItemProps> = ({ objective, onChange, onRemove }) => {
   return (
-    <div className="plot-objective-item">
+    <div className={styles.objectiveItem}>
       <input
         type="checkbox"
         checked={objective.completed}

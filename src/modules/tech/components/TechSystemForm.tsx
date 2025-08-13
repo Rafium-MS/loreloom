@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from './TechSection.module.css';
 
 interface TechSystemFormProps {
   paradigm: string;
@@ -7,7 +8,7 @@ interface TechSystemFormProps {
 
 const TechSystemForm: React.FC<TechSystemFormProps> = ({ paradigm, onChange }) => {
   return (
-    <div className="tech-section">
+    <div className={styles.techSection}>
       <h2>Paradigma Tecnológico</h2>
       <textarea
         value={paradigm}

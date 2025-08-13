@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from './QuestCard.module.css';
 
 type Objective = {
   id: string;
@@ -28,7 +29,7 @@ interface QuestCardProps {
 
 const QuestCard: React.FC<QuestCardProps> = ({ quest, onEdit, onDelete }) => {
   return (
-    <div className="plot-quest-card">
+    <div className={styles.questCard}>
       <h4>{quest.title}</h4>
       <p>{quest.description}</p>
       <p>Type: {quest.type}</p>
@@ -59,7 +60,7 @@ const QuestCard: React.FC<QuestCardProps> = ({ quest, onEdit, onDelete }) => {
           <strong>Consequences:</strong> {quest.consequences}
         </p>
       )}
-      <div className="plot-progress-bar">
+      <div className={styles.progressBar}>
         <div style={{ width: `${quest.progress}%` }}></div>
       </div>
       <p>Status: {quest.status}</p>

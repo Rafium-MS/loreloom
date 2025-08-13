@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Device } from '../services/techRepository';
+import styles from './TechSection.module.css';
 
 interface DeviceListProps {
   devices: Device[];
@@ -27,7 +28,7 @@ const DeviceList: React.FC<DeviceListProps> = ({ devices, onAdd, onUpdate, onRem
   };
 
   return (
-    <div className="tech-section">
+    <div className={styles.techSection}>
       <h3>Dispositivos / Protótipos</h3>
       <ul>
         {devices.map(d => (

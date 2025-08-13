@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Domain } from '../services/techRepository';
+import styles from './TechSection.module.css';
 
 interface DomainListProps {
   domains: Domain[];
@@ -18,7 +19,7 @@ const DomainList: React.FC<DomainListProps> = ({ domains, onAdd, onUpdate, onRem
   };
 
   return (
-    <div className="tech-section">
+    <div className={styles.techSection}>
       <h3>Domínios</h3>
       <ul>
         {domains.map(domain => (

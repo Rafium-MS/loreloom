@@ -10,7 +10,6 @@ import {
   User,
   Artifact,
 } from '../services/magicRepository';
-import '../styles/magic.css';
 
 const MagicSystemPage: React.FC = () => {
   const [system, setSystem] = useState<MagicSystem>(() => magicRepository.getSystem());
@@ -18,7 +17,7 @@ const MagicSystemPage: React.FC = () => {
   const refresh = () => setSystem(magicRepository.getSystem());
 
   return (
-    <div className="magic-system-page">
+    <div>
       <h1>Sistema de Magia</h1>
       <MagicSystemForm
         rules={system.rules}

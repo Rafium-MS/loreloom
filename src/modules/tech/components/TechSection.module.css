@@ -1,0 +1,12 @@
+.techSection {
+  margin-bottom: 1rem;
+}
+
+.techSection ul {
+  list-style: none;
+  padding: 0;
+}
+
+.techSection li {
+  margin-bottom: 0.5rem;
+}
