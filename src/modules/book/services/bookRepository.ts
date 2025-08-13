@@ -61,7 +61,7 @@ export const bookRepository = {
   getProject: (): Project => loadProject(),
   saveProject,
   addBook: (title: string): Book => {
-    let newBook: Book = { id: uuidv4(), title, chapters: [] };
+    const newBook: Book = { id: uuidv4(), title, chapters: [] };
     modifyProject(project => {
       project.books.push(newBook);
     });
@@ -81,7 +81,7 @@ export const bookRepository = {
     });
   },
   addChapter: (bookId: string, data: Partial<Chapter>): Chapter => {
-    let newChapter: Chapter = {
+    const newChapter: Chapter = {
       id: uuidv4(),
       title: data.title || 'New Chapter',
       synopsis: data.synopsis || '',
@@ -117,7 +117,7 @@ export const bookRepository = {
     });
   },
   addScene: (bookId: string, chapterId: string, data: Partial<Scene>): Scene => {
-    let newScene: Scene = {
+    const newScene: Scene = {
       id: uuidv4(),
       title: data.title || 'New Scene',
       synopsis: data.synopsis || '',

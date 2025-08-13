@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { getLocations, addLocation, updateLocation, deleteLocation } from './worldRepository';
+import type { Location } from '../components/LocationForm';
 
 const createStorage = () => {
   let store: Record<string, string> = {};
@@ -18,13 +19,13 @@ const createStorage = () => {
 };
 
 beforeEach(() => {
-  // @ts-ignore - minimal localStorage for Node env
+  // @ts-expect-error - minimal localStorage for Node env
   global.localStorage = createStorage();
 });
 
 describe('worldRepository', () => {
   it('adds, updates and deletes locations', () => {
-    const loc = {
+    const loc: Location = {
       id: 1,
       name: 'City',
       type: 'cidade',
@@ -39,10 +40,10 @@ describe('worldRepository', () => {
       strategicPoints: '',
       history: '',
     };
-    addLocation(loc as any);
+    addLocation(loc);
     expect(getLocations()).toHaveLength(1);
 
-    updateLocation({ ...loc, name: 'Town' } as any);
+    updateLocation({ ...loc, name: 'Town' });
     expect(getLocations()[0].name).toBe('Town');
 
     deleteLocation(loc.id);
