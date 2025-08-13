@@ -1,24 +1,17 @@
 import React from 'react';
+import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
-import { useAppState } from '../core/state/store';
 
-interface Props {
-  children: React.ReactNode;
-}
-
-const MainLayout: React.FC<Props> = ({ children }) => {
-  const focusMode = useAppState((s) => s.focusMode);
-
-  return (
-    <div className="flex h-screen">
-      {!focusMode && <Sidebar />}
-      <div className="flex flex-col flex-1">
-        {!focusMode && <Topbar />}
-        <main className="flex-1 overflow-auto">{children}</main>
-      </div>
+const MainLayout: React.FC = () => (
+  <div className="flex h-screen">
+    <Sidebar />
+    <div className="flex flex-col flex-1">
+      <Topbar />
+      <main className="flex-1 overflow-auto">
+        <Outlet />
+      </main>
     </div>
-  );
-};
-
+  </div>
+);
 export default MainLayout;
