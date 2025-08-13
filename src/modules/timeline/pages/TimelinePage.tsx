@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import {
   TimelineWorldHistoryManager,
@@ -18,11 +18,22 @@ import {
   updateEvent,
   deleteEvent,
 } from '../services/timelineRepository';
+import Skeleton from '../../../app/core/ui/Skeleton';
+import EmptyState from '../../../app/core/ui/EmptyState';
+import { useToast } from '../../../app/core/ui/Toast';
 
 const TimelinePage: React.FC = () => {
-  const [eras, setEras] = useState<Era[]>(() => getEras());
-  const [events, setEvents] = useState<TimelineEvent[]>(() => getEvents());
+  const [eras, setEras] = useState<Era[]>([]);
+  const [events, setEvents] = useState<TimelineEvent[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const { addToast } = useToast();
+
+  useEffect(() => {
+    setEras(getEras());
+    setEvents(getEvents());
+    setLoading(false);
+  }, []);
 
   const [eraForm, setEraForm] = useState({
     id: '',
@@ -51,14 +62,19 @@ const TimelinePage: React.FC = () => {
       end: Number(eraForm.end),
       color: eraForm.color,
     };
-    if (eraForm.id) {
-      updateEra(era);
-      setEras(prev => prev.map(er => (er.id === era.id ? era : er)));
-    } else {
-      addEra(era);
-      setEras(prev => [...prev, era]);
+    try {
+      if (eraForm.id) {
+        updateEra(era);
+        setEras(prev => prev.map(er => (er.id === era.id ? era : er)));
+      } else {
+        addEra(era);
+        setEras(prev => [...prev, era]);
+      }
+      addToast({ type: 'success', message: 'Era salva.' });
+      setEraForm({ id: '', name: '', start: '', end: '', color: '#e0e0e0' });
+    } catch {
+      addToast({ type: 'error', message: 'Erro ao salvar era.' });
     }
-    setEraForm({ id: '', name: '', start: '', end: '', color: '#e0e0e0' });
   };
 
   const handleEventSubmit = (e: React.FormEvent) => {
@@ -70,14 +86,19 @@ const TimelinePage: React.FC = () => {
       eraId: eventForm.eraId || undefined,
       category: eventForm.category || undefined,
     };
-    if (eventForm.id) {
-      updateEvent(ev);
-      setEvents(prev => prev.map(eve => (eve.id === ev.id ? ev : eve)));
-    } else {
-      addEvent(ev);
-      setEvents(prev => [...prev, ev]);
+    try {
+      if (eventForm.id) {
+        updateEvent(ev);
+        setEvents(prev => prev.map(eve => (eve.id === ev.id ? ev : eve)));
+      } else {
+        addEvent(ev);
+        setEvents(prev => [...prev, ev]);
+      }
+      addToast({ type: 'success', message: 'Evento salvo.' });
+      setEventForm({ id: '', name: '', date: '', category: '', eraId: '' });
+    } catch {
+      addToast({ type: 'error', message: 'Erro ao salvar evento.' });
     }
-    setEventForm({ id: '', name: '', date: '', category: '', eraId: '' });
   };
 
   const handleEraEdit = (era: Era) => {
@@ -101,13 +122,23 @@ const TimelinePage: React.FC = () => {
   };
 
   const handleEraDelete = (id: string) => {
-    deleteEra(id);
-    setEras(prev => prev.filter(e => e.id !== id));
+    try {
+      deleteEra(id);
+      setEras(prev => prev.filter(e => e.id !== id));
+      addToast({ type: 'success', message: 'Era removida.' });
+    } catch {
+      addToast({ type: 'error', message: 'Erro ao remover era.' });
+    }
   };
 
   const handleEventDelete = (id: string) => {
-    deleteEvent(id);
-    setEvents(prev => prev.filter(e => e.id !== id));
+    try {
+      deleteEvent(id);
+      setEvents(prev => prev.filter(e => e.id !== id));
+      addToast({ type: 'success', message: 'Evento removido.' });
+    } catch {
+      addToast({ type: 'error', message: 'Erro ao remover evento.' });
+    }
   };
 
   const filteredEvents =
@@ -121,6 +152,7 @@ const TimelinePage: React.FC = () => {
 
       <form onSubmit={handleEraSubmit} className="space-x-2">
         <input
+          id="era-name"
           type="text"
           placeholder="Nome da era"
           value={eraForm.name}
@@ -154,16 +186,28 @@ const TimelinePage: React.FC = () => {
       </form>
 
       <div className="space-y-2">
-        {eras.map(era => (
-          <EraCard key={era.id} era={era} onEdit={handleEraEdit} onDelete={handleEraDelete} />
-        ))}
-        {eras.length === 0 && (
-          <p className="text-sm text-gray-600">Nenhuma era cadastrada.</p>
+        {loading ? (
+          <div className="space-y-2">
+            {[1, 2, 3].map(i => (
+              <Skeleton key={i} className="h-16" />
+            ))}
+          </div>
+        ) : eras.length === 0 ? (
+          <EmptyState
+            message="Nenhuma era cadastrada."
+            actionLabel="Adicionar Era"
+            onAction={() => document.getElementById('era-name')?.focus()}
+          />
+        ) : (
+          eras.map(era => (
+            <EraCard key={era.id} era={era} onEdit={handleEraEdit} onDelete={handleEraDelete} />
+          ))
         )}
       </div>
 
       <form onSubmit={handleEventSubmit} className="space-x-2">
         <input
+          id="event-name"
           type="text"
           placeholder="Nome do evento"
           value={eventForm.name}
@@ -209,11 +253,22 @@ const TimelinePage: React.FC = () => {
       />
 
       <div className="space-y-2">
-        {filteredEvents.map(ev => (
-          <EventCard key={ev.id} event={ev} onEdit={handleEventEdit} onDelete={handleEventDelete} />
-        ))}
-        {filteredEvents.length === 0 && (
-          <p className="text-sm text-gray-600">Nenhum evento encontrado.</p>
+        {loading ? (
+          <div className="space-y-2">
+            {[1, 2, 3].map(i => (
+              <Skeleton key={i} className="h-16" />
+            ))}
+          </div>
+        ) : filteredEvents.length === 0 ? (
+          <EmptyState
+            message="Nenhum evento encontrado."
+            actionLabel="Adicionar Evento"
+            onAction={() => document.getElementById('event-name')?.focus()}
+          />
+        ) : (
+          filteredEvents.map(ev => (
+            <EventCard key={ev.id} event={ev} onEdit={handleEventEdit} onDelete={handleEventDelete} />
+          ))
         )}
       </div>
 
