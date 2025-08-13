@@ -11,6 +11,7 @@ export interface InputProps
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className = '', variant, size, asChild = false, children, ...props }, ref) => {
     const classes = [
+      'border rounded px-3 py-2 peer invalid:border-red-500',
       className,
       variant ? `variant-${variant}` : '',
       size ? `size-${size}` : '',
