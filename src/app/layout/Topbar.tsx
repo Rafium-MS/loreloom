@@ -33,19 +33,22 @@ const Topbar: React.FC = () => {
   };
 
   return (
-    <header className="flex items-center justify-between p-4 border-b">
+    <header
+      className="flex items-center justify-between p-4 border-b border-[var(--primary)] bg-[var(--color-bg)] text-[var(--color-text)]"
+      style={{ fontFamily: 'Cinzel, serif' }}
+    >
       <div className="flex items-center space-x-4 flex-1">
         <Breadcrumbs />
         <input
           type="text"
           placeholder="Buscar..."
           onFocus={() => setPaletteOpen(true)}
-          className="border p-1 rounded w-1/2"
+          className="w-1/2"
         />
       </div>
       <div className="flex items-center space-x-4">
         <span className="text-sm">{status}</span>
-        <button onClick={toggleTheme} className="p-2 rounded hover:bg-gray-200">
+        <button onClick={toggleTheme} className="p-2 rounded hover:bg-[#253a56] text-[var(--primary)]">
           {dark ? <Sun size={16} /> : <Moon size={16} />}
         </button>
       </div>
