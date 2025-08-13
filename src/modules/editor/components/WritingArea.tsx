@@ -1,5 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 
+const sanitize = (html: string) => {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  doc.querySelectorAll('script').forEach((el) => el.remove());
+  return doc.body.innerHTML;
+};
+
 interface Props {
   value: string;
   onChange: (value: string) => void;
@@ -16,14 +22,28 @@ const WritingArea: React.FC<Props> = ({ value, onChange, mode }) => {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (ref.current && ref.current.innerHTML !== value) {
-      ref.current.innerHTML = value;
+    if (ref.current) {
+      const clean = sanitize(value);
+      if (ref.current.innerHTML !== clean) {
+        ref.current.innerHTML = clean;
+      }
     }
   }, [value]);
 
   const handleInput = () => {
     if (ref.current) {
-      onChange(ref.current.innerHTML);
+      const dirty = ref.current.innerHTML;
+      const clean = sanitize(dirty);
+      if (dirty !== clean) {
+        const selection = window.getSelection();
+        const range = selection?.getRangeAt(0);
+        ref.current.innerHTML = clean;
+        if (range) {
+          selection?.removeAllRanges();
+          selection?.addRange(range);
+        }
+      }
+      onChange(clean);
     }
   };
 
