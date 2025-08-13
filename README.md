@@ -67,3 +67,24 @@ Voltada para escritores, roteiristas e mestres de RPG, a ferramenta oferece mód
 ```bash
 git clone https://github.com/Rafium-MS/loreloom.git
 cd loreloom
+```
+
+### 2️⃣ Instalar dependências
+```bash
+npm install
+```
+
+### 3️⃣ Executar em modo de desenvolvimento
+```bash
+npm run dev
+```
+
+### 4️⃣ Gerar build de produção
+```bash
+npm run build
+```
+
+### 5️⃣ Visualizar o build
+```bash
+npm run preview
+```
