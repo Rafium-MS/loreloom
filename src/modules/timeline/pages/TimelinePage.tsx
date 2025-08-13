@@ -18,9 +18,12 @@ import {
   updateEvent,
   deleteEvent,
 } from '../services/timelineRepository';
+
 import Skeleton from '../../../app/core/ui/Skeleton';
 import EmptyState from '../../../app/core/ui/EmptyState';
 import { useToast } from '../../../app/core/ui/Toast';
+import VirtualList from '../../../app/core/ui/VirtualList';
+import localStorageAdapter from '../../../app/core/services/persistence/localStorageAdapter';
 
 const TimelinePage: React.FC = () => {
   const [eras, setEras] = useState<Era[]>([]);
@@ -33,7 +36,15 @@ const TimelinePage: React.FC = () => {
     setEras(getEras());
     setEvents(getEvents());
     setLoading(false);
+    (async () => {
+      const saved = await localStorageAdapter.get<string[]>('timeline:categories');
+      if (saved) setSelectedCategories(saved);
+    })();
   }, []);
+
+  useEffect(() => {
+    localStorageAdapter.set('timeline:categories', selectedCategories);
+  }, [selectedCategories]);
 
   const [eraForm, setEraForm] = useState({
     id: '',
@@ -199,9 +210,16 @@ const TimelinePage: React.FC = () => {
             onAction={() => document.getElementById('era-name')?.focus()}
           />
         ) : (
-          eras.map(era => (
-            <EraCard key={era.id} era={era} onEdit={handleEraEdit} onDelete={handleEraDelete} />
-          ))
+          <VirtualList
+            items={eras}
+            height={256}
+            itemHeight={100}
+            render={era => (
+              <div className="mb-2">
+                <EraCard key={era.id} era={era} onEdit={handleEraEdit} onDelete={handleEraDelete} />
+              </div>
+            )}
+          />
         )}
       </div>
 
@@ -266,9 +284,16 @@ const TimelinePage: React.FC = () => {
             onAction={() => document.getElementById('event-name')?.focus()}
           />
         ) : (
-          filteredEvents.map(ev => (
-            <EventCard key={ev.id} event={ev} onEdit={handleEventEdit} onDelete={handleEventDelete} />
-          ))
+          <VirtualList
+            items={filteredEvents}
+            height={384}
+            itemHeight={100}
+            render={ev => (
+              <div className="mb-2">
+                <EventCard key={ev.id} event={ev} onEdit={handleEventEdit} onDelete={handleEventDelete} />
+              </div>
+            )}
+          />
         )}
       </div>
 

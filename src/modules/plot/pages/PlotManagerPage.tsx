@@ -9,6 +9,7 @@ import Skeleton from '../../../app/core/ui/Skeleton';
 import EmptyState from '../../../app/core/ui/EmptyState';
 import { useToast } from '../../../app/core/ui/Toast';
 
+
 type Arc = {
   id: string;
   title: string;
@@ -71,8 +72,6 @@ const PlotManagerPage: React.FC = () => {
     } catch {
       addToast({ type: 'error', message: 'Erro ao salvar arco.' });
     }
-    setShowArcForm(false);
-    setEditingArc(null);
   };
 
   const deleteArc = (id: string) => {
@@ -142,7 +141,8 @@ const PlotManagerPage: React.FC = () => {
             actionLabel="Add Arc"
             onAction={() => { setEditingArc(null); setShowArcForm(true); }}
           />
-          ) : (
+        ) : (
+
           arcs.map(arc => (
             <ArcCard
               key={arc.id}
@@ -180,7 +180,7 @@ const PlotManagerPage: React.FC = () => {
                 actionLabel="Add Quest"
                 onAction={() => { setEditingQuest(null); setShowQuestForm(true); }}
               />
-                        ) : (
+            ) : (
               activeArc.quests.map(quest => (
                 <QuestCard
                   key={quest.id}
