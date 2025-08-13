@@ -1,7 +1,37 @@
+
 import React from 'react';
 
-export type SelectProps = React.SelectHTMLAttributes<HTMLSelectElement>;
+export interface SelectProps
+  extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'size'> {
+  variant?: string;
+  size?: string;
+  asChild?: boolean;
+}
 
-const Select: React.FC<SelectProps> = props => <select {...props} />;
+export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
+  ({ className = '', variant, size, asChild = false, children, ...props }, ref) => {
+    const classes = [
+      className,
+      variant ? `variant-${variant}` : '',
+      size ? `size-${size}` : '',
+    ]
+      .filter(Boolean)
+      .join(' ');
 
-export default Select;
+    if (asChild && React.isValidElement(children)) {
+      return React.cloneElement(children as React.ReactElement, {
+        className: classes,
+        ref,
+        ...props,
+      });
+    }
+
+    return (
+      <select ref={ref} className={classes} {...props}>
+        {children}
+      </select>
+    );
+  }
+);
+
+Select.displayName = 'Select';

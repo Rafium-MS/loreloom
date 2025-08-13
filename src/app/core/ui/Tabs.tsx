@@ -1,9 +1,36 @@
+
 import React from 'react';
 
-export type TabsProps = React.HTMLAttributes<HTMLDivElement>;
+export interface TabsProps extends React.HTMLAttributes<HTMLDivElement> {
+  variant?: string;
+  size?: string;
+  asChild?: boolean;
+}
 
-const Tabs: React.FC<TabsProps> = ({ children, ...rest }) => (
-  <div {...rest}>{children}</div>
+export const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(
+  ({ className = '', variant, size, asChild = false, children, ...props }, ref) => {
+    const classes = [
+      className,
+      variant ? `variant-${variant}` : '',
+      size ? `size-${size}` : '',
+    ]
+      .filter(Boolean)
+      .join(' ');
+
+    if (asChild && React.isValidElement(children)) {
+      return React.cloneElement(children as React.ReactElement, {
+        className: classes,
+        ref,
+        ...props,
+      });
+    }
+
+    return (
+      <div ref={ref} className={classes} {...props}>
+        {children}
+      </div>
+    );
+  }
 );
 
-export default Tabs;
+Tabs.displayName = 'Tabs';
