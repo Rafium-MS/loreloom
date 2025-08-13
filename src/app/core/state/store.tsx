@@ -1,12 +1,22 @@
 import React, { createContext, useContext, ReactNode, useMemo } from 'react';
 import { create, StoreApi } from 'zustand';
 
-interface AppState {}
+interface AppState {
+  lastSaved: number | null;
+  setLastSaved: (ts: number) => void;
+}
 
 const AppStateContext = createContext<StoreApi<AppState> | null>(null);
 
 export const AppStateProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const store = useMemo(() => create<AppState>(() => ({})), []);
+  const store = useMemo(
+    () =>
+      create<AppState>((set) => ({
+        lastSaved: null,
+        setLastSaved: (ts) => set({ lastSaved: ts }),
+      })),
+    [],
+  );
   return <AppStateContext.Provider value={store}>{children}</AppStateContext.Provider>;
 };
 

@@ -1,19 +1,35 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
+import useAutosave from '../../../app/core/hooks/useAutosave';
+import useHotkeys from '../../../app/core/hooks/useHotkeys';
+import StatusBar from '../../../app/core/ui/StatusBar';
+import { useAppState } from '../../../app/core/state/store';
 
-interface MagicSystemFormProps {
-  rules: string;
-  onChange: (value: string) => void;
-}
+const MagicSystemForm: React.FC = () => {
+  const [description, setDescription] = useState('');
 
-const MagicSystemForm: React.FC<MagicSystemFormProps> = ({ rules, onChange }) => {
+  useAutosave('magic-system', description);
+
+  const setLastSaved = useAppState((s) => s.setLastSaved);
+  useHotkeys({
+    'ctrl+s': () => {
+      localStorage.setItem('magic-system', description);
+      setLastSaved(Date.now());
+    },
+    'ctrl+n': () => setDescription(''),
+  });
+
+  const wordCount = useMemo(() => {
+    return description.trim().split(/\s+/).filter(Boolean).length;
+  }, [description]);
+
   return (
-    <div className="magic-section">
-      <h2>Regras da Magia</h2>
+    <div className="flex flex-col h-full">
       <textarea
-        value={rules}
-        onChange={e => onChange(e.target.value)}
-        placeholder="Descrição das regras básicas do sistema de magia"
+        className="flex-1 p-4 border"
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
       />
+      <StatusBar wordCount={wordCount} />
     </div>
   );
 };
