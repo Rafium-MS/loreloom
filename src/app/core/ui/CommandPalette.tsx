@@ -1,27 +1,16 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { appRoutes } from '../../routesConfig';
 
 interface Props {
   open: boolean;
   onClose: () => void;
 }
 
-const commands = [
-  { label: 'Editor', path: '/editor' },
-  { label: 'Book', path: '/book' },
-  { label: 'Characters', path: '/characters' },
-  { label: 'World', path: '/world' },
-  { label: 'Plot', path: '/plot' },
-  { label: 'Magic', path: '/magic' },
-  { label: 'Tech', path: '/tech' },
-  { label: 'Timeline', path: '/timeline' },
-  { label: 'Relationships', path: '/relationships' },
-];
-
 const CommandPalette: React.FC<Props> = ({ open, onClose }) => {
   const [query, setQuery] = useState('');
   const navigate = useNavigate();
-  const filtered = commands.filter((c) =>
+  const filtered = appRoutes.filter((c) =>
     c.label.toLowerCase().includes(query.toLowerCase()),
   );
   if (!open) return null;
