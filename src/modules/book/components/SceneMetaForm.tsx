@@ -9,7 +9,7 @@ interface SceneMetaFormProps {
 const SceneMetaForm: React.FC<SceneMetaFormProps> = ({ scene, onSave }) => {
   const [draft, setDraft] = useState<Scene>(scene);
 
-  const update = (field: keyof Scene, value: any) => {
+  const update = <K extends keyof Scene>(field: K, value: Scene[K]) => {
     setDraft(prev => ({ ...prev, [field]: value }));
   };
 

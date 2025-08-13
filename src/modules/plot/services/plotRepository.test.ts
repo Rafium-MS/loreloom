@@ -18,7 +18,7 @@ const createStorage = () => {
 };
 
 beforeEach(() => {
-  // @ts-ignore - minimal localStorage for Node env
+  // @ts-expect-error - minimal localStorage for Node env
   global.localStorage = createStorage();
 });
 

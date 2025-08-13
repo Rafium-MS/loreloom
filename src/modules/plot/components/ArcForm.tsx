@@ -1,19 +1,7 @@
 import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import styles from './ArcForm.module.css';
-
-type Arc = {
-  id: string;
-  title: string;
-  description: string;
-  act1: string;
-  act2: string;
-  act3: string;
-  consequences: string;
-  progress: number;
-  status: string;
-  quests: any[];
-};
+import type { Arc } from '../services/plotRepository';
 
 interface ArcFormProps {
   initialArc?: Arc;

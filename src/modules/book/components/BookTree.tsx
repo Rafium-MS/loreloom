@@ -13,8 +13,12 @@ interface BookTreeProps {
   ) => void;
 }
 
+type DragPayload =
+  | { type: 'chapter'; bookId: string; chapterId: string }
+  | { type: 'scene'; bookId: string; chapterId: string; sceneId: string };
+
 const BookTree: React.FC<BookTreeProps> = ({ project, onSelectChapter, onSelectScene, onMoveChapter, onMoveScene }) => {
-  const handleDragStart = (e: React.DragEvent, payload: any) => {
+  const handleDragStart = (e: React.DragEvent, payload: DragPayload) => {
     e.dataTransfer.setData('application/json', JSON.stringify(payload));
   };
 

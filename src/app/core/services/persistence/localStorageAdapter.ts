@@ -26,8 +26,8 @@ const memoryStorage = (): StorageLike => {
 };
 
 const storage: StorageLike =
-  typeof globalThis !== 'undefined' && (globalThis as any).localStorage
-    ? (globalThis as any).localStorage
+  typeof window !== 'undefined' && window.localStorage
+    ? window.localStorage
     : memoryStorage();
 
 const localStorageAdapter: PersistenceAdapter = {

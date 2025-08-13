@@ -1,8 +1,9 @@
 // src/core/ui/Form.tsx
+/* eslint-disable react/prop-types */
 import React from 'react';
 import Button from './Button';
 
-export interface FormRowProps extends React.HTMLAttributes<HTMLDivElement> {}
+export type FormRowProps = React.HTMLAttributes<HTMLDivElement>;
 export function FormRow({ className = '', ...props }: FormRowProps) {
   const classes = ['flex flex-col gap-1', className].filter(Boolean).join(' ');
   return <div className={classes} {...props} />;
