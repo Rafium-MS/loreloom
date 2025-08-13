@@ -1,26 +1,103 @@
 /* src/styles/tokens.css */
+/* ==========================================================================
+   Design Tokens — paleta, espaçamentos, tipografia, raios e aliases
+   Mantém compatibilidade com --primary/--primary-contrast já usados.
+   ========================================================================== */
+
 :root {
-  /* Core brand colors */
-  --color-bg: #1b2a41; /* Azul profundo */
-  --color-panel: #e9e4d0; /* Areia */
-  --color-text: #e9e4d0; /* Texto padrão em fundo escuro */
-  --color-muted: #b8b5aa; /* Texto auxiliar */
-  --primary: #cba135; /* Dourado suave */
-  --primary-contrast: #1b2a41; /* Contraste para botões primários */
-  --accent: #8c2f39; /* Bordô para alertas */
-  --success: #5b7042; /* Verde musgo */
-  --radius: 6px;
+  /* ===== Cores base (tema escuro padrão) ===== */
+  --color-bg: #1b2a41;           /* Fundo principal (azul profundo) */
+  --color-bg-elevated: #223655;  /* Fundo elevado (cards/barras) */
+  --color-panel: #e9e4d0;        /* Painéis claros sobre fundo escuro */
+  --color-text: #e9e4d0;         /* Texto padrão */
+  --color-muted: #b8b5aa;        /* Texto auxiliar */
+
+  /* ===== Cores de estado ===== */
+  --color-primary: #cba135;        /* Dourado suave */
+  --color-primary-contrast: #1b2a41;
+  --color-primary-hover: #d8b347;
+  --color-primary-press: #b38f2f;
+
+  --color-secondary: #506487;      /* Azul acinzentado para elementos secundários */
+  --color-secondary-contrast: #ffffff;
+
+  --color-accent: #8c2f39;         /* Bordô (alertas/ênfase) */
+  --color-success: #5b7042;        /* Verde musgo (sucesso) */
+  --color-warning: #e6b800;        /* Amarelo (atenção) */
+  --color-danger:  #b33a3a;        /* Vermelho (erro) */
+
+  /* ===== Bordas & raios ===== */
+  --radius-xs: 3px;
+  --radius-sm: 4px;
+  --radius:    6px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --border-color: rgba(255,255,255,0.12);
+
+  /* ===== Sombra ===== */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.08);
+  --shadow-md: 0 4px 10px rgba(0,0,0,.14);
+  --shadow-lg: 0 12px 24px rgba(0,0,0,.18);
+
+  /* ===== Espaçamentos ===== */
   --spacing-1: 4px;
   --spacing-2: 8px;
   --spacing-3: 12px;
   --spacing-4: 16px;
   --spacing-6: 24px;
+  --spacing-8: 32px;
+  --spacing-10: 40px;
+
+  /* ===== Tipografia ===== */
+  --font-size-xs: 0.75rem;  /* 12px */
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-md: 1rem;     /* 16px */
+  --font-size-lg: 1.25rem;  /* 20px */
+  --font-size-xl: 1.5rem;   /* 24px */
+  --font-size-2xl: 2rem;    /* 32px */
+  --line-height: 1.45;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+
+  /* ===== Transições ===== */
+  --transition-fast: 120ms ease;
+  --transition: 200ms ease;
+
+  /* ===== Overlays ===== */
+  --overlay: rgba(0,0,0,.5);
+
+  /* ===== Aliases para compatibilidade ===== */
+  --primary: var(--color-primary);
+  --primary-contrast: var(--color-primary-contrast);
+  --secondary: var(--color-secondary);
 }
+
+/* Tema claro */
 [data-theme="light"] {
-  /* Light theme variations */
-  --color-bg: #e9e4d0;
+  --color-bg: #f5f3ea;             /* Areia muito clara */
+  --color-bg-elevated: #ffffff;    /* Cartões brancos */
   --color-panel: #ffffff;
-  --color-text: #1b2a41;
+  --color-text: #1b2a41;           /* Texto escuro para contraste */
   --color-muted: #6b7280;
-  --primary: #cba135;
+
+  --color-primary: #cba135;
+  --color-primary-contrast: #1b2a41;
+  --color-primary-hover: #d6b247;
+  --color-primary-press: #aa862a;
+
+  --border-color: rgba(0,0,0,0.12);
+
+  /* Aliases */
+  --primary: var(--color-primary);
+  --primary-contrast: var(--color-primary-contrast);
+  --secondary: var(--color-secondary);
+}
+
+/* Tema de alto contraste (opcional) */
+@media (prefers-contrast: more) {
+  :root {
+    --border-color: rgba(255,255,255,0.22);
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.16);
+  }
 }
