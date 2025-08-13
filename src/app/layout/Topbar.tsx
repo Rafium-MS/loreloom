@@ -3,6 +3,7 @@ import { Sun, Moon } from 'lucide-react';
 import CommandPalette from '../core/ui/CommandPalette';
 import useHotkeys from '../core/hooks/useHotkeys';
 import { useAppState } from '../core/state/store';
+import Breadcrumbs from '../core/ui/Breadcrumbs';
 
 const Topbar: React.FC = () => {
   const [paletteOpen, setPaletteOpen] = useState(false);
@@ -33,12 +34,15 @@ const Topbar: React.FC = () => {
 
   return (
     <header className="flex items-center justify-between p-4 border-b">
-      <input
-        type="text"
-        placeholder="Buscar..."
-        onFocus={() => setPaletteOpen(true)}
-        className="border p-1 rounded w-1/2"
-      />
+      <div className="flex items-center space-x-4 flex-1">
+        <Breadcrumbs />
+        <input
+          type="text"
+          placeholder="Buscar..."
+          onFocus={() => setPaletteOpen(true)}
+          className="border p-1 rounded w-1/2"
+        />
+      </div>
       <div className="flex items-center space-x-4">
         <span className="text-sm">{status}</span>
         <button onClick={toggleTheme} className="p-2 rounded hover:bg-gray-200">
@@ -51,4 +55,3 @@ const Topbar: React.FC = () => {
 };
 
 export default Topbar;
-
