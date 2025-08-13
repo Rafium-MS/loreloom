@@ -7,6 +7,7 @@ import Skeleton from '../../../app/core/ui/Skeleton';
 import EmptyState from '../../../app/core/ui/EmptyState';
 import { useToast } from '../../../app/core/ui/Toast';
 
+
 const CharactersPage: React.FC = () => {
   const [characters, setCharacters] = useState<Character[]>([]);
   const [loading, setLoading] = useState(true);
