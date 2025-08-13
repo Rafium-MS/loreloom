@@ -1,29 +1,49 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Character } from '../types';
 import CharacterForm from '../components/CharacterForm';
 import CharacterList from '../components/CharacterList';
 import { addCharacter, deleteCharacter, getCharacters, updateCharacter } from '../services/characterRepository';
+import Skeleton from '../../../core/ui/Skeleton';
+import EmptyState from '../../../core/ui/EmptyState';
+import { useToast } from '../../../core/ui/Toast';
 
 const CharactersPage: React.FC = () => {
-  const [characters, setCharacters] = useState<Character[]>(() => getCharacters());
+  const [characters, setCharacters] = useState<Character[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingCharacter, setEditingCharacter] = useState<Character | undefined>();
+  const { addToast } = useToast();
+
+  useEffect(() => {
+    setCharacters(getCharacters());
+    setLoading(false);
+  }, []);
 
   const handleSave = (character: Character) => {
-    if (characters.find(c => c.id === character.id)) {
-      updateCharacter(character);
-      setCharacters(chars => chars.map(c => (c.id === character.id ? character : c)));
-    } else {
-      addCharacter(character);
-      setCharacters(chars => [...chars, character]);
+    try {
+      if (characters.find(c => c.id === character.id)) {
+        updateCharacter(character);
+        setCharacters(chars => chars.map(c => (c.id === character.id ? character : c)));
+      } else {
+        addCharacter(character);
+        setCharacters(chars => [...chars, character]);
+      }
+      addToast({ type: 'success', message: 'Personagem salvo.' });
+      setShowForm(false);
+      setEditingCharacter(undefined);
+    } catch {
+      addToast({ type: 'error', message: 'Erro ao salvar personagem.' });
     }
-    setShowForm(false);
-    setEditingCharacter(undefined);
   };
 
   const handleDelete = (id: string) => {
-    deleteCharacter(id);
-    setCharacters(chars => chars.filter(c => c.id !== id));
+    try {
+      deleteCharacter(id);
+      setCharacters(chars => chars.filter(c => c.id !== id));
+      addToast({ type: 'success', message: 'Personagem removido.' });
+    } catch {
+      addToast({ type: 'error', message: 'Erro ao remover personagem.' });
+    }
   };
 
   const handleEdit = (character: Character) => {
@@ -58,11 +78,25 @@ const CharactersPage: React.FC = () => {
           Novo Personagem
         </button>
       )}
-      <CharacterList
-        characters={characters}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
+      {loading ? (
+        <div className="space-y-2">
+          {[1, 2, 3].map(i => (
+            <Skeleton key={i} className="h-24" />
+          ))}
+        </div>
+      ) : characters.length === 0 ? (
+        <EmptyState
+          message="Nenhum personagem. Crie o primeiro."
+          actionLabel="Novo Personagem"
+          onAction={handleNew}
+        />
+      ) : (
+        <CharacterList
+          characters={characters}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
+      )}
     </div>
   );
 };

@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import ArcCard from '../components/ArcCard';
 import ArcForm from '../components/ArcForm';
 import QuestCard from '../components/QuestCard';
 import QuestForm from '../components/QuestForm';
 import '../styles/plot.css';
+import Skeleton from '../../../core/ui/Skeleton';
+import EmptyState from '../../../core/ui/EmptyState';
+import { useToast } from '../../../core/ui/Toast';
 
 type Arc = {
   id: string;
@@ -41,57 +44,83 @@ type Quest = {
 
 const PlotManagerPage: React.FC = () => {
   const [arcs, setArcs] = useState<Arc[]>([]);
+  const [loading, setLoading] = useState(true);
   const [activeArcId, setActiveArcId] = useState<string | null>(null);
   const [showArcForm, setShowArcForm] = useState(false);
   const [showQuestForm, setShowQuestForm] = useState(false);
   const [editingArc, setEditingArc] = useState<Arc | null>(null);
   const [editingQuest, setEditingQuest] = useState<Quest | null>(null);
+  const { addToast } = useToast();
+
+  useEffect(() => {
+    setLoading(false);
+  }, []);
 
   const activeArc = arcs.find(a => a.id === activeArcId) || null;
 
   const saveArc = (arc: Arc) => {
-    if (editingArc) {
-      setArcs(arcs.map(a => (a.id === arc.id ? { ...arc, quests: editingArc.quests } : a)));
-    } else {
-      setArcs([...arcs, { ...arc, id: uuidv4(), quests: [] }]);
+    try {
+      if (editingArc) {
+        setArcs(arcs.map(a => (a.id === arc.id ? { ...arc, quests: editingArc.quests } : a)));
+      } else {
+        setArcs([...arcs, { ...arc, id: uuidv4(), quests: [] }]);
+      }
+      addToast({ type: 'success', message: 'Arco salvo.' });
+      setShowArcForm(false);
+      setEditingArc(null);
+    } catch {
+      addToast({ type: 'error', message: 'Erro ao salvar arco.' });
     }
-    setShowArcForm(false);
-    setEditingArc(null);
   };
 
   const deleteArc = (id: string) => {
-    setArcs(arcs.filter(a => a.id !== id));
-    if (activeArcId === id) {
-      setActiveArcId(null);
+    try {
+      setArcs(arcs.filter(a => a.id !== id));
+      if (activeArcId === id) {
+        setActiveArcId(null);
+      }
+      addToast({ type: 'success', message: 'Arco removido.' });
+    } catch {
+      addToast({ type: 'error', message: 'Erro ao remover arco.' });
     }
   };
 
   const saveQuest = (quest: Quest) => {
     if (!activeArcId) return;
-    setArcs(arcs.map(arc => {
-      if (arc.id !== activeArcId) return arc;
-      if (editingQuest) {
+    try {
+      setArcs(arcs.map(arc => {
+        if (arc.id !== activeArcId) return arc;
+        if (editingQuest) {
+          return {
+            ...arc,
+            quests: arc.quests.map(q => (q.id === quest.id ? quest : q)),
+          };
+        }
         return {
           ...arc,
-          quests: arc.quests.map(q => (q.id === quest.id ? quest : q)),
+          quests: [...arc.quests, { ...quest, id: uuidv4() }],
         };
-      }
-      return {
-        ...arc,
-        quests: [...arc.quests, { ...quest, id: uuidv4() }],
-      };
-    }));
-    setShowQuestForm(false);
-    setEditingQuest(null);
+      }));
+      addToast({ type: 'success', message: 'Quest salva.' });
+      setShowQuestForm(false);
+      setEditingQuest(null);
+    } catch {
+      addToast({ type: 'error', message: 'Erro ao salvar quest.' });
+    }
   };
 
   const deleteQuest = (id: string) => {
     if (!activeArcId) return;
-    setArcs(arcs.map(arc =>
-      arc.id === activeArcId
-        ? { ...arc, quests: arc.quests.filter(q => q.id !== id) }
-        : arc
-    ));
+    try {
+      setArcs(arcs.map(arc =>
+        arc.id === activeArcId
+          ? { ...arc, quests: arc.quests.filter(q => q.id !== id) }
+          : arc
+      ));
+      addToast({ type: 'success', message: 'Quest removida.' });
+    } catch {
+      addToast({ type: 'error', message: 'Erro ao remover quest.' });
+    }
   };
 
   return (
@@ -99,16 +128,30 @@ const PlotManagerPage: React.FC = () => {
       <h2>Plot Arcs</h2>
       <button onClick={() => { setEditingArc(null); setShowArcForm(true); }}>Add Arc</button>
       <div className="plot-arc-list">
-        {arcs.map(arc => (
-          <ArcCard
-            key={arc.id}
-            arc={arc}
-            isActive={arc.id === activeArcId}
-            onSelect={() => setActiveArcId(arc.id)}
-            onEdit={() => { setEditingArc(arc); setShowArcForm(true); }}
-            onDelete={() => deleteArc(arc.id)}
+        {loading ? (
+          <div className="space-y-2">
+            {[1, 2, 3].map(i => (
+              <Skeleton key={i} className="h-24" />
+            ))}
+          </div>
+        ) : arcs.length === 0 ? (
+          <EmptyState
+            message="Nenhum arco. Adicione o primeiro."
+            actionLabel="Add Arc"
+            onAction={() => { setEditingArc(null); setShowArcForm(true); }}
           />
-        ))}
+        ) : (
+          arcs.map(arc => (
+            <ArcCard
+              key={arc.id}
+              arc={arc}
+              isActive={arc.id === activeArcId}
+              onSelect={() => setActiveArcId(arc.id)}
+              onEdit={() => { setEditingArc(arc); setShowArcForm(true); }}
+              onDelete={() => deleteArc(arc.id)}
+            />
+          ))
+        )}
       </div>
       {showArcForm && (
         <ArcForm
@@ -123,14 +166,28 @@ const PlotManagerPage: React.FC = () => {
           <h3>Quests for {activeArc.title}</h3>
           <button onClick={() => { setEditingQuest(null); setShowQuestForm(true); }}>Add Quest</button>
           <div className="plot-quest-list">
-            {activeArc.quests.map(quest => (
-              <QuestCard
-                key={quest.id}
-                quest={quest}
-                onEdit={() => { setEditingQuest(quest); setShowQuestForm(true); }}
-                onDelete={() => deleteQuest(quest.id)}
+            {loading ? (
+              <div className="space-y-2">
+                {[1, 2, 3].map(i => (
+                  <Skeleton key={i} className="h-24" />
+                ))}
+              </div>
+            ) : activeArc.quests.length === 0 ? (
+              <EmptyState
+                message="Nenhuma quest. Adicione a primeira."
+                actionLabel="Add Quest"
+                onAction={() => { setEditingQuest(null); setShowQuestForm(true); }}
               />
-            ))}
+            ) : (
+              activeArc.quests.map(quest => (
+                <QuestCard
+                  key={quest.id}
+                  quest={quest}
+                  onEdit={() => { setEditingQuest(quest); setShowQuestForm(true); }}
+                  onDelete={() => deleteQuest(quest.id)}
+                />
+              ))
+            )}
           </div>
           {showQuestForm && (
             <QuestForm
