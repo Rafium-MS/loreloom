@@ -1,5 +1,3 @@
-// scripts/initProject.js
-/* eslint-disable no-console */
 import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
