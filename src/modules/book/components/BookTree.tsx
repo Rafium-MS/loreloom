@@ -1,4 +1,5 @@
 import React from 'react';
+import VirtualList from '../../../app/core/ui/VirtualList';
 import { Project, Book, Chapter, Scene } from '../services/bookRepository';
 
 interface BookTreeProps {
@@ -40,9 +41,16 @@ const BookTree: React.FC<BookTreeProps> = ({ project, onSelectChapter, onSelectS
   };
 
   return (
-    <div>
-      {project.books.map(book => (
-        <div key={book.id}>
+    <VirtualList
+      items={project.books}
+      height={400}
+      itemHeight={book =>
+        24 +
+        book.chapters.length * 24 +
+        book.chapters.reduce((sum, c) => sum + c.scenes.length * 24, 0)
+      }
+      render={book => (
+        <div className="mb-4">
           <strong>{book.title}</strong>
           <ul>
             {book.chapters.map(chapter => (
@@ -80,8 +88,8 @@ const BookTree: React.FC<BookTreeProps> = ({ project, onSelectChapter, onSelectS
             ))}
           </ul>
         </div>
-      ))}
-    </div>
+      )}
+    />
   );
 };
 
