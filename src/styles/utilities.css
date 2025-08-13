@@ -1,0 +1,15 @@
+/* src/styles/utilities.css */
+.u-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.u-grid {
+  display: grid;
+  gap: var(--spacing-4);
+}
+
+.u-scroll {
+  overflow-y: auto;
+}

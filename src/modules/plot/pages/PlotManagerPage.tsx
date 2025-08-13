@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import ArcCard from '../components/ArcCard';
 import ArcForm from '../components/ArcForm';
 import QuestCard from '../components/QuestCard';
 import QuestForm from '../components/QuestForm';
-import '../styles/plot.css';
+import styles from './PlotManagerPage.module.css';
 import Skeleton from '../../../app/core/ui/Skeleton';
 import EmptyState from '../../../app/core/ui/EmptyState';
 import { useToast } from '../../../app/core/ui/Toast';
@@ -126,10 +126,10 @@ const PlotManagerPage: React.FC = () => {
   };
 
   return (
-    <div className="plot-manager">
+    <div className={styles.plotManager}>
       <h2>Plot Arcs</h2>
       <button onClick={() => { setEditingArc(null); setShowArcForm(true); }}>Add Arc</button>
-      <div className="plot-arc-list">
+      <div className={`${styles.plotArcList} u-grid`}>
         {loading ? (
           <div className="space-y-2">
             {[1, 2, 3].map(i => (
@@ -167,7 +167,7 @@ const PlotManagerPage: React.FC = () => {
         <div>
           <h3>Quests for {activeArc.title}</h3>
           <button onClick={() => { setEditingQuest(null); setShowQuestForm(true); }}>Add Quest</button>
-          <div className="plot-quest-list">
+          <div className={`${styles.plotQuestList} u-grid`}>
             {loading ? (
               <div className="space-y-2">
                 {[1, 2, 3].map(i => (

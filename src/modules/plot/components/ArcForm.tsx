@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import styles from './ArcForm.module.css';
 
 type Arc = {
   id: string;
@@ -47,7 +48,7 @@ const ArcForm: React.FC<ArcFormProps> = ({ initialArc, onSave, onCancel }) => {
   };
 
   return (
-    <div className="plot-arc-form">
+    <div className={styles.arcForm}>
       <h3>{initialArc ? 'Edit Arc' : 'New Arc'}</h3>
       <label>
         Title:
@@ -57,7 +58,7 @@ const ArcForm: React.FC<ArcFormProps> = ({ initialArc, onSave, onCancel }) => {
         Description:
         <textarea name="description" value={form.description} onChange={handleChange} />
       </label>
-      <div className="plot-act-structure">
+      <div className={styles.actStructure}>
         <label>
           Act 1:
           <textarea name="act1" value={form.act1} onChange={handleChange} />

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Practitioner } from '../services/techRepository';
+import styles from './TechSection.module.css';
 
 interface PractitionerListProps {
   practitioners: Practitioner[];
@@ -20,7 +21,7 @@ const PractitionerList: React.FC<PractitionerListProps> = ({ practitioners, onAd
   };
 
   return (
-    <div className="tech-section">
+    <div className={styles.techSection}>
       <h3>Atores</h3>
       <ul>
         {practitioners.map(p => (

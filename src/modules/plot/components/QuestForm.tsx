@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import styles from './QuestForm.module.css';
+import objectiveStyles from './ObjectiveItem.module.css';
 
 type Objective = {
   id: string;
@@ -91,7 +93,7 @@ const QuestForm: React.FC<QuestFormProps> = ({ initialQuest, onSave, onCancel })
   };
 
   return (
-    <div className="plot-quest-form">
+    <div className={styles.questForm}>
       <h3>{initialQuest ? 'Edit Quest' : 'New Quest'}</h3>
       <label>
         Title:
@@ -110,7 +112,7 @@ const QuestForm: React.FC<QuestFormProps> = ({ initialQuest, onSave, onCancel })
       </label>
       <h4>Objectives</h4>
       {form.objectives.map(obj => (
-        <div key={obj.id} className="plot-objective-item">
+        <div key={obj.id} className={objectiveStyles.objectiveItem}>
           <input type="checkbox" checked={obj.completed} onChange={() => toggleObjectiveCompletion(obj.id)} />
           <input
             type="text"

@@ -1,0 +1,33 @@
+.questCard {
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 5px;
+  background: #f9f9f9;
+}
+
+.progressBar {
+  height: 10px;
+  background: #e0e0e0;
+  border-radius: 5px;
+  margin: 10px 0;
+}
+
+.progressBar div {
+  height: 100%;
+  background: #4CAF50;
+  border-radius: 5px;
+}
+
+.questCard button {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  margin: 5px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.questCard button:hover {
+  background: #45a049;
+}

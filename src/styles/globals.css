@@ -1,0 +1,15 @@
+/* src/styles/globals.css */
+* {
+  box-sizing: border-box;
+}
+html,
+body,
+#root {
+  height: 100%;
+}
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font: 14px/1.45 Inter, system-ui, sans-serif;
+}

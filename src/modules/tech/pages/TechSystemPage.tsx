@@ -10,7 +10,7 @@ import {
   Practitioner,
   Device,
 } from '../services/techRepository';
-import '../styles/tech.css';
+import styles from './TechSystemPage.module.css';
 
 const TechSystemPage: React.FC = () => {
   const [system, setSystem] = useState<TechSystem>(() => techRepository.getSystem());
@@ -18,7 +18,7 @@ const TechSystemPage: React.FC = () => {
   const refresh = () => setSystem(techRepository.getSystem());
 
   return (
-    <div className="tech-system-page">
+    <div className={styles.techSystemPage}>
       <h1>Sistema Tecnológico</h1>
       <TechSystemForm
         paradigm={system.paradigm}

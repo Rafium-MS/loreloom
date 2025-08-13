@@ -11,3 +11,4 @@ declare module '@state/*';
 declare module '@services/*';
 declare module '@layout/*';
 declare module '@modules/*';
+declare module '*.module.css';
