@@ -344,7 +344,39 @@ function hydrateUIFromProject(){
   updateStatusBadge();
 }
 
+function setupNavigation(){
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', function(){
+      document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+      document.querySelectorAll('.content-panel').forEach(panel => panel.classList.remove('active'));
+      this.classList.add('active');
+      const route = this.dataset.route;
+      const panel = document.getElementById(route);
+      if (panel) panel.classList.add('active');
+      const crumb = document.getElementById('crumb');
+      if (crumb) crumb.textContent = this.textContent.trim();
+    });
+  });
+}
+
+function setupTabs(){
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', function(){
+      const container = this.closest('#world');
+      if (!container) return;
+      container.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      container.querySelectorAll('.tab-content').forEach(tc => tc.style.display = 'none');
+      this.classList.add('active');
+      const tabId = this.dataset.tab;
+      const content = document.getElementById(tabId);
+      if (content) content.style.display = 'block';
+    });
+  });
+}
+
 document.addEventListener('DOMContentLoaded', ()=>{
   // carrega projeto default (pode trocar depois pelo input)
   loadProject(currentProjectName);
+  setupNavigation();
+  setupTabs();
 });
