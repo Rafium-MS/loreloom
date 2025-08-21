@@ -127,7 +127,7 @@
               <button class="btn btn-primario" onclick="openLocationModal()">Novo Local</button>
             </div>
             
-            <div class="location-list">
+            <div class="location-list" id="locationList">
               <div class="list-item">
                 <div>
                   <strong>Gondor</strong>
@@ -193,7 +193,7 @@
               </div>
             </div>
             
-            <div class="item-list">
+            <div class="item-list" id="itemList">
               <div class="list-item">
                 <div>
                   <strong>Andúril</strong>
@@ -218,9 +218,9 @@
             <h2>Sistema Econômico</h2>
           </div>
           
-          <div class="grid grid-2">
-            <div>
-              <h3>Moedas</h3>
+            <div class="grid grid-2">
+              <div>
+                <h3>Moedas</h3>
               <div class="form-group">
                 <label>Nome da Moeda</label>
                 <input type="text" class="form-control" placeholder="ex: Moedas de Ouro">
@@ -294,7 +294,7 @@
             <button class="btn btn-primario" onclick="openLanguageModal()">Nova Língua</button>
           </div>
           
-          <div class="grid grid-2">
+          <div class="grid grid-2" id="languageList">
             <div class="card">
               <h3>Élfico (Sindarin)</h3>
               <div class="form-group">
@@ -383,7 +383,7 @@
             </select>
           </div>
           
-          <div style="border-left: 3px solid #3b82f6; padding-left: 20px;">
+          <div style="border-left: 3px solid #3b82f6; padding-left: 20px;" id="eventList">
             <div class="card" style="margin-bottom: 12px; position: relative;">
               <div style="position: absolute; left: -26px; top: 16px; width: 12px; height: 12px; background: #3b82f6; border-radius: 50%;"></div>
               <strong>T.A. 3018</strong> - Início da Jornada do Anel
@@ -450,7 +450,7 @@
             </div>
           </div>
           
-          <div class="grid grid-2">
+          <div class="grid grid-2" id="noteList">
             <div class="card">
               <div class="card-header">
                 <strong>Sistema de Magia</strong>
