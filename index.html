@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>LoreLoom • Minimal</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+
+<body>
+  <!-- Topbar -->
+  <header class="topbar">
+    <div class="brand">🌌 LoreLoom</div>
+    <div class="spacer"></div>
+    <div class="status" id="status">Pronto</div>
+    <button id="saveBtn" class="btn" title="Ctrl+S">Salvar</button>
+  </header>
+
+  <div class="app">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <li class="nav-item active" data-route="editor">Editor</li>
+      <li class="nav-item" data-route="world">Mundo</li>
+      <li class="nav-item" data-route="time">Linha do Tempo</li>
+    </nav>
+
+    <!-- Main -->
+    <main class="main">
+      <!-- Editor -->
+      <section data-view="#/editor" class="view active">
+        <div class="toolbar">
+          <button class="btn btn-ghost" data-cmd="bold"   title="Negrito **texto**">B</button>
+          <button class="btn btn-ghost" data-cmd="italic" title="Itálico *texto*"><i>I</i></button>
+        </div>
+
+        <textarea id="editor" class="editor" placeholder="Comece a escrever... Use [Colchetes] para marcar nomes e lugares."></textarea>
+
+        <div class="meta">
+          <span id="words">0 palavras</span>
+          <span class="dot">•</span>
+          <span id="chars">0 caracteres</span>
+        </div>
+      </section>
+
+      <!-- Mundo -->
+      <section data-view="#/world" class="view">
+        <h2>Mundo</h2>
+        <p>Esqueleto mínimo. Mais tarde: personagens, locais, itens.</p>
+        <textarea id="worldNotes" class="editor" placeholder="Notas do mundo (solto)."></textarea>
+      </section>
+
+      <!-- Timeline -->
+      <section data-view="#/time" class="view">
+        <h2>Timeline</h2>
+        <p>Esqueleto mínimo. Mais tarde: eventos com data, eras, vínculos.</p>
+        <textarea id="timeNotes" class="editor" placeholder="Notas de timeline (solto)."></textarea>
+      </section>
+    </main>
+  </div>
+<!-- Modal: alterações não salvas -->
+<div id="unsaved-modal" class="modal-overlay" style="display:none;">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="unsaved-title">
+    <h3 id="unsaved-title" style="margin-top:0;">Alterações não salvas</h3>
+    <p>Você tem alterações não salvas no editor. O que deseja fazer?</p>
+    <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:16px;">
+      <button id="unsaved-cancel" class="btn btn-secundario">Cancelar</button>
+      <button id="unsaved-discard" class="btn">Descartar</button>
+      <button id="unsaved-save" class="btn btn-primario">Salvar e continuar</button>
+    </div>
+  </div>
+</div>
+
+
+<script type="module" src="js/app.js"></script>
+
+</body>
+</html>
