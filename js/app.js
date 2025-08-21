@@ -61,13 +61,13 @@ function mountRoutes(){
 }
 
 function exposeGlobals(){
-  // Toolbar do editor
+  // Editor
   window.formatText = (cmd) => Editor.format(cmd);
   window.insertReference = () => Editor.insertReference();
   window.checkConsistency = () => Editor.checkConsistency();
   window.saveDocument = () => Editor.save();
 
-  // Mundo (stubs)
+  // Mundo
   window.addCharacter = () => World.addCharacter();
   window.addLocation  = () => World.addLocation();
   window.addMerchant  = () => World.addMerchant();
@@ -75,6 +75,14 @@ function exposeGlobals(){
   window.addLanguage  = () => World.addLanguage();
   window.addEvent     = () => World.addEvent();
   window.addNote      = () => World.addNote();
+
+  // Hooks de export/import usados pelo editor.js
+  window.__worldExportHook = () => {
+    Editor.exportProject(() => World.getData());
+  };
+  window.__worldImportHook = (worldObj) => {
+    World.setData(worldObj);
+  };
 }
 
 function toast(msg, ms = 1600){

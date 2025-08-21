@@ -1,0 +1,1157 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>LoreLoom • Completo</title>
+  <style>
+    
+  </style>
+</head>
+<body>
+  <!-- Topbar -->
+  <header class="topbar">
+    <div class="left">
+      <strong>🌌 LoreLoom</strong>
+      <span class="status-mini"><span class="dot">•</span><span id="status">Pronto</span></span>
+    </div>
+    <div class="right">
+      <button class="btn btn-primario" onclick="saveProject()" title="Ctrl/Cmd + S">Salvar Projeto</button>
+      <button class="btn btn-secundario" onclick="exportProject()">Exportar</button>
+      <input type="file" id="importFile" accept=".json" style="display:none">
+      <button class="btn btn-secundario" onclick="document.getElementById('importFile').click()">Importar</button>
+    </div>
+  </header>
+
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-head">
+        <h3 style="margin:0">Navegação</h3>
+      </div>
+      <nav class="tree">
+        <ul style="list-style:none; margin:0; padding:0;">
+          <li class="nav-item active" data-route="editor">📝 Editor</li>
+          <li class="nav-item" data-route="characters">👤 Personagens</li>
+          <li class="nav-item" data-route="world">🌍 Mundo</li>
+          <li class="nav-item" data-route="economy">💱 Economia</li>
+          <li class="nav-item" data-route="languages">🔤 Línguas</li>
+          <li class="nav-item" data-route="timeline">⏳ Linha do Tempo</li>
+          <li class="nav-item" data-route="notes">🗒️ Notas</li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+      <!-- Breadcrumbs -->
+      <div class="crumbs">Home / <span id="crumb">Editor</span></div>
+
+      <!-- Painel: Editor -->
+      <section id="editor" class="content-panel active">
+        <div class="card">
+          <div class="card-header">
+            <h2>Editor de Texto Rico</h2>
+          </div>
+          
+          <div class="editor-toolbar">
+            <button class="btn" onclick="formatText('bold')" title="Negrito"><b>B</b></button>
+            <button class="btn" onclick="formatText('italic')" title="Itálico"><i>I</i></button>
+            <button class="btn" onclick="formatText('underline')" title="Sublinhado"><u>U</u></button>
+            <button class="btn" onclick="insertReference()" title="Inserir Referência">[ ]</button>
+            <button class="btn" onclick="insertCharacterRef()" title="Personagem">👤</button>
+            <button class="btn" onclick="insertLocationRef()" title="Local">🌍</button>
+            <button class="btn btn-secundario" onclick="checkConsistency()">✔ Consistência</button>
+          </div>
+          
+          <div class="form-group">
+            <label for="documentTitle">Título do Documento</label>
+            <input type="text" id="documentTitle" class="form-control" placeholder="Digite o título..." value="História sem título">
+          </div>
+          
+          <div class="form-group">
+            <label for="mainText">Conteúdo</label>
+            <textarea id="mainText" class="editor" placeholder="Comece a escrever sua história... Use [Colchetes] para marcar referências a personagens, lugares e conceitos."></textarea>
+          </div>
+          
+          <div class="status-bar">
+            <span>Palavras: <strong id="wordCount">0</strong></span>
+            <span>Caracteres: <strong id="charCount">0</strong></span>
+            <span>Referências: <strong id="refCount">0</strong></span>
+            <span id="saveStatus">Rascunho local</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Painel: Personagens -->
+      <section id="characters" class="content-panel">
+        <div class="card">
+          <div class="card-header">
+            <h2>Gerenciador de Personagens</h2>
+            <button class="btn btn-primario" onclick="openCharacterModal()">Novo Personagem</button>
+          </div>
+          
+          <div class="form-group">
+            <input type="text" id="characterSearch" class="form-control" placeholder="Buscar personagens...">
+          </div>
+          
+          <div class="character-list" id="characterList">
+            <!-- Exemplo de personagem -->
+            <div class="list-item">
+              <div>
+                <strong>Aragorn</strong>
+                <div style="font-size: 0.9em; color: #64748b;">Guardião, Humano</div>
+                <div class="tag">Protagonista</div>
+                <div class="tag">Rei</div>
+              </div>
+              <div>
+                <button class="btn" onclick="editCharacter('aragorn')">Editar</button>
+                <button class="btn btn-danger" onclick="deleteCharacter('aragorn')">Excluir</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Painel: Mundo -->
+      <section id="world" class="content-panel">
+        <div class="tabs">
+          <div class="tab active" data-tab="locations">Locais</div>
+          <div class="tab" data-tab="factions">Facções</div>
+          <div class="tab" data-tab="items">Itens</div>
+        </div>
+        
+        <!-- Sub-painel: Locais -->
+        <div id="locations" class="tab-content active">
+          <div class="card">
+            <div class="card-header">
+              <h3>Locais do Mundo</h3>
+              <button class="btn btn-primario" onclick="openLocationModal()">Novo Local</button>
+            </div>
+            
+            <div class="location-list">
+              <div class="list-item">
+                <div>
+                  <strong>Gondor</strong>
+                  <div style="font-size: 0.9em; color: #64748b;">Reino • Capital: Minas Tirith</div>
+                  <div class="tag">Reino</div>
+                  <div class="tag">Importante</div>
+                </div>
+                <div>
+                  <button class="btn" onclick="editLocation('gondor')">Editar</button>
+                  <button class="btn btn-danger">Excluir</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Sub-painel: Facções -->
+        <div id="factions" class="tab-content" style="display:none;">
+          <div class="card">
+            <div class="card-header">
+              <h3>Facções e Organizações</h3>
+              <button class="btn btn-primario" onclick="openFactionModal()">Nova Facção</button>
+            </div>
+            
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Buscar facções...">
+            </div>
+            
+            <div class="list-item">
+              <div>
+                <strong>Irmandade do Anel</strong>
+                <div style="font-size: 0.9em; color: #64748b;">Aliança • 9 membros</div>
+                <div class="tag">Protagonistas</div>
+              </div>
+              <div>
+                <button class="btn">Editar</button>
+                <button class="btn btn-danger">Excluir</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Sub-painel: Itens -->
+        <div id="items" class="tab-content" style="display:none;">
+          <div class="card">
+            <div class="card-header">
+              <h3>Itens e Artefatos</h3>
+              <button class="btn btn-primario" onclick="openItemModal()">Novo Item</button>
+            </div>
+            
+            <div class="grid grid-2">
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Buscar itens...">
+              </div>
+              <div class="form-group">
+                <select class="form-control">
+                  <option>Todos os tipos</option>
+                  <option>Arma</option>
+                  <option>Armadura</option>
+                  <option>Artefato</option>
+                  <option>Consumível</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="item-list">
+              <div class="list-item">
+                <div>
+                  <strong>Andúril</strong>
+                  <div style="font-size: 0.9em; color: #64748b;">Espada • Lendária</div>
+                  <div class="tag">Arma</div>
+                  <div class="tag">Única</div>
+                </div>
+                <div>
+                  <button class="btn">Editar</button>
+                  <button class="btn btn-danger">Excluir</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Painel: Economia -->
+      <section id="economy" class="content-panel">
+        <div class="card">
+          <div class="card-header">
+            <h2>Sistema Econômico</h2>
+          </div>
+          
+          <div class="grid grid-2">
+            <div>
+              <h3>Moedas</h3>
+              <div class="form-group">
+                <label>Nome da Moeda</label>
+                <input type="text" class="form-control" placeholder="ex: Moedas de Ouro">
+              </div>
+              <div class="form-group">
+                <label>Símbolo</label>
+                <input type="text" class="form-control" placeholder="ex: 🪙" maxlength="5">
+              </div>
+              <div class="form-group">
+                <label>Taxa de Câmbio (base)</label>
+                <input type="number" class="form-control" placeholder="1.0" step="0.1">
+              </div>
+              <button class="btn btn-primario">Adicionar Moeda</button>
+            </div>
+            
+            <div>
+              <h3>Recursos</h3>
+              <div class="form-group">
+                <label>Nome do Recurso</label>
+                <input type="text" class="form-control" placeholder="ex: Minério de Ferro">
+              </div>
+              <div class="form-group">
+                <label>Raridade</label>
+                <select class="form-control">
+                  <option>Comum</option>
+                  <option>Incomum</option>
+                  <option>Raro</option>
+                  <option>Épico</option>
+                  <option>Lendário</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Valor Base</label>
+                <input type="number" class="form-control" placeholder="100">
+              </div>
+              <button class="btn btn-primario">Adicionar Recurso</button>
+            </div>
+          </div>
+          
+          <div class="card" style="margin-top: 16px;">
+            <h3>Mercados e Preços</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr style="border-bottom: 1px solid #e2e8f0;">
+                  <th style="text-align: left; padding: 8px;">Item</th>
+                  <th style="text-align: left; padding: 8px;">Região</th>
+                  <th style="text-align: left; padding: 8px;">Preço</th>
+                  <th style="text-align: left; padding: 8px;">Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="padding: 8px;">Pão</td>
+                  <td style="padding: 8px;">Gondor</td>
+                  <td style="padding: 8px;">2 🪙</td>
+                  <td style="padding: 8px;">
+                    <button class="btn">Editar</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Painel: Línguas -->
+      <section id="languages" class="content-panel">
+        <div class="card">
+          <div class="card-header">
+            <h2>Sistema de Línguas</h2>
+            <button class="btn btn-primario" onclick="openLanguageModal()">Nova Língua</button>
+          </div>
+          
+          <div class="grid grid-2">
+            <div class="card">
+              <h3>Élfico (Sindarin)</h3>
+              <div class="form-group">
+                <label>Família Linguística</label>
+                <input type="text" class="form-control" value="Élfica" readonly>
+              </div>
+              <div class="form-group">
+                <label>Falantes</label>
+                <input type="text" class="form-control" value="Elfos de Rivendell, Lothlórien" readonly>
+              </div>
+              <div class="form-group">
+                <label>Script</label>
+                <input type="text" class="form-control" value="Tengwar" readonly>
+              </div>
+              <div class="form-group">
+                <label>Exemplo</label>
+                <textarea class="form-control" rows="2" readonly>Mae govannen - Bem-vindos</textarea>
+              </div>
+              <button class="btn">Editar</button>
+              <button class="btn btn-danger">Excluir</button>
+            </div>
+            
+            <div class="card">
+              <h3>Língua Negra</h3>
+              <div class="form-group">
+                <label>Família Linguística</label>
+                <input type="text" class="form-control" value="Línguas Sombrias" readonly>
+              </div>
+              <div class="form-group">
+                <label>Falantes</label>
+                <input type="text" class="form-control" value="Orcs, Nazgûl" readonly>
+              </div>
+              <div class="form-group">
+                <label>Script</label>
+                <input type="text" class="form-control" value="Runas Sombrias" readonly>
+              </div>
+              <div class="form-group">
+                <label>Exemplo</label>
+                <textarea class="form-control" rows="2" readonly>Ash nazg durbatulûk - Um anel para dominá-los</textarea>
+              </div>
+              <button class="btn">Editar</button>
+              <button class="btn btn-danger">Excluir</button>
+            </div>
+          </div>
+          
+          <div class="card">
+            <h3>Dicionário e Traduções</h3>
+            <div class="grid grid-3">
+              <div class="form-group">
+                <label>Palavra</label>
+                <input type="text" class="form-control" placeholder="ex: mellon">
+              </div>
+              <div class="form-group">
+                <label>Língua</label>
+                <select class="form-control">
+                  <option>Élfico</option>
+                  <option>Língua Negra</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Tradução</label>
+                <input type="text" class="form-control" placeholder="ex: amigo">
+              </div>
+            </div>
+            <button class="btn btn-primario">Adicionar Palavra</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Painel: Linha do Tempo -->
+      <section id="timeline" class="content-panel">
+        <div class="card">
+          <div class="card-header">
+            <h2>Linha do Tempo</h2>
+            <button class="btn btn-primario" onclick="openEventModal()">Novo Evento</button>
+          </div>
+          
+          <div class="form-group">
+            <label>Filtrar por Era/Período</label>
+            <select class="form-control">
+              <option>Todos os períodos</option>
+              <option>Primeira Era</option>
+              <option>Segunda Era</option>
+              <option>Terceira Era</option>
+              <option>Quarta Era</option>
+            </select>
+          </div>
+          
+          <div style="border-left: 3px solid #3b82f6; padding-left: 20px;">
+            <div class="card" style="margin-bottom: 12px; position: relative;">
+              <div style="position: absolute; left: -26px; top: 16px; width: 12px; height: 12px; background: #3b82f6; border-radius: 50%;"></div>
+              <strong>T.A. 3018</strong> - Início da Jornada do Anel
+              <div style="font-size: 0.9em; color: #64748b; margin-top: 4px;">
+                Frodo deixa o Condado com o Um Anel
+              </div>
+              <div class="tag">Importante</div>
+              <div style="margin-top: 8px;">
+                <button class="btn">Editar</button>
+                <button class="btn btn-danger">Excluir</button>
+              </div>
+            </div>
+            
+            <div class="card" style="margin-bottom: 12px; position: relative;">
+              <div style="position: absolute; left: -26px; top: 16px; width: 12px; height: 12px; background: #10b981; border-radius: 50%;"></div>
+              <strong>T.A. 3019</strong> - Batalha dos Campos de Pelennor
+              <div style="font-size: 0.9em; color: #64748b; margin-top: 4px;">
+                Vitória decisiva contra as forças de Mordor
+              </div>
+              <div class="tag">Batalha</div>
+              <div style="margin-top: 8px;">
+                <button class="btn">Editar</button>
+                <button class="btn btn-danger">Excluir</button>
+              </div>
+            </div>
+            
+            <div class="card" style="margin-bottom: 12px; position: relative;">
+              <div style="position: absolute; left: -26px; top: 16px; width: 12px; height: 12px; background: #f59e0b; border-radius: 50%;"></div>
+              <strong>T.A. 3019</strong> - Destruição do Anel
+              <div style="font-size: 0.9em; color: #64748b; margin-top: 4px;">
+                O Um Anel é destruído na Montanha da Perdição
+              </div>
+              <div class="tag">Clímax</div>
+              <div style="margin-top: 8px;">
+                <button class="btn">Editar</button>
+                <button class="btn btn-danger">Excluir</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Painel: Notas -->
+      <section id="notes" class="content-panel">
+        <div class="card">
+          <div class="card-header">
+            <h2>Notas e Ideias</h2>
+            <button class="btn btn-primario" onclick="openNoteModal()">Nova Nota</button>
+          </div>
+          
+          <div class="grid grid-2">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Buscar notas...">
+            </div>
+            <div class="form-group">
+              <select class="form-control">
+                <option>Todas as categorias</option>
+                <option>Ideias de enredo</option>
+                <option>Desenvolvimento de personagens</option>
+                <option>Worldbuilding</option>
+                <option>Pesquisa</option>
+                <option>Referências</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="grid grid-2">
+            <div class="card">
+              <div class="card-header">
+                <strong>Sistema de Magia</strong>
+                <span style="font-size: 0.8em; color: #64748b;">há 2 dias</span>
+              </div>
+              <p style="font-size: 0.9em; margin: 8px 0;">
+                Desenvolver sistema baseado em palavras de poder. Cada palavra tem custo energético...
+              </p>
+              <div class="tag">Worldbuilding</div>
+              <div class="tag">Magia</div>
+              <div style="margin-top: 12px;">
+                <button class="btn">Editar</button>
+                <button class="btn btn-danger">Excluir</button>
+              </div>
+            </div>
+            
+            <div class="card">
+              <div class="card-header">
+                <strong>Arco do Gandalf</strong>
+                <span style="font-size: 0.8em; color: #64748b;">há 1 semana</span>
+              </div>
+              <p style="font-size: 0.9em; margin: 8px 0;">
+                Transformação de Gandalf Cinzento para Branco representa crescimento espiritual...
+              </p>
+              <div class="tag">Personagem</div>
+              <div class="tag">Desenvolvimento</div>
+              <div style="margin-top: 12px;">
+                <button class="btn">Editar</button>
+                <button class="btn btn-danger">Excluir</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal para Personagem -->
+  <div id="characterModal" class="modal">
+    <div class="modal-content">
+      <h3>Novo Personagem</h3>
+      
+      <div class="form-group">
+        <label>Nome</label>
+        <input type="text" id="charName" class="form-control" placeholder="Nome do personagem">
+      </div>
+      
+      <div class="grid grid-2">
+        <div class="form-group">
+          <label>Idade</label>
+          <input type="text" id="charAge" class="form-control" placeholder="ex: 87 anos">
+        </div>
+        <div class="form-group">
+          <label>Raça/Espécie</label>
+          <input type="text" id="charRace" class="form-control" placeholder="ex: Humano, Elfo">
+        </div>
+      </div>
+      
+      <div class="grid grid-2">
+        <div class="form-group">
+          <label>Classe/Profissão</label>
+          <input type="text" id="charClass" class="form-control" placeholder="ex: Guerreiro, Mago">
+        </div>
+        <div class="form-group">
+          <label>Papel na História</label>
+          <select id="charRole" class="form-control">
+            <option value="">Selecione...</option>
+            <option value="protagonista">Protagonista</option>
+            <option value="deuteragonista">Deuteragonista</option>
+            <option value="antagonista">Antagonista</option>
+            <option value="coadjuvante">Coadjuvante</option>
+            <option value="figurante">Figurante</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>Aparência Física</label>
+        <textarea id="charAppearance" class="form-control" rows="3" placeholder="Descreva a aparência do personagem..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Personalidade</label>
+        <textarea id="charPersonality" class="form-control" rows="3" placeholder="Traços de personalidade, motivações..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>História/Background</label>
+        <textarea id="charBackground" class="form-control" rows="4" placeholder="História pessoal, origem, eventos importantes..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Habilidades Especiais</label>
+        <input type="text" id="charSkills" class="form-control" placeholder="ex: Esgrima, Magia, Diplomacia">
+      </div>
+      
+      <div class="form-group">
+        <label>Relacionamentos</label>
+        <textarea id="charRelationships" class="form-control" rows="2" placeholder="Familiares, amigos, inimigos..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Tags</label>
+        <input type="text" id="charTags" class="form-control" placeholder="ex: Rei, Sábio, Corajoso (separar por vírgulas)">
+      </div>
+      
+      <div style="margin-top: 20px; text-align: right;">
+        <button class="btn" onclick="closeModal('characterModal')">Cancelar</button>
+        <button class="btn btn-primario" onclick="saveCharacter()">Salvar Personagem</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para Local -->
+  <div id="locationModal" class="modal">
+    <div class="modal-content">
+      <h3>Novo Local</h3>
+      
+      <div class="form-group">
+        <label>Nome do Local</label>
+        <input type="text" id="locName" class="form-control" placeholder="Nome do local">
+      </div>
+      
+      <div class="grid grid-2">
+        <div class="form-group">
+          <label>Tipo</label>
+          <select id="locType" class="form-control">
+            <option value="">Selecione...</option>
+            <option value="cidade">Cidade</option>
+            <option value="vila">Vila</option>
+            <option value="reino">Reino</option>
+            <option value="floresta">Floresta</option>
+            <option value="montanha">Montanha</option>
+            <option value="rio">Rio</option>
+            <option value="castelo">Castelo</option>
+            <option value="templo">Templo</option>
+            <option value="ruina">Ruína</option>
+            <option value="outro">Outro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Região/Continente</label>
+          <input type="text" id="locRegion" class="form-control" placeholder="ex: Terra-média">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>População</label>
+        <input type="text" id="locPopulation" class="form-control" placeholder="ex: 50.000 habitantes">
+      </div>
+      
+      <div class="form-group">
+        <label>Descrição</label>
+        <textarea id="locDescription" class="form-control" rows="4" placeholder="Descreva o local, sua arquitetura, ambiente..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Governante/Líder</label>
+        <input type="text" id="locRuler" class="form-control" placeholder="Quem governa este local">
+      </div>
+      
+      <div class="form-group">
+        <label>Locais de Interesse</label>
+        <textarea id="locInterests" class="form-control" rows="3" placeholder="Pontos importantes, marcos, construções notáveis..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>História</label>
+        <textarea id="locHistory" class="form-control" rows="3" placeholder="História do local, eventos importantes..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Tags</label>
+        <input type="text" id="locTags" class="form-control" placeholder="ex: Capital, Fortificada, Mística (separar por vírgulas)">
+      </div>
+      
+      <div style="margin-top: 20px; text-align: right;">
+        <button class="btn" onclick="closeModal('locationModal')">Cancelar</button>
+        <button class="btn btn-primario" onclick="saveLocation()">Salvar Local</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para Item -->
+  <div id="itemModal" class="modal">
+    <div class="modal-content">
+      <h3>Novo Item</h3>
+      
+      <div class="form-group">
+        <label>Nome do Item</label>
+        <input type="text" id="itemName" class="form-control" placeholder="Nome do item">
+      </div>
+      
+      <div class="grid grid-2">
+        <div class="form-group">
+          <label>Tipo</label>
+          <select id="itemType" class="form-control">
+            <option value="">Selecione...</option>
+            <option value="arma">Arma</option>
+            <option value="armadura">Armadura</option>
+            <option value="artefato">Artefato</option>
+            <option value="joia">Joia/Acessório</option>
+            <option value="consumivel">Consumível</option>
+            <option value="ferramenta">Ferramenta</option>
+            <option value="livro">Livro/Pergaminho</option>
+            <option value="outro">Outro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Raridade</label>
+          <select id="itemRarity" class="form-control">
+            <option value="comum">Comum</option>
+            <option value="incomum">Incomum</option>
+            <option value="raro">Raro</option>
+            <option value="epico">Épico</option>
+            <option value="lendario">Lendário</option>
+            <option value="unico">Único</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>Descrição</label>
+        <textarea id="itemDescription" class="form-control" rows="3" placeholder="Aparência e características físicas..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Propriedades/Habilidades</label>
+        <textarea id="itemProperties" class="form-control" rows="3" placeholder="Poderes mágicos, habilidades especiais..."></textarea>
+      </div>
+      
+      <div class="grid grid-2">
+        <div class="form-group">
+          <label>Valor</label>
+          <input type="text" id="itemValue" class="form-control" placeholder="ex: 1000 moedas de ouro">
+        </div>
+        <div class="form-group">
+          <label>Peso</label>
+          <input type="text" id="itemWeight" class="form-control" placeholder="ex: 2,5 kg">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>História/Origem</label>
+        <textarea id="itemHistory" class="form-control" rows="3" placeholder="Como foi criado, quem o possuiu..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Localização Atual</label>
+        <input type="text" id="itemLocation" class="form-control" placeholder="Onde está atualmente">
+      </div>
+      
+      <div style="margin-top: 20px; text-align: right;">
+        <button class="btn" onclick="closeModal('itemModal')">Cancelar</button>
+        <button class="btn btn-primario" onclick="saveItem()">Salvar Item</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para Língua -->
+  <div id="languageModal" class="modal">
+    <div class="modal-content">
+      <h3>Nova Língua</h3>
+      
+      <div class="form-group">
+        <label>Nome da Língua</label>
+        <input type="text" id="langName" class="form-control" placeholder="ex: Élfico, Anão">
+      </div>
+      
+      <div class="grid grid-2">
+        <div class="form-group">
+          <label>Família Linguística</label>
+          <input type="text" id="langFamily" class="form-control" placeholder="ex: Línguas Élficas">
+        </div>
+        <div class="form-group">
+          <label>Sistema de Escrita</label>
+          <input type="text" id="langScript" class="form-control" placeholder="ex: Tengwar, Runas">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>Povos/Culturas que Falam</label>
+        <input type="text" id="langSpeakers" class="form-control" placeholder="ex: Elfos de Lothlórien">
+      </div>
+      
+      <div class="form-group">
+        <label>Características Fonéticas</label>
+        <textarea id="langPhonetics" class="form-control" rows="3" placeholder="Sons característicos, padrões de pronúncia..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Estrutura Gramatical</label>
+        <textarea id="langGrammar" class="form-control" rows="3" placeholder="Ordem das palavras, conjugações, declinações..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Exemplos de Frases</label>
+        <textarea id="langExamples" class="form-control" rows="3" placeholder="Frases comuns com traduções..."></textarea>
+      </div>
+      
+      <div style="margin-top: 20px; text-align: right;">
+        <button class="btn" onclick="closeModal('languageModal')">Cancelar</button>
+        <button class="btn btn-primario" onclick="saveLanguage()">Salvar Língua</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para Evento -->
+  <div id="eventModal" class="modal">
+    <div class="modal-content">
+      <h3>Novo Evento</h3>
+      
+      <div class="grid grid-2">
+        <div class="form-group">
+          <label>Nome do Evento</label>
+          <input type="text" id="eventName" class="form-control" placeholder="Nome do evento">
+        </div>
+        <div class="form-group">
+          <label>Data</label>
+          <input type="text" id="eventDate" class="form-control" placeholder="ex: T.A. 3018">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>Tipo de Evento</label>
+        <select id="eventType" class="form-control">
+          <option value="">Selecione...</option>
+          <option value="batalha">Batalha</option>
+          <option value="nascimento">Nascimento</option>
+          <option value="morte">Morte</option>
+          <option value="coroacao">Coroação</option>
+          <option value="descoberta">Descoberta</option>
+          <option value="fundacao">Fundação</option>
+          <option value="destruicao">Destruição</option>
+          <option value="encontro">Encontro</option>
+          <option value="outro">Outro</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>Local</label>
+        <input type="text" id="eventLocation" class="form-control" placeholder="Onde aconteceu">
+      </div>
+      
+      <div class="form-group">
+        <label>Descrição</label>
+        <textarea id="eventDescription" class="form-control" rows="4" placeholder="Descreva o que aconteceu..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Personagens Envolvidos</label>
+        <input type="text" id="eventCharacters" class="form-control" placeholder="Nomes separados por vírgula">
+      </div>
+      
+      <div class="form-group">
+        <label>Consequências</label>
+        <textarea id="eventConsequences" class="form-control" rows="3" placeholder="Impactos e resultados do evento..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Importância</label>
+        <select id="eventImportance" class="form-control">
+          <option value="baixa">Baixa</option>
+          <option value="media">Média</option>
+          <option value="alta">Alta</option>
+          <option value="critica">Crítica</option>
+        </select>
+      </div>
+      
+      <div style="margin-top: 20px; text-align: right;">
+        <button class="btn" onclick="closeModal('eventModal')">Cancelar</button>
+        <button class="btn btn-primario" onclick="saveEvent()">Salvar Evento</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para Nota -->
+  <div id="noteModal" class="modal">
+    <div class="modal-content">
+      <h3>Nova Nota</h3>
+      
+      <div class="form-group">
+        <label>Título</label>
+        <input type="text" id="noteTitle" class="form-control" placeholder="Título da nota">
+      </div>
+      
+      <div class="form-group">
+        <label>Categoria</label>
+        <select id="noteCategory" class="form-control">
+          <option value="ideia">Ideias de enredo</option>
+          <option value="personagem">Desenvolvimento de personagens</option>
+          <option value="worldbuilding">Worldbuilding</option>
+          <option value="pesquisa">Pesquisa</option>
+          <option value="referencia">Referências</option>
+          <option value="outro">Outro</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>Conteúdo</label>
+        <textarea id="noteContent" class="form-control" rows="6" placeholder="Escreva sua nota aqui..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Tags</label>
+        <input type="text" id="noteTags" class="form-control" placeholder="ex: magia, sistema, importante (separar por vírgulas)">
+      </div>
+      
+      <div style="margin-top: 20px; text-align: right;">
+        <button class="btn" onclick="closeModal('noteModal')">Cancelar</button>
+        <button class="btn btn-primario" onclick="saveNote()">Salvar Nota</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Dados do projeto (simulação de armazenamento local)
+    let projectData = {
+      title: "Projeto LoreLoom",
+      content: "",
+      characters: [],
+      locations: [],
+      items: [],
+      languages: [],
+      timeline: [],
+      notes: [],
+      economy: {
+        currencies: [],
+        resources: [],
+        markets: []
+      }
+    };
+
+    // Navegação entre painéis
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', function() {
+        // Remove active de todos os itens
+        document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+        document.querySelectorAll('.content-panel').forEach(panel => panel.classList.remove('active'));
+        
+        // Adiciona active ao item clicado
+        this.classList.add('active');
+        const route = this.dataset.route;
+        document.getElementById(route).classList.add('active');
+        document.getElementById('crumb').textContent = this.textContent.trim();
+      });
+    });
+
+    // Navegação por abas no painel Mundo
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        if (this.closest('#world')) {
+          document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+          document.querySelectorAll('.tab-content').forEach(tc => tc.style.display = 'none');
+          
+          this.classList.add('active');
+          const tabId = this.dataset.tab;
+          document.getElementById(tabId).style.display = 'block';
+        }
+      });
+    });
+
+    // Funções para abrir modais
+    function openCharacterModal() {
+      document.getElementById('characterModal').classList.add('active');
+    }
+
+    function openLocationModal() {
+      document.getElementById('locationModal').classList.add('active');
+    }
+
+    function openItemModal() {
+      document.getElementById('itemModal').classList.add('active');
+    }
+
+    function openLanguageModal() {
+      document.getElementById('languageModal').classList.add('active');
+    }
+
+    function openEventModal() {
+      document.getElementById('eventModal').classList.add('active');
+    }
+
+    function openNoteModal() {
+      document.getElementById('noteModal').classList.add('active');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+    }
+
+    // Fechar modal clicando fora
+    document.querySelectorAll('.modal').forEach(modal => {
+      modal.addEventListener('click', function(e) {
+        if (e.target === this) {
+          this.classList.remove('active');
+        }
+      });
+    });
+
+    // Funções de formatação de texto
+    function formatText(command) {
+      document.execCommand(command, false, null);
+    }
+
+    function insertReference() {
+      const textarea = document.getElementById('mainText');
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const selectedText = textarea.value.substring(start, end);
+      
+      if (selectedText) {
+        textarea.value = textarea.value.substring(0, start) + 
+                        '[' + selectedText + ']' + 
+                        textarea.value.substring(end);
+      } else {
+        textarea.value = textarea.value.substring(0, start) + 
+                        '[referência]' + 
+                        textarea.value.substring(end);
+      }
+      
+      updateWordCount();
+    }
+
+    function insertCharacterRef() {
+      const textarea = document.getElementById('mainText');
+      const start = textarea.selectionStart;
+      textarea.value = textarea.value.substring(0, start) + 
+                      '[personagem]' + 
+                      textarea.value.substring(start);
+      updateWordCount();
+    }
+
+    function insertLocationRef() {
+      const textarea = document.getElementById('mainText');
+      const start = textarea.selectionStart;
+      textarea.value = textarea.value.substring(0, start) + 
+                      '[local]' + 
+                      textarea.value.substring(start);
+      updateWordCount();
+    }
+
+    // Atualizar contador de palavras
+    function updateWordCount() {
+      const text = document.getElementById('mainText').value;
+      const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+      const chars = text.length;
+      const refs = (text.match(/\[([^\]]+)\]/g) || []).length;
+      
+      document.getElementById('wordCount').textContent = words;
+      document.getElementById('charCount').textContent = chars;
+      document.getElementById('refCount').textContent = refs;
+    }
+
+    // Event listener para o editor
+    document.getElementById('mainText').addEventListener('input', updateWordCount);
+
+    // Funções de salvamento (placeholder)
+    function saveProject() {
+      projectData.content = document.getElementById('mainText').value;
+      projectData.title = document.getElementById('documentTitle').value;
+      
+      document.getElementById('saveStatus').textContent = 'Salvo ' + new Date().toLocaleTimeString();
+      console.log('Projeto salvo:', projectData);
+    }
+
+    function saveCharacter() {
+      const character = {
+        id: Date.now(),
+        name: document.getElementById('charName').value,
+        age: document.getElementById('charAge').value,
+        race: document.getElementById('charRace').value,
+        class: document.getElementById('charClass').value,
+        role: document.getElementById('charRole').value,
+        appearance: document.getElementById('charAppearance').value,
+        personality: document.getElementById('charPersonality').value,
+        background: document.getElementById('charBackground').value,
+        skills: document.getElementById('charSkills').value,
+        relationships: document.getElementById('charRelationships').value,
+        tags: document.getElementById('charTags').value.split(',').map(t => t.trim())
+      };
+      
+      projectData.characters.push(character);
+      closeModal('characterModal');
+      console.log('Personagem salvo:', character);
+    }
+
+    function saveLocation() {
+      const location = {
+        id: Date.now(),
+        name: document.getElementById('locName').value,
+        type: document.getElementById('locType').value,
+        region: document.getElementById('locRegion').value,
+        population: document.getElementById('locPopulation').value,
+        description: document.getElementById('locDescription').value,
+        ruler: document.getElementById('locRuler').value,
+        interests: document.getElementById('locInterests').value,
+        history: document.getElementById('locHistory').value,
+        tags: document.getElementById('locTags').value.split(',').map(t => t.trim())
+      };
+      
+      projectData.locations.push(location);
+      closeModal('locationModal');
+      console.log('Local salvo:', location);
+    }
+
+    function saveItem() {
+      const item = {
+        id: Date.now(),
+        name: document.getElementById('itemName').value,
+        type: document.getElementById('itemType').value,
+        rarity: document.getElementById('itemRarity').value,
+        description: document.getElementById('itemDescription').value,
+        properties: document.getElementById('itemProperties').value,
+        value: document.getElementById('itemValue').value,
+        weight: document.getElementById('itemWeight').value,
+        history: document.getElementById('itemHistory').value,
+        location: document.getElementById('itemLocation').value
+      };
+      
+      projectData.items.push(item);
+      closeModal('itemModal');
+      console.log('Item salvo:', item);
+    }
+
+    function saveLanguage() {
+      const language = {
+        id: Date.now(),
+        name: document.getElementById('langName').value,
+        family: document.getElementById('langFamily').value,
+        script: document.getElementById('langScript').value,
+        speakers: document.getElementById('langSpeakers').value,
+        phonetics: document.getElementById('langPhonetics').value,
+        grammar: document.getElementById('langGrammar').value,
+        examples: document.getElementById('langExamples').value
+      };
+      
+      projectData.languages.push(language);
+      closeModal('languageModal');
+      console.log('Língua salva:', language);
+    }
+
+    function saveEvent() {
+      const event = {
+        id: Date.now(),
+        name: document.getElementById('eventName').value,
+        date: document.getElementById('eventDate').value,
+        type: document.getElementById('eventType').value,
+        location: document.getElementById('eventLocation').value,
+        description: document.getElementById('eventDescription').value,
+        characters: document.getElementById('eventCharacters').value.split(',').map(c => c.trim()),
+        consequences: document.getElementById('eventConsequences').value,
+        importance: document.getElementById('eventImportance').value
+      };
+      
+      projectData.timeline.push(event);
+      closeModal('eventModal');
+      console.log('Evento salvo:', event);
+    }
+
+    function saveNote() {
+      const note = {
+        id: Date.now(),
+        title: document.getElementById('noteTitle').value,
+        category: document.getElementById('noteCategory').value,
+        content: document.getElementById('noteContent').value,
+        tags: document.getElementById('noteTags').value.split(',').map(t => t.trim()),
+        createdAt: new Date()
+      };
+      
+      projectData.notes.push(note);
+      closeModal('noteModal');
+      console.log('Nota salva:', note);
+    }
+
+    function checkConsistency() {
+      alert('Função de verificação de consistência ainda não implementada.');
+    }
+
+    function exportProject() {
+      const dataStr = JSON.stringify(projectData, null, 2);
+      const dataBlob = new Blob([dataStr], {type: 'application/json'});
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'projeto_loreloom.json';
+      link.click();
+    }
+
+    // Atalhos de teclado
+    document.addEventListener('keydown', function(e) {
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        saveProject();
+      }
+    });
+
+    // Inicialização
+    updateWordCount();
+  </script>
+</body>
+</html>
