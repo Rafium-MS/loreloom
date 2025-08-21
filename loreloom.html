@@ -21,24 +21,39 @@
     </div>
   </header>
 
-  <div class="app">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="sidebar-head">
-        <h3 style="margin:0">Navegação</h3>
+  <aside class="sidebar">
+  <div class="sidebar-head">
+    <h3 style="margin:0">Navegação</h3>
+  </div>
+
+    <!-- PROJETO / LIVRO -->
+    <div class="card" style="border:none; border-bottom:1px solid #e2e8f0; border-radius:0; margin:0;">
+      <div class="form-group" style="margin-bottom:8px;">
+        <label>Nome do Projeto (Livro)</label>
+        <input type="text" id="projectNameInput" class="form-control" placeholder="ex: As Cinzas do Cedro">
       </div>
-      <nav class="tree">
-        <ul style="list-style:none; margin:0; padding:0;">
-          <li class="nav-item active" data-route="editor">📝 Editor</li>
-          <li class="nav-item" data-route="characters">👤 Personagens</li>
-          <li class="nav-item" data-route="world">🌍 Mundo</li>
-          <li class="nav-item" data-route="economy">💱 Economia</li>
-          <li class="nav-item" data-route="languages">🔤 Línguas</li>
-          <li class="nav-item" data-route="timeline">⏳ Linha do Tempo</li>
-          <li class="nav-item" data-route="notes">🗒️ Notas</li>
-        </ul>
-      </nav>
-    </aside>
+      <div class="project-tree">
+        <div class="book-node">
+          📚 <span id="projectNameDisplay">Projeto LoreLoom</span>
+          <button class="btn btn-sm" id="newDocumentBtn" title="Novo texto" style="margin-left:8px;">+ Texto</button>
+        </div>
+        <ul id="documentsTree" class="treeview"></ul>
+      </div>
+    </div>
+
+    <nav class="tree">
+      <ul style="list-style:none; margin:0; padding:0;">
+        <li class="nav-item active" data-route="editor">📝 Editor</li>
+        <li class="nav-item" data-route="documents">📄 Textos</li>
+        <li class="nav-item" data-route="characters">👤 Personagens</li>
+        <li class="nav-item" data-route="world">🌍 Mundo</li>
+        <li class="nav-item" data-route="economy">💱 Economia</li>
+        <li class="nav-item" data-route="languages">🔤 Línguas</li>
+        <li class="nav-item" data-route="timeline">⏳ Linha do Tempo</li>
+        <li class="nav-item" data-route="notes">🗒️ Notas</li>
+      </ul>
+    </nav>
+  </aside>
 
     <!-- Main -->
     <main class="main">
@@ -60,6 +75,22 @@
             <button class="btn" onclick="insertCharacterRef()" title="Personagem">👤</button>
             <button class="btn" onclick="insertLocationRef()" title="Local">🌍</button>
             <button class="btn btn-secundario" onclick="checkConsistency()">✔ Consistência</button>
+
+            <!-- NOVOS -->
+            <div style="flex:1"></div>
+            <button class="btn" id="draftToggleBtn" onclick="toggleDraft()" title="Marcar como rascunho/final">🏷️ Rascunho</button>
+            <button class="btn" id="grammarBtn" onclick="grammarReview()" title="Revisão gramatical">✍️ Revisão</button>
+          </div>
+
+          <div id="grammarPanel" class="grammar-panel" style="display:none;">
+            <div class="grammar-header">
+              <strong>Revisão Gramatical</strong>
+              <div>
+                <button class="btn btn-sm" onclick="applyQuickFixes()">Aplicar correções rápidas</button>
+                <button class="btn btn-sm" onclick="document.getElementById('grammarPanel').style.display='none'">Fechar</button>
+              </div>
+            </div>
+            <div id="grammarResults" class="grammar-results"></div>
           </div>
           
           <div class="form-group">
@@ -77,9 +108,25 @@
             <span>Caracteres: <strong id="charCount">0</strong></span>
             <span>Referências: <strong id="refCount">0</strong></span>
             <span id="saveStatus">Rascunho local</span>
+            <span class="status-right">
+              Status: <span id="docStatusBadge" class="badge badge-draft">Rascunho</span>
+            </span>
+          </div>
+          
+      </section>
+      
+    <section id="documents" class="content-panel">
+      <div class="card">
+        <div class="card-header">
+          <h2>Textos do Projeto</h2>
+          <div>
+            <input type="text" id="docSearch" class="form-control" placeholder="Buscar por título..." style="width:240px; display:inline-block;"/>
           </div>
         </div>
-      </section>
+
+        <div id="documentsList" class="document-list"></div>
+      </div>
+    </section>
 
       <!-- Painel: Personagens -->
       <section id="characters" class="content-panel">

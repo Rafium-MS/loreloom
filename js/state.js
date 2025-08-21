@@ -11,7 +11,8 @@ export const projectData = {
     currencies: [],
     resources: [],
     markets: []
-  }
+  },
+  documents: []   
 };
 
 export const editingIds = {
