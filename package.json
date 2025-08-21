@@ -4,8 +4,8 @@
   "description": "",
   "main": "loreloom.html",
   "scripts": {
-    "start":"node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js",
+    "test": "echo \"No tests specified\""
   },
   "repository": {
     "type": "git",
@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/Rafium-MS/loreloom/issues"
   },
-  "homepage": "https://github.com/Rafium-MS/loreloom#readme"
+  "homepage": "https://github.com/Rafium-MS/loreloom#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
 }
