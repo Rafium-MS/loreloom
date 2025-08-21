@@ -1,4 +1,4 @@
-// Dados do projeto (simulação de armazenamento local)
+// Dados do projeto carregados do servidor
     let projectData = {
       title: "Projeto LoreLoom",
       content: "",
@@ -14,6 +14,14 @@
         markets: []
       }
     };
+
+    async function loadProject() {
+      const res = await fetch('/load');
+      projectData = await res.json();
+      document.getElementById('mainText').value = projectData.content || '';
+      document.getElementById('documentTitle').value = projectData.title || '';
+      updateWordCount();
+    }
 
     // Navegação entre painéis
     document.querySelectorAll('.nav-item').forEach(item => {
@@ -140,15 +148,19 @@
     document.getElementById('mainText').addEventListener('input', updateWordCount);
 
     // Funções de salvamento (placeholder)
-    function saveProject() {
+    async function saveProject() {
       projectData.content = document.getElementById('mainText').value;
       projectData.title = document.getElementById('documentTitle').value;
-      
+      await fetch('/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(projectData)
+      });
       document.getElementById('saveStatus').textContent = 'Salvo ' + new Date().toLocaleTimeString();
       console.log('Projeto salvo:', projectData);
     }
 
-    function saveCharacter() {
+    async function saveCharacter() {
       const character = {
         id: Date.now(),
         name: document.getElementById('charName').value,
@@ -165,6 +177,11 @@
       };
       
       projectData.characters.push(character);
+      await fetch('/characters', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(character)
+      });
       closeModal('characterModal');
       console.log('Personagem salvo:', character);
     }
@@ -280,4 +297,4 @@
     });
 
     // Inicialização
-    updateWordCount();
+    loadProject();

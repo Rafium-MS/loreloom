@@ -1,11 +1,57 @@
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
 const port = process.env.PORT || 3000;
+const DATA_FILE = path.join(__dirname, 'data.json');
 
+app.use(express.json());
 // Serve static assets from the repository root
 app.use(express.static(__dirname));
+
+function readData() {
+  try {
+    return JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
+  } catch {
+    return {
+      title: 'Projeto LoreLoom',
+      content: '',
+      characters: [],
+      locations: [],
+      items: [],
+      languages: [],
+      timeline: [],
+      notes: [],
+      economy: { currencies: [], resources: [], markets: [] }
+    };
+  }
+}
+
+function writeData(data) {
+  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+}
+
+app.post('/save', (req, res) => {
+  writeData(req.body);
+  res.json({ status: 'ok' });
+});
+
+app.get('/load', (_req, res) => {
+  res.json(readData());
+});
+
+app.get('/characters', (_req, res) => {
+  const data = readData();
+  res.json(data.characters || []);
+});
+
+app.post('/characters', (req, res) => {
+  const data = readData();
+  data.characters.push(req.body);
+  writeData(data);
+  res.json({ status: 'ok' });
+});
 
 // Fallback to the main HTML file
 app.get('/', (_req, res) => {
