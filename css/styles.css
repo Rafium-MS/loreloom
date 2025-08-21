@@ -45,18 +45,33 @@ body {
   align-items: center;
 }
 
-.nav-item {
-  padding: 12px 16px;
+/* Estilos unificados para itens de lista e navegação */
+.nav-item, .doc-node, .list-item {
+  padding: 12px;
   cursor: pointer;
-  border-left: 3px solid transparent;
   transition: all 0.2s;
+  display: flex;
+  align-items: center;
 }
 
-.nav-item:hover {
-  background: #f1f5f9;
+.nav-item {
+  border-left: 3px solid transparent;
+  justify-content: flex-start;
 }
 
-.nav-item.active {
+.doc-node, .list-item {
+  justify-content: space-between;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.nav-item:hover,
+.doc-node:hover,
+.list-item:hover {
+  background: #f8fafc;
+}
+
+.nav-item.active,
+.doc-node.active {
   background: #eff6ff;
   border-left-color: #3b82f6;
   color: #1d4ed8;
@@ -173,7 +188,7 @@ body {
 
 .card-header {
   display: flex;
-  justify-content: between;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
   padding-bottom: 12px;
@@ -207,21 +222,9 @@ body {
   margin: 2px;
 }
 
-.character-list, .location-list, .item-list {
+.character-list, .location-list, .item-list, .document-list {
   max-height: 300px;
   overflow-y: auto;
-}
-
-.list-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px;
-  border-bottom: 1px solid #f1f5f9;
-}
-
-.list-item:hover {
-  background: #f8fafc;
 }
 
 .tabs {
@@ -267,17 +270,22 @@ body {
   max-height: 80vh;
   overflow-y: auto;
 }
+
 /* ===== NOVOS: Projeto/Livro e Documentos ===== */
 .project-tree { padding: 12px 16px; }
 .book-node { font-weight: 600; margin-bottom: 8px; display:flex; align-items:center; }
 #documentsTree { list-style: none; padding-left: 0; margin: 0; }
-.doc-node { display:flex; justify-content: space-between; align-items:center; padding: 8px 8px; border-radius: 6px; cursor:pointer; }
-.doc-node:hover { background: #f8fafc; }
-.doc-node.active { background:#eff6ff; border-left:3px solid #3b82f6; }
+
 .doc-meta { font-size: 0.8em; color:#64748b; }
 
 /* badges de status */
-.badge { display:inline-block; padding:2px 8px; border-radius: 999px; font-size: 0.75em; border:1px solid transparent; }
+.badge { 
+  display:inline-block; 
+  padding:2px 8px; 
+  border-radius: 999px; 
+  font-size: 0.75em; 
+  border:1px solid transparent; 
+}
 .badge-draft { background:#fff7ed; color:#9a3412; border-color:#fdba74; }
 .badge-final { background:#ecfdf5; color:#065f46; border-color:#6ee7b7; }
 
@@ -285,8 +293,6 @@ body {
 .status-right { margin-left:auto; }
 
 /* documentos (lista do painel) */
-.document-list .list-item { padding: 12px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #f1f5f9; }
-.document-list .list-item:hover { background:#f8fafc; }
 .document-title { font-weight:600; }
 .document-sub { font-size:0.85em; color:#64748b; }
 
