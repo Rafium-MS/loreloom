@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const os = require('os');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -53,11 +54,31 @@ app.post('/characters', (req, res) => {
   res.json({ status: 'ok' });
 });
 
+app.get('/os', (_req, res) => {
+  res.json({
+    platform: os.platform(),
+    release: os.release(),
+    arch: os.arch(),
+    cpus: os.cpus().length,
+    totalmem: os.totalmem(),
+    freemem: os.freemem(),
+  });
+});
+
 // Fallback to the main HTML file
 app.get('/', (_req, res) => {
   res.sendFile(path.join(__dirname, 'loreloom.html'));
 });
 
 app.listen(port, () => {
-  console.log(`LoreLoom server running at http://localhost:${port}`);
+  console.log('LoreLoom server running at:');
+  console.log(`  Local:   http://localhost:${port}`);
+  const nets = os.networkInterfaces();
+  for (const name of Object.keys(nets)) {
+    for (const net of nets[name]) {
+      if (net.family === 'IPv4' && !net.internal) {
+        console.log(`  Network (${name}): http://${net.address}:${port}`);
+      }
+    }
+  }
 });
