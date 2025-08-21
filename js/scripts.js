@@ -621,6 +621,32 @@
       link.click();
     }
 
+    async function importProject(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      try {
+        const text = await file.text();
+        const data = JSON.parse(text);
+        projectData = data;
+        document.getElementById('mainText').value = projectData.content || '';
+        document.getElementById('documentTitle').value = projectData.title || '';
+        updateWordCount();
+        renderCharacterList();
+        renderLocationList();
+        renderItemList();
+        renderLanguageList();
+        renderEventList();
+        renderNoteList();
+        await saveProject();
+      } catch (err) {
+        console.error('Erro ao importar projeto:', err);
+        alert('Arquivo JSON inválido');
+      }
+      event.target.value = '';
+    }
+
+    document.getElementById('importFile').addEventListener('change', importProject);
+
     // Atalhos de teclado
     document.addEventListener('keydown', function(e) {
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
