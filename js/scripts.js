@@ -44,26 +44,7 @@ function ensureProject(name) {
   return { map, key };
 }
 
-function loadProject(name) {
-  const { map, key } = ensureProject(name);
-  projectData = map[key];
-  currentProjectName = name;
-  if (!Array.isArray(projectData.documents)) projectData.documents = [];
-  if (!currentDocumentId) {
-    if (projectData.documents.length === 0) {
-      // cria primeiro documento
-      const doc = createDocument("Documento 1");
-      projectData.documents.push(doc);
-      currentDocumentId = doc.id;
-      persistProject();
-    } else {
-      currentDocumentId = projectData.documents[0].id;
-    }
-  }
-  hydrateUIFromProject();
-  renderProjectTree();
-  renderDocumentsPanel();
-}
+
 
 function persistProject() {
   const map = loadProjectsMap();
@@ -198,19 +179,6 @@ function renderDocumentsPanel() {
   `).join('');
 }
 
-function saveProject() {
-  // atualiza dados do doc atual e do projeto
-  const title = document.getElementById('documentTitle').value;
-  const text  = document.getElementById('mainText').value;
-
-  // título do doc alimenta a hierarquia
-  renameCurrentDocument(title);
-  saveCurrentDocumentContent(text);
-
-  // título do projeto (livro) no topo
-  projectData.title = document.getElementById('documentTitle').value; // mantém compat se já usava
-  persistProject();
-}
 // ====== Binds de UI novos ======
 document.getElementById('newDocumentBtn').addEventListener('click', newDocument);
 
@@ -222,9 +190,7 @@ if (projectInput) {
   });
   projectInput.addEventListener('change', ()=>{
     // move/garante projeto no storage quando o nome muda
-    const old = currentProjectName;
-    // carrega/garante o novo container
-    loadProject(projectInput.value || 'Projeto');
+    // (função de carregar projeto removida)
   });
 }
 
@@ -376,7 +342,7 @@ function setupTabs(){
 
 document.addEventListener('DOMContentLoaded', ()=>{
   // carrega projeto default (pode trocar depois pelo input)
-  loadProject(currentProjectName);
+  // (função de carregar projeto removida)
   setupNavigation();
   setupTabs();
 });
