@@ -17,5 +17,10 @@
   border-radius: 8px;
   font-family: 'Monaco', 'Consolas', monospace;
   font-size: 14px;
-  resize: vertical;
+  overflow-y: auto;
+}
+
+.editor[contenteditable="true"]:empty:before {
+  content: attr(data-placeholder);
+  color: #9ca3af;
 }

@@ -1,48 +1,80 @@
 import { projectData } from './state.js';
 
 export function formatText(command) {
-  document.execCommand(command, false, null);
+  const selection = window.getSelection();
+  if (!selection.rangeCount) return;
+  const range = selection.getRangeAt(0);
+  if (range.collapsed) return;
+
+  let tagName;
+  switch (command) {
+    case 'bold':
+      tagName = 'strong';
+      break;
+    case 'italic':
+      tagName = 'em';
+      break;
+    case 'underline':
+      tagName = 'u';
+      break;
+    default:
+      return;
+  }
+
+  const wrapper = document.createElement(tagName);
+  wrapper.appendChild(range.extractContents());
+  range.insertNode(wrapper);
+  range.collapse(false);
+  selection.removeAllRanges();
+  selection.addRange(range);
+  updateWordCount();
 }
 
 export function insertReference() {
-  const textarea = document.getElementById('mainText');
-  const start = textarea.selectionStart;
-  const end = textarea.selectionEnd;
-  const selectedText = textarea.value.substring(start, end);
-
-  if (selectedText) {
-    textarea.value = textarea.value.substring(0, start) +
-                    '[' + selectedText + ']' +
-                    textarea.value.substring(end);
-  } else {
-    textarea.value = textarea.value.substring(0, start) +
-                    '[referência]' +
-                    textarea.value.substring(end);
-  }
-
+  const selection = window.getSelection();
+  if (!selection.rangeCount) return;
+  const range = selection.getRangeAt(0);
+  const selectedText = range.toString();
+  const text = selectedText ? `[${selectedText}]` : '[referência]';
+  range.deleteContents();
+  const node = document.createTextNode(text);
+  range.insertNode(node);
+  range.setStartAfter(node);
+  range.collapse(true);
+  selection.removeAllRanges();
+  selection.addRange(range);
   updateWordCount();
 }
 
 export function insertCharacterRef() {
-  const textarea = document.getElementById('mainText');
-  const start = textarea.selectionStart;
-  textarea.value = textarea.value.substring(0, start) +
-                  '[personagem]' +
-                  textarea.value.substring(start);
+  const selection = window.getSelection();
+  if (!selection.rangeCount) return;
+  const range = selection.getRangeAt(0);
+  const node = document.createTextNode('[personagem]');
+  range.insertNode(node);
+  range.setStartAfter(node);
+  range.collapse(true);
+  selection.removeAllRanges();
+  selection.addRange(range);
   updateWordCount();
 }
 
 export function insertLocationRef() {
-  const textarea = document.getElementById('mainText');
-  const start = textarea.selectionStart;
-  textarea.value = textarea.value.substring(0, start) +
-                  '[local]' +
-                  textarea.value.substring(start);
+  const selection = window.getSelection();
+  if (!selection.rangeCount) return;
+  const range = selection.getRangeAt(0);
+  const node = document.createTextNode('[local]');
+  range.insertNode(node);
+  range.setStartAfter(node);
+  range.collapse(true);
+  selection.removeAllRanges();
+  selection.addRange(range);
   updateWordCount();
 }
 
 export function updateWordCount() {
-  const text = document.getElementById('mainText').value;
+  const editor = document.getElementById('mainText');
+  const text = editor.textContent;
   const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
   const chars = text.length;
   const refs = (text.match(/\[([^\]]+)\]/g) || []).length;
@@ -53,7 +85,7 @@ export function updateWordCount() {
 }
 
 export async function saveProject() {
-  projectData.content = document.getElementById('mainText').value;
+  projectData.content = document.getElementById('mainText').innerHTML;
   projectData.title = document.getElementById('documentTitle').value;
   await fetch('/save', {
     method: 'POST',
@@ -85,7 +117,7 @@ export async function importProject(event) {
     const text = await file.text();
     const data = JSON.parse(text);
     Object.assign(projectData, data);
-    document.getElementById('mainText').value = projectData.content || '';
+    document.getElementById('mainText').innerHTML = projectData.content || '';
     document.getElementById('documentTitle').value = projectData.title || '';
     updateWordCount();
     window.renderCharacterList?.();
