@@ -29,7 +29,8 @@ async function loadProject() {
 }
 
 document.querySelectorAll('.nav-item').forEach(item => {
-  item.addEventListener('click', function() {
+  item.addEventListener('click', function(e) {
+    e.stopPropagation();
     document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
     document.querySelectorAll('.content-panel').forEach(panel => panel.classList.remove('active'));
     this.classList.add('active');
@@ -38,7 +39,10 @@ document.querySelectorAll('.nav-item').forEach(item => {
     const crumb = document.getElementById('crumb');
     if (crumb) {
       crumb.setAttribute('data-i18n', this.getAttribute('data-i18n') || '');
-      crumb.textContent = this.textContent.trim();
+      const label = this.classList.contains('has-submenu')
+        ? this.childNodes[0].textContent.trim()
+        : this.textContent.trim();
+      crumb.textContent = label;
     }
   });
 });
@@ -79,6 +83,10 @@ document.addEventListener('keydown', function(e) {
     e.preventDefault();
     editor.saveProject();
   }
+});
+
+document.getElementById('sidebarToggle')?.addEventListener('click', () => {
+  document.querySelector('.app')?.classList.toggle('collapsed');
 });
 
 loadProject();
