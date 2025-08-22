@@ -1,6 +1,6 @@
 const express = require('express');
 const { characterSchema, sanitizeCharacter } = require('../validation');
-const { readData, writeData } = require('../services/data');
+const { readData, writeData } = require('../services/db');
 
 const router = express.Router();
 

@@ -1,7 +1,6 @@
 const express = require('express');
-const path = require('path');
 const { dataSchema, sanitizeData } = require('../validation');
-const { readData, writeData, DATA_FILE } = require('../services/data');
+const { readData, writeData } = require('../services/db');
 
 const router = express.Router();
 
@@ -30,8 +29,14 @@ router.get('/load', async (_req, res) => {
   }
 });
 
-router.get('/data.json', (_req, res) => {
-  res.sendFile(path.resolve(DATA_FILE));
+router.get('/data.json', async (_req, res) => {
+  try {
+    const data = await readData();
+    res.json(data);
+  } catch (err) {
+    console.error('Error loading data:', err);
+    res.status(500).json({ error: 'Failed to load data' });
+  }
 });
 
 module.exports = router;
