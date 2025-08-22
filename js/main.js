@@ -8,6 +8,17 @@ function closeModal(modalId) {
   document.getElementById(modalId)?.classList.remove('active');
 }
 
+function triggerImport() {
+  document.getElementById('importFile')?.click();
+}
+
+function closeGrammarPanel() {
+  const panel = document.getElementById('grammarPanel');
+  if (panel) panel.style.display = 'none';
+}
+
+const localActions = { triggerImport, closeGrammarPanel };
+
 Object.assign(window, editor, characters, world, { closeModal });
 
 async function loadProject() {
@@ -87,6 +98,21 @@ document.addEventListener('keydown', function(e) {
 
 document.getElementById('sidebarToggle')?.addEventListener('click', () => {
   document.querySelector('.app')?.classList.toggle('collapsed');
+});
+
+document.querySelectorAll('[data-action]').forEach(el => {
+  el.addEventListener('click', () => {
+    const action = el.getAttribute('data-action');
+    const arg = el.getAttribute('data-arg');
+    const fn = localActions[action] || window[action];
+    if (typeof fn === 'function') {
+      if (arg !== null) {
+        fn(arg);
+      } else {
+        fn();
+      }
+    }
+  });
 });
 
 loadProject();
