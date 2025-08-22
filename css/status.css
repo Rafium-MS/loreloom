@@ -1,0 +1,14 @@
+.status-mini { font-size: 0.8em; opacity: 0.8; margin-left: 12px; }
+.dot { color: #10b981; }
+
+.status-bar {
+  background: #f8fafc;
+  padding: 12px 16px;
+  margin-top: 16px;
+  border-radius: 6px;
+  font-size: 0.9em;
+  display: flex;
+  gap: 16px;
+}
+
+.status-right { margin-left: auto; }

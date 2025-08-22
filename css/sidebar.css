@@ -1,0 +1,45 @@
+.sidebar {
+  background: white;
+  border-right: 1px solid #e2e8f0;
+  overflow-y: auto;
+}
+
+.sidebar-head {
+  padding: 16px;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* itens e navegação */
+.nav-item, .doc-node, .list-item {
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+}
+
+.nav-item {
+  border-left: 3px solid transparent;
+  justify-content: flex-start;
+}
+
+.doc-node, .list-item {
+  justify-content: space-between;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.nav-item:hover,
+.doc-node:hover,
+.list-item:hover {
+  background: #f8fafc;
+}
+
+.nav-item.active,
+.doc-node.active {
+  background: #eff6ff;
+  border-left-color: #3b82f6;
+  color: #1d4ed8;
+}

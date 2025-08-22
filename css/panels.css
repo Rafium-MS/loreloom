@@ -1,0 +1,2 @@
+.content-panel { display: none; }
+.content-panel.active { display: block; }

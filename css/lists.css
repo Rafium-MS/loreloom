@@ -1,0 +1,6 @@
+.character-list, .location-list, .item-list, .document-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.list-item { /* base em sidebar.css; hover/active já herdados */ }

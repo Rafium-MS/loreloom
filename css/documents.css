@@ -1,0 +1,9 @@
+/* Projeto/Livro e Documentos */
+.project-tree { padding: 12px 16px; }
+.book-node { font-weight: 600; margin-bottom: 8px; display:flex; align-items:center; }
+#documentsTree { list-style: none; padding-left: 0; margin: 0; }
+
+.doc-meta { font-size: 0.8em; color:#64748b; }
+
+.document-title { font-weight: 600; }
+.document-sub { font-size: 0.85em; color:#64748b; }
