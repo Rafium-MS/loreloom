@@ -1,6 +1,11 @@
 import { projectData, editingIds } from './state.js';
 import { saveProject } from './editor.js';
 
+function setField(id, value = '') {
+  const el = document.getElementById(id);
+  if (el) el.value = value;
+}
+
 export function renderCharacterList() {
   const list = document.getElementById('characterList');
   if (!list) return;
@@ -26,8 +31,8 @@ export function renderCharacterList() {
 
 export function openCharacterModal() {
   editingIds.character = null;
-  ['charName','charAge','charRace','charClass','charRole','charAppearance','charPersonality','charBackground','charSkills','charRelationships','charTags'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('characterModal').classList.add('active');
+  ['charName','charAge','charRace','charClass','charRole','charAppearance','charPersonality','charBackground','charSkills','charRelationships','charTags'].forEach(id => setField(id));
+  document.getElementById('characterModal')?.classList.add('active');
 }
 
 export async function saveCharacter() {
@@ -43,7 +48,7 @@ export async function saveCharacter() {
     background: document.getElementById('charBackground').value,
     skills: document.getElementById('charSkills').value,
     relationships: document.getElementById('charRelationships').value,
-    tags: document.getElementById('charTags').value.split(',').map(t => t.trim())
+    tags: document.getElementById('charTags').value.split(',').map(t => t.trim()).filter(Boolean)
   };
 
   if (editingIds.character) {
@@ -63,18 +68,18 @@ export function editCharacter(id) {
   const c = projectData.characters.find(ch => ch.id === id);
   if (!c) return;
   editingIds.character = id;
-  document.getElementById('charName').value = c.name || '';
-  document.getElementById('charAge').value = c.age || '';
-  document.getElementById('charRace').value = c.race || '';
-  document.getElementById('charClass').value = c.class || '';
-  document.getElementById('charRole').value = c.role || '';
-  document.getElementById('charAppearance').value = c.appearance || '';
-  document.getElementById('charPersonality').value = c.personality || '';
-  document.getElementById('charBackground').value = c.background || '';
-  document.getElementById('charSkills').value = c.skills || '';
-  document.getElementById('charRelationships').value = c.relationships || '';
-  document.getElementById('charTags').value = (c.tags || []).join(', ');
-  document.getElementById('characterModal').classList.add('active');
+  setField('charName', c.name);
+  setField('charAge', c.age);
+  setField('charRace', c.race);
+  setField('charClass', c.class);
+  setField('charRole', c.role);
+  setField('charAppearance', c.appearance);
+  setField('charPersonality', c.personality);
+  setField('charBackground', c.background);
+  setField('charSkills', c.skills);
+  setField('charRelationships', c.relationships);
+  setField('charTags', (c.tags || []).join(', '));
+  document.getElementById('characterModal')?.classList.add('active');
 }
 
 export async function deleteCharacter(id) {
