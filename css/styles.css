@@ -47,7 +47,7 @@ body {
 
 /* Estilos unificados para itens de lista e navegação */
 .nav-item, .doc-node, .list-item {
-  padding: 12px;
+  padding: 10px;
   cursor: pointer;
   transition: all 0.2s;
   display: flex;
