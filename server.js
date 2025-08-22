@@ -87,17 +87,6 @@ app.post('/characters', async (req, res) => {
   }
 });
 
-app.get('/os', (_req, res) => {
-  res.json({
-    platform: os.platform(),
-    release: os.release(),
-    arch: os.arch(),
-    cpus: os.cpus().length,
-    totalmem: os.totalmem(),
-    freemem: os.freemem(),
-  });
-});
-
 // Fallback to the main HTML file
 app.get('/', (_req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'loreloom.html'));
