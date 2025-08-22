@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const os = require('os');
+const { characterSchema, dataSchema, sanitizeCharacter, sanitizeData } = require('./validation');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -33,7 +34,12 @@ async function writeData(data) {
 
 app.post('/save', async (req, res) => {
   try {
-    await writeData(req.body);
+    const { error, value } = dataSchema.validate(req.body, { abortEarly: false });
+    if (error) {
+      return res.status(400).json({ error: 'dados inválidos' });
+    }
+    const sanitized = sanitizeData(value);
+    await writeData(sanitized);
     res.json({ status: 'ok' });
   } catch (err) {
     console.error('Error saving data:', err);
@@ -63,8 +69,12 @@ app.get('/characters', async (_req, res) => {
 
 app.post('/characters', async (req, res) => {
   try {
+    const { error, value } = characterSchema.validate(req.body, { abortEarly: false });
+    if (error) {
+      return res.status(400).json({ error: 'dados inválidos' });
+    }
     const data = await readData();
-    data.characters.push(req.body);
+    data.characters.push(sanitizeCharacter(value));
     await writeData(data);
     res.json({ status: 'ok' });
   } catch (err) {
