@@ -1,36 +1,34 @@
-const Joi = require('joi');
+function validateCharacter(value) {
+  const errors = [];
+  if (!Number.isInteger(value.id)) errors.push('id');
+  if (typeof value.name !== 'string' || !value.name.trim()) errors.push('name');
+  if (value.tags && !Array.isArray(value.tags)) errors.push('tags');
+  return errors.length ? { error: errors } : { value };
+}
 
-const characterSchema = Joi.object({
-  id: Joi.number().integer().required(),
-  name: Joi.string().trim().required(),
-  age: Joi.string().allow('').trim(),
-  race: Joi.string().allow('').trim(),
-  class: Joi.string().allow('').trim(),
-  role: Joi.string().allow('').trim(),
-  appearance: Joi.string().allow('').trim(),
-  personality: Joi.string().allow('').trim(),
-  background: Joi.string().allow('').trim(),
-  skills: Joi.string().allow('').trim(),
-  relationships: Joi.string().allow('').trim(),
-  tags: Joi.array().items(Joi.string().trim()).default([])
-});
+function validateData(value) {
+  const errors = [];
+  if (typeof value.title !== 'string') errors.push('title');
+  if (typeof value.content !== 'string') errors.push('content');
+  if (!Array.isArray(value.characters)) errors.push('characters');
+  if (!Array.isArray(value.locations)) errors.push('locations');
+  if (!Array.isArray(value.items)) errors.push('items');
+  if (!Array.isArray(value.languages)) errors.push('languages');
+  if (!Array.isArray(value.timeline)) errors.push('timeline');
+  if (!Array.isArray(value.notes)) errors.push('notes');
+  if (!value.economy || typeof value.economy !== 'object') {
+    errors.push('economy');
+  } else {
+    if (!Array.isArray(value.economy.currencies)) errors.push('currencies');
+    if (!Array.isArray(value.economy.resources)) errors.push('resources');
+    if (!Array.isArray(value.economy.markets)) errors.push('markets');
+  }
+  if (typeof value.uiLanguage !== 'string') errors.push('uiLanguage');
+  return errors.length ? { error: errors } : { value };
+}
 
-const dataSchema = Joi.object({
-  title: Joi.string().trim().allow('').required(),
-  content: Joi.string().trim().allow('').required(),
-  characters: Joi.array().items(characterSchema).required(),
-  locations: Joi.array().required(),
-  items: Joi.array().required(),
-  languages: Joi.array().required(),
-  timeline: Joi.array().required(),
-  notes: Joi.array().required(),
-  economy: Joi.object({
-    currencies: Joi.array().required(),
-    resources: Joi.array().required(),
-    markets: Joi.array().required()
-  }).required(),
-  uiLanguage: Joi.string().trim().required()
-});
+const characterSchema = { validate: validateCharacter };
+const dataSchema = { validate: validateData };
 
 function sanitizeCharacter(ch) {
   return {
