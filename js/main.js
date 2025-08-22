@@ -2,6 +2,7 @@ import { projectData } from './state.js';
 import * as editor from './editor.js';
 import * as characters from './characters.js';
 import * as world from './world.js';
+import { setLanguage } from './i18n.js';
 
 function closeModal(modalId) {
   document.getElementById(modalId)?.classList.remove('active');
@@ -15,6 +16,9 @@ async function loadProject() {
   Object.assign(projectData, data);
   document.getElementById('mainText')?.value = projectData.content || '';
   document.getElementById('documentTitle')?.value = projectData.title || '';
+  const langSelect = document.getElementById('languageSwitcher');
+  if (langSelect) langSelect.value = projectData.uiLanguage || 'pt';
+  setLanguage(projectData.uiLanguage || 'pt');
   editor.updateWordCount();
   characters.renderCharacterList();
   world.renderLocationList();
@@ -32,7 +36,10 @@ document.querySelectorAll('.nav-item').forEach(item => {
     const route = this.dataset.route;
     document.getElementById(route)?.classList.add('active');
     const crumb = document.getElementById('crumb');
-    if (crumb) crumb.textContent = this.textContent.trim();
+    if (crumb) {
+      crumb.setAttribute('data-i18n', this.getAttribute('data-i18n') || '');
+      crumb.textContent = this.textContent.trim();
+    }
   });
 });
 
@@ -60,6 +67,12 @@ document.querySelectorAll('.modal').forEach(modal => {
 document.getElementById('mainText')?.addEventListener('input', editor.updateWordCount);
 
 document.getElementById('importFile')?.addEventListener('change', editor.importProject);
+
+document.getElementById('languageSwitcher')?.addEventListener('change', async function() {
+  projectData.uiLanguage = this.value;
+  setLanguage(this.value);
+  await editor.saveProject();
+});
 
 document.addEventListener('keydown', function(e) {
   if ((e.ctrlKey || e.metaKey) && e.key === 's') {
