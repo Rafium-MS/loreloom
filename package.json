@@ -5,7 +5,8 @@
   "main": "loreloom.html",
   "scripts": {
     "start": "node server.js",
-    "test": "echo \"No tests specified\""
+    "test": "echo \"No tests specified\"",
+    "build:css": "node build-css.js"
   },
   "repository": {
     "type": "git",
