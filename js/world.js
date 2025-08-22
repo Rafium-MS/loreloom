@@ -16,7 +16,7 @@ export function renderLocationList() {
         ${tags}
       </div>
       <div>
-        <button class="btn" onclick="editLocation(${l.id})">Editar</button>
+        <button class="btn" onclick="editLocation(${l.id}, this)">Editar</button>
         <button class="btn btn-danger" onclick="deleteLocation(${l.id})">Excluir</button>
       </div>
     `;
@@ -37,7 +37,7 @@ export function renderItemList() {
         <div style="font-size: 0.9em; color: #64748b;">${[i.type, i.rarity].filter(Boolean).join(' • ')}</div>
       </div>
       <div>
-        <button class="btn" onclick="editItem(${i.id})">Editar</button>
+        <button class="btn" onclick="editItem(${i.id}, this)">Editar</button>
         <button class="btn btn-danger" onclick="deleteItem(${i.id})">Excluir</button>
       </div>
     `;
@@ -56,7 +56,7 @@ export function renderLanguageList() {
       <h3>${l.name}</h3>
       <div style="font-size: 0.9em; color: #64748b;">${l.family || ''}</div>
       <div style="margin-top:8px;">
-        <button class="btn" onclick="editLanguage(${l.id})">Editar</button>
+        <button class="btn" onclick="editLanguage(${l.id}, this)">Editar</button>
         <button class="btn btn-danger" onclick="deleteLanguage(${l.id})">Excluir</button>
       </div>
     `;
@@ -79,7 +79,7 @@ export function renderEventList() {
       <div style=\"font-size: 0.9em; color: #64748b; margin-top: 4px;\">${e.description || ''}</div>
       ${(e.importance ? `<div class="tag">${e.importance}</div>` : '')}
       <div style="margin-top: 8px;">
-        <button class="btn" onclick="editEvent(${e.id})">Editar</button>
+        <button class="btn" onclick="editEvent(${e.id}, this)">Editar</button>
         <button class="btn btn-danger" onclick="deleteEvent(${e.id})">Excluir</button>
       </div>
     `;
@@ -104,7 +104,7 @@ export function renderNoteList() {
       <p style="font-size: 0.9em; margin: 8px 0;">${n.content}</p>
       ${tags}
       <div style="margin-top: 12px;">
-        <button class="btn" onclick="editNote(${n.id})">Editar</button>
+        <button class="btn" onclick="editNote(${n.id}, this)">Editar</button>
         <button class="btn btn-danger" onclick="deleteNote(${n.id})">Excluir</button>
       </div>
     `;
@@ -112,34 +112,34 @@ export function renderNoteList() {
   });
 }
 
-export function openLocationModal() {
+export function openLocationModal(trigger = document.activeElement) {
   editingIds.location = null;
   ['locName','locType','locRegion','locPopulation','locDescription','locRuler','locInterests','locHistory','locTags'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('locationModal').classList.add('active');
+  openModal('locationModal', trigger);
 }
 
-export function openItemModal() {
+export function openItemModal(trigger = document.activeElement) {
   editingIds.item = null;
   ['itemName','itemType','itemRarity','itemDescription','itemProperties','itemValue','itemWeight','itemHistory','itemLocation'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('itemModal').classList.add('active');
+  openModal('itemModal', trigger);
 }
 
-export function openLanguageModal() {
+export function openLanguageModal(trigger = document.activeElement) {
   editingIds.language = null;
   ['langName','langFamily','langScript','langSpeakers','langPhonetics','langGrammar','langExamples'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('languageModal').classList.add('active');
+  openModal('languageModal', trigger);
 }
 
-export function openEventModal() {
+export function openEventModal(trigger = document.activeElement) {
   editingIds.event = null;
   ['eventName','eventDate','eventType','eventLocation','eventDescription','eventCharacters','eventConsequences','eventImportance'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('eventModal').classList.add('active');
+  openModal('eventModal', trigger);
 }
 
-export function openNoteModal() {
+export function openNoteModal(trigger = document.activeElement) {
   editingIds.note = null;
   ['noteTitle','noteCategory','noteContent','noteTags'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('noteModal').classList.add('active');
+  openModal('noteModal', trigger);
 }
 
 export async function saveLocation() {
@@ -270,7 +270,7 @@ export async function saveNote() {
   console.log('Nota salva:', note);
 }
 
-export function editLocation(id) {
+export function editLocation(id, trigger = document.activeElement) {
   const l = projectData.locations.find(loc => loc.id === id);
   if (!l) return;
   editingIds.location = id;
@@ -283,7 +283,7 @@ export function editLocation(id) {
   document.getElementById('locInterests').value = l.interests || '';
   document.getElementById('locHistory').value = l.history || '';
   document.getElementById('locTags').value = (l.tags || []).join(', ');
-  document.getElementById('locationModal').classList.add('active');
+  openModal('locationModal', trigger);
 }
 
 export async function deleteLocation(id) {
@@ -292,7 +292,7 @@ export async function deleteLocation(id) {
   renderLocationList();
 }
 
-export function editItem(id) {
+export function editItem(id, trigger = document.activeElement) {
   const i = projectData.items.find(it => it.id === id);
   if (!i) return;
   editingIds.item = id;
@@ -305,7 +305,7 @@ export function editItem(id) {
   document.getElementById('itemWeight').value = i.weight || '';
   document.getElementById('itemHistory').value = i.history || '';
   document.getElementById('itemLocation').value = i.location || '';
-  document.getElementById('itemModal').classList.add('active');
+  openModal('itemModal', trigger);
 }
 
 export async function deleteItem(id) {
@@ -314,7 +314,7 @@ export async function deleteItem(id) {
   renderItemList();
 }
 
-export function editLanguage(id) {
+export function editLanguage(id, trigger = document.activeElement) {
   const l = projectData.languages.find(lang => lang.id === id);
   if (!l) return;
   editingIds.language = id;
@@ -325,7 +325,7 @@ export function editLanguage(id) {
   document.getElementById('langPhonetics').value = l.phonetics || '';
   document.getElementById('langGrammar').value = l.grammar || '';
   document.getElementById('langExamples').value = l.examples || '';
-  document.getElementById('languageModal').classList.add('active');
+  openModal('languageModal', trigger);
 }
 
 export async function deleteLanguage(id) {
@@ -334,7 +334,7 @@ export async function deleteLanguage(id) {
   renderLanguageList();
 }
 
-export function editEvent(id) {
+export function editEvent(id, trigger = document.activeElement) {
   const e = projectData.timeline.find(ev => ev.id === id);
   if (!e) return;
   editingIds.event = id;
@@ -346,7 +346,7 @@ export function editEvent(id) {
   document.getElementById('eventCharacters').value = (e.characters || []).join(', ');
   document.getElementById('eventConsequences').value = e.consequences || '';
   document.getElementById('eventImportance').value = e.importance || '';
-  document.getElementById('eventModal').classList.add('active');
+  openModal('eventModal', trigger);
 }
 
 export async function deleteEvent(id) {
@@ -355,7 +355,7 @@ export async function deleteEvent(id) {
   renderEventList();
 }
 
-export function editNote(id) {
+export function editNote(id, trigger = document.activeElement) {
   const n = projectData.notes.find(nt => nt.id === id);
   if (!n) return;
   editingIds.note = id;
@@ -363,7 +363,7 @@ export function editNote(id) {
   document.getElementById('noteCategory').value = n.category || '';
   document.getElementById('noteContent').value = n.content || '';
   document.getElementById('noteTags').value = (n.tags || []).join(', ');
-  document.getElementById('noteModal').classList.add('active');
+  openModal('noteModal', trigger);
 }
 
 export async function deleteNote(id) {
