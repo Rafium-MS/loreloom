@@ -1,0 +1,51 @@
+:root {
+  /* Base */
+  --bg: #f8fafc;
+  --text: #334155;
+  --muted: #64748b;
+
+  /* Superfícies e bordas */
+  --surface: #ffffff;
+  --panel: #f8fafc;
+  --border: #e2e8f0;
+  --border-weak: #d1d5db;
+  --row-divider: #f1f5f9;
+
+  /* Topbar */
+  --topbar-bg: #1e293b;
+  --topbar-text: #ffffff;
+  --shadow-100: 0 2px 4px rgba(0,0,0,0.1);
+
+  /* Tipografia do editor */
+  --editor-mono: 'Monaco', 'Consolas', monospace;
+
+  /* Ação / Estado */
+  --primary: #3b82f6;
+  --primary-strong: #2563eb;
+  --secondary: #6b7280;
+  --danger: #ef4444;
+  --success: #10b981;
+
+  /* Hovers/realces */
+  --hover: #f8fafc;        /* item hover bg */
+  --active-bg: #eff6ff;    /* nav ativo bg */
+  --active-text: #1d4ed8;  /* nav ativo texto */
+
+  /* Utilitários */
+  --neutral-50:  #f9fafb;
+  --neutral-100: #f8fafc;
+  --neutral-200: #f1f5f9;
+  --neutral-300: #e2e8f0;
+  --neutral-400: #d1d5db;
+
+  /* Badges */
+  --badge-draft-bg:  #fff7ed;
+  --badge-draft-fg:  #9a3412;
+  --badge-draft-br:  #fdba74;
+  --badge-final-bg:  #ecfdf5;
+  --badge-final-fg:  #065f46;
+  --badge-final-br:  #6ee7b7;
+
+  /* Focus ring */
+  --ring-primary: rgba(59, 130, 246, 0.1);
+}
