@@ -42,7 +42,8 @@ async function loadProject() {
   const res = await fetch('/load');
   const data = await res.json();
   Object.assign(projectData, data);
-  document.getElementById('mainText')?.value = projectData.content || '';
+  const mainTextEl = document.getElementById('mainText');
+  if (mainTextEl) mainTextEl.innerHTML = projectData.content || '';
   document.getElementById('documentTitle')?.value = projectData.title || '';
   const langSelect = document.getElementById('languageSwitcher');
   if (langSelect) langSelect.value = projectData.uiLanguage || 'pt';

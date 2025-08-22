@@ -70,7 +70,7 @@ function selectDocument(id) {
   if (!doc) return;
   currentDocumentId = id;
   document.getElementById('documentTitle').value = doc.title;
-  document.getElementById('mainText').value = doc.content;
+  document.getElementById('mainText').innerHTML = doc.content;
   updateWordCount();
   updateStatusBadge();
   renderProjectTree();
@@ -238,7 +238,7 @@ function toggleDraft(){
 function grammarReview(){
   const panel = document.getElementById('grammarPanel');
   const out = document.getElementById('grammarResults');
-  const text = document.getElementById('mainText').value;
+  const text = document.getElementById('mainText').textContent;
   const issues = [];
 
   // 1) Espaços duplos
@@ -280,7 +280,8 @@ function grammarReview(){
 }
 
 function applyQuickFixes(){
-  let t = document.getElementById('mainText').value;
+  const editor = document.getElementById('mainText');
+  let t = editor.textContent;
   // remover espaço antes de pontuação
   t = t.replace(/\s+([,.;:!?])/g, '$1');
   // reduzir múltiplos espaços
@@ -288,7 +289,7 @@ function applyQuickFixes(){
   // remover duplicatas consecutivas "palavra palavra" (case-insensitive)
   t = t.replace(/\b(\w+)\s+\1\b/gi, '$1');
 
-  document.getElementById('mainText').value = t;
+  editor.textContent = t;
   updateWordCount();
   saveProject();
   grammarReview(); // reexecuta para atualizar painel
@@ -301,10 +302,10 @@ function hydrateUIFromProject(){
   const doc = getCurrentDoc();
   if (doc){
     document.getElementById('documentTitle').value = doc.title;
-    document.getElementById('mainText').value = doc.content;
+    document.getElementById('mainText').innerHTML = doc.content;
   } else {
     document.getElementById('documentTitle').value = '';
-    document.getElementById('mainText').value = '';
+    document.getElementById('mainText').innerHTML = '';
   }
   updateWordCount();
   updateStatusBadge();
