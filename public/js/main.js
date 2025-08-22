@@ -48,7 +48,7 @@ async function loadProject() {
     console.error('Failed to load project', err);
     document.getElementById('status')?.textContent = 'Erro ao carregar projeto';
     try {
-      const fallback = await fetch('data.json');
+      const fallback = await fetch('/data.json');
       if (fallback.ok) {
         data = await fallback.json();
         document.getElementById('status')?.textContent = 'Dados locais carregados';

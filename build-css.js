@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const entry = path.join(__dirname, 'css', 'index.css');
-const output = path.join(__dirname, 'css', 'bundle.css');
+const entry = path.join(__dirname, 'public', 'css', 'index.css');
+const output = path.join(__dirname, 'public', 'css', 'bundle.css');
 
 function resolveImports(filePath, visited = new Set()) {
   if (visited.has(filePath)) return '';
