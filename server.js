@@ -13,7 +13,9 @@ app.use(express.static(__dirname));
 
 function readData() {
   try {
-    return JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
+    const data = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
+    if (!data.uiLanguage) data.uiLanguage = 'pt';
+    return data;
   } catch {
     return {
       title: 'Projeto LoreLoom',
@@ -24,7 +26,8 @@ function readData() {
       languages: [],
       timeline: [],
       notes: [],
-      economy: { currencies: [], resources: [], markets: [] }
+      economy: { currencies: [], resources: [], markets: [] },
+      uiLanguage: 'pt'
     };
   }
 }
