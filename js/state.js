@@ -12,7 +12,8 @@ export const projectData = {
     resources: [],
     markets: []
   },
-  documents: []   
+  documents: [],
+  uiLanguage: 'pt'
 };
 
 export const editingIds = {

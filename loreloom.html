@@ -12,19 +12,23 @@
   <header class="topbar">
     <div class="left">
       <strong>LoreLoom</strong>
-      <span class="status-mini"><span class="dot">•</span><span id="status">Pronto</span></span>
+      <span class="status-mini"><span class="dot">•</span><span id="status" data-i18n="ready">Pronto</span></span>
     </div>
     <div class="right">
-      <button class="btn btn-primario" onclick="saveProject()" title="Ctrl/Cmd + S">Salvar Projeto</button>
-      <button class="btn btn-secundario" onclick="exportProject()">Exportar</button>
+      <button class="btn btn-primario" onclick="saveProject()" title="Ctrl/Cmd + S" data-i18n="save_project">Salvar Projeto</button>
+      <button class="btn btn-secundario" onclick="exportProject()" data-i18n="export">Exportar</button>
       <input type="file" id="importFile" accept=".json" style="display:none">
-      <button class="btn btn-secundario" onclick="document.getElementById('importFile').click()">Importar</button>
+      <button class="btn btn-secundario" onclick="document.getElementById('importFile').click()" data-i18n="import">Importar</button>
+      <select id="languageSwitcher" style="margin-left:8px;">
+        <option value="pt">Português</option>
+        <option value="en">English</option>
+      </select>
     </div>
   </header>
 
   <aside class="sidebar">
   <div class="sidebar-head">
-    <h3 style="margin:0">Navegação</h3>
+    <h3 style="margin:0" data-i18n="navigation">Navegação</h3>
   </div>
 
     <!-- PROJETO / LIVRO -->
@@ -44,14 +48,14 @@
 
     <nav class="tree">
       <ul style="list-style:none; margin:0; padding:0;">
-        <li class="nav-item active" data-route="editor">📝 Editor</li>
-        <li class="nav-item" data-route="documents">📄 Textos</li>
-        <li class="nav-item" data-route="characters">👤 Personagens</li>
-        <li class="nav-item" data-route="world">🌍 Mundo</li>
-        <li class="nav-item" data-route="economy">💱 Economia</li>
-        <li class="nav-item" data-route="languages">🔤 Línguas</li>
-        <li class="nav-item" data-route="timeline">⏳ Linha do Tempo</li>
-        <li class="nav-item" data-route="notes">🗒️ Notas</li>
+        <li class="nav-item active" data-route="editor" data-i18n="editor">📝 Editor</li>
+        <li class="nav-item" data-route="documents" data-i18n="documents">📄 Textos</li>
+        <li class="nav-item" data-route="characters" data-i18n="characters">👤 Personagens</li>
+        <li class="nav-item" data-route="world" data-i18n="world">🌍 Mundo</li>
+        <li class="nav-item" data-route="economy" data-i18n="economy">💱 Economia</li>
+        <li class="nav-item" data-route="languages" data-i18n="nav_languages">🔤 Línguas</li>
+        <li class="nav-item" data-route="timeline" data-i18n="timeline">⏳ Linha do Tempo</li>
+        <li class="nav-item" data-route="notes" data-i18n="notes">🗒️ Notas</li>
       </ul>
     </nav>
   </aside>
@@ -59,7 +63,7 @@
     <!-- Main -->
     <main class="main">
       <!-- Breadcrumbs -->
-      <div class="crumbs">Home / <span id="crumb">Editor</span></div>
+      <div class="crumbs"><span data-i18n="home">Home</span> / <span id="crumb" data-i18n="editor">Editor</span></div>
 
       <!-- Painel: Editor -->
       <section id="editor" class="content-panel active">
