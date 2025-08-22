@@ -39,9 +39,27 @@ const localActions = { triggerImport, closeGrammarPanel };
 Object.assign(window, editor, characters, world, { openModal, closeModal });
 
 async function loadProject() {
-  const res = await fetch('/load');
-  const data = await res.json();
-  Object.assign(projectData, data);
+  let data;
+  try {
+    const res = await fetch('/load');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    data = await res.json();
+  } catch (err) {
+    console.error('Failed to load project', err);
+    document.getElementById('status')?.textContent = 'Erro ao carregar projeto';
+    try {
+      const fallback = await fetch('data.json');
+      if (fallback.ok) {
+        data = await fallback.json();
+        document.getElementById('status')?.textContent = 'Dados locais carregados';
+      }
+    } catch (fallbackErr) {
+      console.error('Fallback load failed', fallbackErr);
+    }
+  }
+  if (data) {
+    Object.assign(projectData, data);
+  }
   const mainTextEl = document.getElementById('mainText');
   if (mainTextEl) mainTextEl.innerHTML = projectData.content || '';
   document.getElementById('documentTitle')?.value = projectData.title || '';
