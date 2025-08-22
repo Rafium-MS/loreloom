@@ -11,6 +11,7 @@
   <!-- Topbar -->
   <header class="topbar">
     <div class="left">
+      <button id="sidebarToggle" class="btn" title="Alternar menu">☰</button>
       <strong>LoreLoom</strong>
       <span class="status-mini"><span class="dot">•</span><span id="status" data-i18n="ready">Pronto</span></span>
     </div>
@@ -26,6 +27,7 @@
       <button id="themeToggle" class="btn-toggle" aria-label="Alternar tema">🌙</button>    </div>
   </header>
 
+  <div class="app">
   <aside class="sidebar">
   <div class="sidebar-head">
     <h3 style="margin:0" data-i18n="navigation">Navegação</h3>
@@ -48,8 +50,11 @@
 
     <nav class="tree">
       <ul style="list-style:none; margin:0; padding:0;">
-        <li class="nav-item active" data-route="editor" data-i18n="editor">📝 Editor</li>
-        <li class="nav-item" data-route="documents" data-i18n="documents">📄 Textos</li>
+        <li class="nav-item has-submenu active" data-route="editor" data-i18n="editor">📝 Editor
+          <ul class="submenu">
+            <li class="nav-item" data-route="documents" data-i18n="documents">📄 Textos</li>
+          </ul>
+        </li>
         <li class="nav-item" data-route="characters" data-i18n="characters">👤 Personagens</li>
         <li class="nav-item" data-route="world" data-i18n="world">🌍 Mundo</li>
         <li class="nav-item" data-route="economy" data-i18n="economy">💱 Economia</li>
@@ -910,14 +915,14 @@
         <label>Tags</label>
         <input type="text" id="noteTags" class="form-control" placeholder="ex: magia, sistema, importante (separar por vírgulas)">
       </div>
-      
+
       <div style="margin-top: 20px; text-align: right;">
         <button class="btn" onclick="closeModal('noteModal')">Cancelar</button>
         <button class="btn btn-primario" onclick="saveNote()">Salvar Nota</button>
       </div>
     </div>
   </div>
-  <script type="module" src="js/main.js"></script>
+<script type="module" src="js/main.js"></script>
   <script src="js/scripts.js"></script>
   <script src="js/utils.js"></script>
 </body>
