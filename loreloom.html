@@ -15,10 +15,10 @@
       <span class="status-mini"><span class="dot">•</span><span id="status" data-i18n="ready">Pronto</span></span>
     </div>
     <div class="right">
-      <button class="btn btn-primario" onclick="saveProject()" title="Ctrl/Cmd + S" data-i18n="save_project">Salvar Projeto</button>
-      <button class="btn btn-secundario" onclick="exportProject()" data-i18n="export">Exportar</button>
+      <button class="btn btn-primario" data-action="saveProject" title="Ctrl/Cmd + S" data-i18n="save_project">Salvar Projeto</button>
+      <button class="btn btn-secundario" data-action="exportProject" data-i18n="export">Exportar</button>
       <input type="file" id="importFile" accept=".json" style="display:none">
-      <button class="btn btn-secundario" onclick="document.getElementById('importFile').click()" data-i18n="import">Importar</button>
+      <button class="btn btn-secundario" data-action="triggerImport" data-i18n="import">Importar</button>
       <select id="languageSwitcher" style="margin-left:8px;">
         <option value="pt">Português</option>
         <option value="en">English</option>
@@ -77,26 +77,26 @@
           </div>
           
           <div class="editor-toolbar">
-            <button class="btn" onclick="formatText('bold')" title="Negrito"><b>B</b></button>
-            <button class="btn" onclick="formatText('italic')" title="Itálico"><i>I</i></button>
-            <button class="btn" onclick="formatText('underline')" title="Sublinhado"><u>U</u></button>
-            <button class="btn" onclick="insertReference()" title="Inserir Referência">[ ]</button>
-            <button class="btn" onclick="insertCharacterRef()" title="Personagem">👤</button>
-            <button class="btn" onclick="insertLocationRef()" title="Local">🌍</button>
-            <button class="btn btn-secundario" onclick="checkConsistency()">✔ Consistência</button>
+            <button class="btn" data-action="formatText" data-arg="bold" title="Negrito"><b>B</b></button>
+            <button class="btn" data-action="formatText" data-arg="italic" title="Itálico"><i>I</i></button>
+            <button class="btn" data-action="formatText" data-arg="underline" title="Sublinhado"><u>U</u></button>
+            <button class="btn" data-action="insertReference" title="Inserir Referência">[ ]</button>
+            <button class="btn" data-action="insertCharacterRef" title="Personagem">👤</button>
+            <button class="btn" data-action="insertLocationRef" title="Local">🌍</button>
+            <button class="btn btn-secundario" data-action="checkConsistency">✔ Consistência</button>
 
             <!-- NOVOS -->
             <div style="flex:1"></div>
-            <button class="btn" id="draftToggleBtn" onclick="toggleDraft()" title="Marcar como rascunho/final">🏷️ Rascunho</button>
-            <button class="btn" id="grammarBtn" onclick="grammarReview()" title="Revisão gramatical">✍️ Revisão</button>
+            <button class="btn" id="draftToggleBtn" data-action="toggleDraft" title="Marcar como rascunho/final">🏷️ Rascunho</button>
+            <button class="btn" id="grammarBtn" data-action="grammarReview" title="Revisão gramatical">✍️ Revisão</button>
           </div>
 
           <div id="grammarPanel" class="grammar-panel" style="display:none;">
             <div class="grammar-header">
               <strong>Revisão Gramatical</strong>
               <div>
-                <button class="btn btn-sm" onclick="applyQuickFixes()">Aplicar correções rápidas</button>
-                <button class="btn btn-sm" onclick="document.getElementById('grammarPanel').style.display='none'">Fechar</button>
+                <button class="btn btn-sm" data-action="applyQuickFixes">Aplicar correções rápidas</button>
+                <button class="btn btn-sm" data-action="closeGrammarPanel">Fechar</button>
               </div>
             </div>
             <div id="grammarResults" class="grammar-results"></div>
@@ -142,7 +142,7 @@
         <div class="card">
           <div class="card-header">
             <h2>Gerenciador de Personagens</h2>
-            <button class="btn btn-primario" onclick="openCharacterModal()">Novo Personagem</button>
+            <button class="btn btn-primario" data-action="openCharacterModal">Novo Personagem</button>
           </div>
           
           <div class="form-group">
@@ -159,8 +159,8 @@
                 <div class="tag">Rei</div>
               </div>
               <div>
-                <button class="btn" onclick="editCharacter('aragorn')">Editar</button>
-                <button class="btn btn-danger" onclick="deleteCharacter('aragorn')">Excluir</button>
+                <button class="btn" data-action="editCharacter" data-arg="aragorn">Editar</button>
+                <button class="btn btn-danger" data-action="deleteCharacter" data-arg="aragorn">Excluir</button>
               </div>
             </div>
           </div>
@@ -180,7 +180,7 @@
           <div class="card">
             <div class="card-header">
               <h3>Locais do Mundo</h3>
-              <button class="btn btn-primario" onclick="openLocationModal()">Novo Local</button>
+              <button class="btn btn-primario" data-action="openLocationModal">Novo Local</button>
             </div>
             
             <div class="location-list" id="locationList">
@@ -192,7 +192,7 @@
                   <div class="tag">Importante</div>
                 </div>
                 <div>
-                  <button class="btn" onclick="editLocation('gondor')">Editar</button>
+                  <button class="btn" data-action="editLocation" data-arg="gondor">Editar</button>
                   <button class="btn btn-danger">Excluir</button>
                 </div>
               </div>
@@ -205,7 +205,7 @@
           <div class="card">
             <div class="card-header">
               <h3>Facções e Organizações</h3>
-              <button class="btn btn-primario" onclick="openFactionModal()">Nova Facção</button>
+              <button class="btn btn-primario" data-action="openFactionModal">Nova Facção</button>
             </div>
             
             <div class="form-group">
@@ -231,7 +231,7 @@
           <div class="card">
             <div class="card-header">
               <h3>Itens e Artefatos</h3>
-              <button class="btn btn-primario" onclick="openItemModal()">Novo Item</button>
+              <button class="btn btn-primario" data-action="openItemModal">Novo Item</button>
             </div>
             
             <div class="grid grid-2">
@@ -347,7 +347,7 @@
         <div class="card">
           <div class="card-header">
             <h2>Sistema de Línguas</h2>
-            <button class="btn btn-primario" onclick="openLanguageModal()">Nova Língua</button>
+            <button class="btn btn-primario" data-action="openLanguageModal">Nova Língua</button>
           </div>
           
           <div class="grid grid-2" id="languageList">
@@ -425,7 +425,7 @@
         <div class="card">
           <div class="card-header">
             <h2>Linha do Tempo</h2>
-            <button class="btn btn-primario" onclick="openEventModal()">Novo Evento</button>
+            <button class="btn btn-primario" data-action="openEventModal">Novo Evento</button>
           </div>
           
           <div class="form-group">
@@ -487,7 +487,7 @@
         <div class="card">
           <div class="card-header">
             <h2>Notas e Ideias</h2>
-            <button class="btn btn-primario" onclick="openNoteModal()">Nova Nota</button>
+            <button class="btn btn-primario" data-action="openNoteModal">Nova Nota</button>
           </div>
           
           <div class="grid grid-2">
@@ -614,8 +614,8 @@
       </div>
       
       <div style="margin-top: 20px; text-align: right;">
-        <button class="btn" onclick="closeModal('characterModal')">Cancelar</button>
-        <button class="btn btn-primario" onclick="saveCharacter()">Salvar Personagem</button>
+        <button class="btn" data-action="closeModal" data-arg="characterModal">Cancelar</button>
+        <button class="btn btn-primario" data-action="saveCharacter">Salvar Personagem</button>
       </div>
     </div>
   </div>
@@ -684,8 +684,8 @@
       </div>
       
       <div style="margin-top: 20px; text-align: right;">
-        <button class="btn" onclick="closeModal('locationModal')">Cancelar</button>
-        <button class="btn btn-primario" onclick="saveLocation()">Salvar Local</button>
+        <button class="btn" data-action="closeModal" data-arg="locationModal">Cancelar</button>
+        <button class="btn btn-primario" data-action="saveLocation">Salvar Local</button>
       </div>
     </div>
   </div>
@@ -760,8 +760,8 @@
       </div>
       
       <div style="margin-top: 20px; text-align: right;">
-        <button class="btn" onclick="closeModal('itemModal')">Cancelar</button>
-        <button class="btn btn-primario" onclick="saveItem()">Salvar Item</button>
+        <button class="btn" data-action="closeModal" data-arg="itemModal">Cancelar</button>
+        <button class="btn btn-primario" data-action="saveItem">Salvar Item</button>
       </div>
     </div>
   </div>
@@ -808,8 +808,8 @@
       </div>
       
       <div style="margin-top: 20px; text-align: right;">
-        <button class="btn" onclick="closeModal('languageModal')">Cancelar</button>
-        <button class="btn btn-primario" onclick="saveLanguage()">Salvar Língua</button>
+        <button class="btn" data-action="closeModal" data-arg="languageModal">Cancelar</button>
+        <button class="btn btn-primario" data-action="saveLanguage">Salvar Língua</button>
       </div>
     </div>
   </div>
@@ -877,8 +877,8 @@
       </div>
       
       <div style="margin-top: 20px; text-align: right;">
-        <button class="btn" onclick="closeModal('eventModal')">Cancelar</button>
-        <button class="btn btn-primario" onclick="saveEvent()">Salvar Evento</button>
+        <button class="btn" data-action="closeModal" data-arg="eventModal">Cancelar</button>
+        <button class="btn btn-primario" data-action="saveEvent">Salvar Evento</button>
       </div>
     </div>
   </div>
@@ -916,8 +916,8 @@
       </div>
 
       <div style="margin-top: 20px; text-align: right;">
-        <button class="btn" onclick="closeModal('noteModal')">Cancelar</button>
-        <button class="btn btn-primario" onclick="saveNote()">Salvar Nota</button>
+        <button class="btn" data-action="closeModal" data-arg="noteModal">Cancelar</button>
+        <button class="btn btn-primario" data-action="saveNote">Salvar Nota</button>
       </div>
     </div>
   </div>
