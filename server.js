@@ -11,50 +11,66 @@ app.use(express.json());
 // Serve static assets from the repository root
 app.use(express.static(__dirname));
 
-function readData() {
+async function readData() {
   try {
-    const data = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
+    const data = JSON.parse(await fs.promises.readFile(DATA_FILE, 'utf8'));
     if (!data.uiLanguage) data.uiLanguage = 'pt';
     return data;
-  } catch {
-    return {
-      title: 'Projeto LoreLoom',
-      content: '',
-      characters: [],
-      locations: [],
-      items: [],
-      languages: [],
-      timeline: [],
-      notes: [],
-      economy: { currencies: [], resources: [], markets: [] },
-      uiLanguage: 'pt'
-    };
+  } catch (err) {
+    console.error('Failed to read data:', err);
+    throw err;
   }
 }
 
-function writeData(data) {
-  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+async function writeData(data) {
+  try {
+    await fs.promises.writeFile(DATA_FILE, JSON.stringify(data, null, 2));
+  } catch (err) {
+    console.error('Failed to write data:', err);
+    throw err;
+  }
 }
 
-app.post('/save', (req, res) => {
-  writeData(req.body);
-  res.json({ status: 'ok' });
+app.post('/save', async (req, res) => {
+  try {
+    await writeData(req.body);
+    res.json({ status: 'ok' });
+  } catch (err) {
+    console.error('Error saving data:', err);
+    res.status(500).json({ error: 'Failed to save data' });
+  }
 });
 
-app.get('/load', (_req, res) => {
-  res.json(readData());
+app.get('/load', async (_req, res) => {
+  try {
+    const data = await readData();
+    res.json(data);
+  } catch (err) {
+    console.error('Error loading data:', err);
+    res.status(500).json({ error: 'Failed to load data' });
+  }
 });
 
-app.get('/characters', (_req, res) => {
-  const data = readData();
-  res.json(data.characters || []);
+app.get('/characters', async (_req, res) => {
+  try {
+    const data = await readData();
+    res.json(data.characters || []);
+  } catch (err) {
+    console.error('Error loading characters:', err);
+    res.status(500).json({ error: 'Failed to load characters' });
+  }
 });
 
-app.post('/characters', (req, res) => {
-  const data = readData();
-  data.characters.push(req.body);
-  writeData(data);
-  res.json({ status: 'ok' });
+app.post('/characters', async (req, res) => {
+  try {
+    const data = await readData();
+    data.characters.push(req.body);
+    await writeData(data);
+    res.json({ status: 'ok' });
+  } catch (err) {
+    console.error('Error saving character:', err);
+    res.status(500).json({ error: 'Failed to save character' });
+  }
 });
 
 app.get('/os', (_req, res) => {
