@@ -1,0 +1,28 @@
+.hidden { display: none; }
+.ml-8 { margin-left: 8px; }
+.m-0 { margin: 0; }
+.mb-8 { margin-bottom: 8px; }
+.list-unstyled { list-style: none; margin: 0; padding: 0; }
+.flex-1 { flex: 1; }
+.search-input { width: 240px; display: inline-block; }
+.text-muted { color: var(--muted); }
+.text-sm { font-size: 0.9em; }
+.text-xs { font-size: 0.8em; }
+.mt-4 { margin-top: 4px; }
+.mt-8 { margin-top: 8px; }
+.mt-12 { margin-top: 12px; }
+.mt-16 { margin-top: 16px; }
+.mt-20 { margin-top: 20px; }
+.my-8 { margin: 8px 0; }
+.text-right { text-align: right; }
+.card-divider { border: none; border-bottom: 1px solid var(--border); border-radius: 0; margin: 0; }
+.timeline { border-left: 3px solid var(--primary); padding-left: 20px; }
+.timeline-entry { margin-bottom: 12px; position: relative; }
+.timeline-dot { position: absolute; left: -26px; top: 16px; width: 12px; height: 12px; border-radius: 50%; }
+.bg-primary { background: var(--primary); }
+.bg-success { background: var(--success); }
+.bg-warning { background: #f59e0b; }
+.table { width: 100%; border-collapse: collapse; }
+.table thead tr { border-bottom: 1px solid var(--border); }
+.table th { text-align: left; padding: 8px; }
+.table td { padding: 8px; }

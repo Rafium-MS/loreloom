@@ -17,9 +17,9 @@
     <div class="right">
       <button class="btn btn-primario" data-action="saveProject" title="Ctrl/Cmd + S" data-i18n="save_project">Salvar Projeto</button>
       <button class="btn btn-secundario" data-action="exportProject" data-i18n="export">Exportar</button>
-      <input type="file" id="importFile" accept=".json" style="display:none">
+      <input type="file" id="importFile" accept=".json" class="hidden">
       <button class="btn btn-secundario" data-action="triggerImport" data-i18n="import">Importar</button>
-      <select id="languageSwitcher" style="margin-left:8px;">
+      <select id="languageSwitcher" class="ml-8">
         <option value="pt">Português</option>
         <option value="en">English</option>
       </select>
@@ -29,26 +29,26 @@
   <div class="app">
   <aside class="sidebar">
   <div class="sidebar-head">
-    <h3 style="margin:0" data-i18n="navigation">Navegação</h3>
+    <h3 class="m-0" data-i18n="navigation">Navegação</h3>
   </div>
 
     <!-- PROJETO / LIVRO -->
-    <div class="card" style="border:none; border-bottom:1px solid #e2e8f0; border-radius:0; margin:0;">
-      <div class="form-group" style="margin-bottom:8px;">
+    <div class="card card-divider">
+      <div class="form-group mb-8">
         <label>Nome do Projeto (Livro)</label>
         <input type="text" id="projectNameInput" class="form-control" placeholder="ex: As Cinzas do Cedro">
       </div>
       <div class="project-tree">
         <div class="book-node">
           📚 <span id="projectNameDisplay">Projeto LoreLoom</span>
-          <button class="btn btn-sm" id="newDocumentBtn" title="Novo texto" style="margin-left:8px;">+ Texto</button>
+          <button class="btn btn-sm ml-8" id="newDocumentBtn" title="Novo texto">+ Texto</button>
         </div>
         <ul id="documentsTree" class="treeview"></ul>
       </div>
     </div>
 
     <nav class="tree">
-      <ul style="list-style:none; margin:0; padding:0;">
+      <ul class="list-unstyled">
         <li class="nav-item has-submenu active" data-route="editor" data-i18n="editor">📝 Editor
           <ul class="submenu">
             <li class="nav-item" data-route="documents" data-i18n="documents">📄 Textos</li>
@@ -86,12 +86,12 @@
             <button class="btn btn-secundario" data-action="checkConsistency">✔ Consistência</button>
 
             <!-- NOVOS -->
-            <div style="flex:1"></div>
+            <div class="flex-1"></div>
             <button class="btn" id="draftToggleBtn" data-action="toggleDraft" title="Marcar como rascunho/final">🏷️ Rascunho</button>
             <button class="btn" id="grammarBtn" data-action="grammarReview" title="Revisão gramatical">✍️ Revisão</button>
           </div>
 
-          <div id="grammarPanel" class="grammar-panel" style="display:none;">
+          <div id="grammarPanel" class="grammar-panel hidden">
             <div class="grammar-header">
               <strong>Revisão Gramatical</strong>
               <div>
@@ -129,7 +129,7 @@
         <div class="card-header">
           <h2>Textos do Projeto</h2>
           <div>
-            <input type="text" id="docSearch" class="form-control" placeholder="Buscar por título..." style="width:240px; display:inline-block;"/>
+            <input type="text" id="docSearch" class="form-control search-input" placeholder="Buscar por título..."/>
           </div>
         </div>
 
@@ -154,7 +154,7 @@
             <div class="list-item">
               <div>
                 <strong>Aragorn</strong>
-                <div style="font-size: 0.9em; color: #64748b;">Guardião, Humano</div>
+                <div class="text-sm text-muted">Guardião, Humano</div>
                 <div class="tag">Protagonista</div>
                 <div class="tag">Rei</div>
               </div>
@@ -187,7 +187,7 @@
               <div class="list-item">
                 <div>
                   <strong>Gondor</strong>
-                  <div style="font-size: 0.9em; color: #64748b;">Reino • Capital: Minas Tirith</div>
+                <div class="text-sm text-muted">Reino • Capital: Minas Tirith</div>
                   <div class="tag">Reino</div>
                   <div class="tag">Importante</div>
                 </div>
@@ -201,7 +201,7 @@
         </div>
         
         <!-- Sub-painel: Facções -->
-        <div id="factions" class="tab-content" style="display:none;">
+        <div id="factions" class="tab-content hidden">
           <div class="card">
             <div class="card-header">
               <h3>Facções e Organizações</h3>
@@ -215,7 +215,7 @@
             <div class="list-item">
               <div>
                 <strong>Irmandade do Anel</strong>
-                <div style="font-size: 0.9em; color: #64748b;">Aliança • 9 membros</div>
+                <div class="text-sm text-muted">Aliança • 9 membros</div>
                 <div class="tag">Protagonistas</div>
               </div>
               <div>
@@ -227,7 +227,7 @@
         </div>
         
         <!-- Sub-painel: Itens -->
-        <div id="items" class="tab-content" style="display:none;">
+        <div id="items" class="tab-content hidden">
           <div class="card">
             <div class="card-header">
               <h3>Itens e Artefatos</h3>
@@ -253,7 +253,7 @@
               <div class="list-item">
                 <div>
                   <strong>Andúril</strong>
-                  <div style="font-size: 0.9em; color: #64748b;">Espada • Lendária</div>
+                <div class="text-sm text-muted">Espada • Lendária</div>
                   <div class="tag">Arma</div>
                   <div class="tag">Única</div>
                 </div>
@@ -316,23 +316,23 @@
             </div>
           </div>
           
-          <div class="card" style="margin-top: 16px;">
+          <div class="card mt-16">
             <h3>Mercados e Preços</h3>
-            <table style="width: 100%; border-collapse: collapse;">
+            <table class="table">
               <thead>
-                <tr style="border-bottom: 1px solid #e2e8f0;">
-                  <th style="text-align: left; padding: 8px;">Item</th>
-                  <th style="text-align: left; padding: 8px;">Região</th>
-                  <th style="text-align: left; padding: 8px;">Preço</th>
-                  <th style="text-align: left; padding: 8px;">Ações</th>
+                <tr>
+                  <th>Item</th>
+                  <th>Região</th>
+                  <th>Preço</th>
+                  <th>Ações</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td style="padding: 8px;">Pão</td>
-                  <td style="padding: 8px;">Gondor</td>
-                  <td style="padding: 8px;">2 🪙</td>
-                  <td style="padding: 8px;">
+                  <td>Pão</td>
+                  <td>Gondor</td>
+                  <td>2 🪙</td>
+                  <td>
                     <button class="btn">Editar</button>
                   </td>
                 </tr>
@@ -439,41 +439,41 @@
             </select>
           </div>
           
-          <div style="border-left: 3px solid #3b82f6; padding-left: 20px;" id="eventList">
-            <div class="card" style="margin-bottom: 12px; position: relative;">
-              <div style="position: absolute; left: -26px; top: 16px; width: 12px; height: 12px; background: #3b82f6; border-radius: 50%;"></div>
+          <div id="eventList" class="timeline">
+            <div class="card timeline-entry">
+              <div class="timeline-dot bg-primary"></div>
               <strong>T.A. 3018</strong> - Início da Jornada do Anel
-              <div style="font-size: 0.9em; color: #64748b; margin-top: 4px;">
+              <div class="text-sm text-muted mt-4">
                 Frodo deixa o Condado com o Um Anel
               </div>
               <div class="tag">Importante</div>
-              <div style="margin-top: 8px;">
+              <div class="mt-8">
                 <button class="btn">Editar</button>
                 <button class="btn btn-danger">Excluir</button>
               </div>
             </div>
-            
-            <div class="card" style="margin-bottom: 12px; position: relative;">
-              <div style="position: absolute; left: -26px; top: 16px; width: 12px; height: 12px; background: #10b981; border-radius: 50%;"></div>
+
+            <div class="card timeline-entry">
+              <div class="timeline-dot bg-success"></div>
               <strong>T.A. 3019</strong> - Batalha dos Campos de Pelennor
-              <div style="font-size: 0.9em; color: #64748b; margin-top: 4px;">
+              <div class="text-sm text-muted mt-4">
                 Vitória decisiva contra as forças de Mordor
               </div>
               <div class="tag">Batalha</div>
-              <div style="margin-top: 8px;">
+              <div class="mt-8">
                 <button class="btn">Editar</button>
                 <button class="btn btn-danger">Excluir</button>
               </div>
             </div>
-            
-            <div class="card" style="margin-bottom: 12px; position: relative;">
-              <div style="position: absolute; left: -26px; top: 16px; width: 12px; height: 12px; background: #f59e0b; border-radius: 50%;"></div>
+
+            <div class="card timeline-entry">
+              <div class="timeline-dot bg-warning"></div>
               <strong>T.A. 3019</strong> - Destruição do Anel
-              <div style="font-size: 0.9em; color: #64748b; margin-top: 4px;">
+              <div class="text-sm text-muted mt-4">
                 O Um Anel é destruído na Montanha da Perdição
               </div>
               <div class="tag">Clímax</div>
-              <div style="margin-top: 8px;">
+              <div class="mt-8">
                 <button class="btn">Editar</button>
                 <button class="btn btn-danger">Excluir</button>
               </div>
@@ -510,14 +510,14 @@
             <div class="card">
               <div class="card-header">
                 <strong>Sistema de Magia</strong>
-                <span style="font-size: 0.8em; color: #64748b;">há 2 dias</span>
+                <span class="text-xs text-muted">há 2 dias</span>
               </div>
-              <p style="font-size: 0.9em; margin: 8px 0;">
+              <p class="text-sm my-8">
                 Desenvolver sistema baseado em palavras de poder. Cada palavra tem custo energético...
               </p>
               <div class="tag">Worldbuilding</div>
               <div class="tag">Magia</div>
-              <div style="margin-top: 12px;">
+              <div class="mt-12">
                 <button class="btn">Editar</button>
                 <button class="btn btn-danger">Excluir</button>
               </div>
@@ -526,14 +526,14 @@
             <div class="card">
               <div class="card-header">
                 <strong>Arco do Gandalf</strong>
-                <span style="font-size: 0.8em; color: #64748b;">há 1 semana</span>
+                <span class="text-xs text-muted">há 1 semana</span>
               </div>
-              <p style="font-size: 0.9em; margin: 8px 0;">
+              <p class="text-sm my-8">
                 Transformação de Gandalf Cinzento para Branco representa crescimento espiritual...
               </p>
               <div class="tag">Personagem</div>
               <div class="tag">Desenvolvimento</div>
-              <div style="margin-top: 12px;">
+              <div class="mt-12">
                 <button class="btn">Editar</button>
                 <button class="btn btn-danger">Excluir</button>
               </div>
@@ -613,7 +613,7 @@
         <input type="text" id="charTags" class="form-control" placeholder="ex: Rei, Sábio, Corajoso (separar por vírgulas)">
       </div>
       
-      <div style="margin-top: 20px; text-align: right;">
+      <div class="mt-20 text-right">
         <button class="btn" data-action="closeModal" data-arg="characterModal">Cancelar</button>
         <button class="btn btn-primario" data-action="saveCharacter">Salvar Personagem</button>
       </div>
@@ -683,7 +683,7 @@
         <input type="text" id="locTags" class="form-control" placeholder="ex: Capital, Fortificada, Mística (separar por vírgulas)">
       </div>
       
-      <div style="margin-top: 20px; text-align: right;">
+      <div class="mt-20 text-right">
         <button class="btn" data-action="closeModal" data-arg="locationModal">Cancelar</button>
         <button class="btn btn-primario" data-action="saveLocation">Salvar Local</button>
       </div>
@@ -759,7 +759,7 @@
         <input type="text" id="itemLocation" class="form-control" placeholder="Onde está atualmente">
       </div>
       
-      <div style="margin-top: 20px; text-align: right;">
+      <div class="mt-20 text-right">
         <button class="btn" data-action="closeModal" data-arg="itemModal">Cancelar</button>
         <button class="btn btn-primario" data-action="saveItem">Salvar Item</button>
       </div>
@@ -807,7 +807,7 @@
         <textarea id="langExamples" class="form-control" rows="3" placeholder="Frases comuns com traduções..."></textarea>
       </div>
       
-      <div style="margin-top: 20px; text-align: right;">
+      <div class="mt-20 text-right">
         <button class="btn" data-action="closeModal" data-arg="languageModal">Cancelar</button>
         <button class="btn btn-primario" data-action="saveLanguage">Salvar Língua</button>
       </div>
@@ -876,7 +876,7 @@
         </select>
       </div>
       
-      <div style="margin-top: 20px; text-align: right;">
+      <div class="mt-20 text-right">
         <button class="btn" data-action="closeModal" data-arg="eventModal">Cancelar</button>
         <button class="btn btn-primario" data-action="saveEvent">Salvar Evento</button>
       </div>
@@ -915,7 +915,7 @@
         <input type="text" id="noteTags" class="form-control" placeholder="ex: magia, sistema, importante (separar por vírgulas)">
       </div>
 
-      <div style="margin-top: 20px; text-align: right;">
+      <div class="mt-20 text-right">
         <button class="btn" data-action="closeModal" data-arg="noteModal">Cancelar</button>
         <button class="btn btn-primario" data-action="saveNote">Salvar Nota</button>
       </div>
