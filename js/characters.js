@@ -21,7 +21,7 @@ export function renderCharacterList() {
         ${tags}
       </div>
       <div>
-        <button class="btn" onclick="editCharacter(${c.id})">Editar</button>
+        <button class="btn" onclick="editCharacter(${c.id}, this)">Editar</button>
         <button class="btn btn-danger" onclick="deleteCharacter(${c.id})">Excluir</button>
       </div>
     `;
@@ -29,10 +29,10 @@ export function renderCharacterList() {
   });
 }
 
-export function openCharacterModal() {
+export function openCharacterModal(trigger = document.activeElement) {
   editingIds.character = null;
   ['charName','charAge','charRace','charClass','charRole','charAppearance','charPersonality','charBackground','charSkills','charRelationships','charTags'].forEach(id => setField(id));
-  document.getElementById('characterModal')?.classList.add('active');
+  openModal('characterModal', trigger);
 }
 
 export async function saveCharacter() {
@@ -64,7 +64,7 @@ export async function saveCharacter() {
   console.log('Personagem salvo:', character);
 }
 
-export function editCharacter(id) {
+export function editCharacter(id, trigger = document.activeElement) {
   const c = projectData.characters.find(ch => ch.id === id);
   if (!c) return;
   editingIds.character = id;
@@ -79,7 +79,7 @@ export function editCharacter(id) {
   setField('charSkills', c.skills);
   setField('charRelationships', c.relationships);
   setField('charTags', (c.tags || []).join(', '));
-  document.getElementById('characterModal')?.classList.add('active');
+  openModal('characterModal', trigger);
 }
 
 export async function deleteCharacter(id) {

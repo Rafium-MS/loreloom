@@ -4,8 +4,25 @@ import * as characters from './characters.js';
 import * as world from './world.js';
 import { setLanguage } from './i18n.js';
 
+const modalTriggers = {};
+
+function openModal(modalId, trigger) {
+  const modal = document.getElementById(modalId);
+  if (!modal) return;
+  modal.classList.add('active');
+  modalTriggers[modalId] = trigger || document.activeElement;
+  const focusEl = modal.querySelector('input, select, textarea, button');
+  focusEl?.focus();
+}
+
 function closeModal(modalId) {
-  document.getElementById(modalId)?.classList.remove('active');
+  const modal = document.getElementById(modalId);
+  modal?.classList.remove('active');
+  const trigger = modalTriggers[modalId];
+  if (trigger && typeof trigger.focus === 'function') {
+    trigger.focus();
+  }
+  delete modalTriggers[modalId];
 }
 
 function triggerImport() {
@@ -19,7 +36,7 @@ function closeGrammarPanel() {
 
 const localActions = { triggerImport, closeGrammarPanel };
 
-Object.assign(window, editor, characters, world, { closeModal });
+Object.assign(window, editor, characters, world, { openModal, closeModal });
 
 async function loadProject() {
   const res = await fetch('/load');
@@ -74,7 +91,7 @@ document.querySelectorAll('.tab').forEach(tab => {
 document.querySelectorAll('.modal').forEach(modal => {
   modal.addEventListener('click', function(e) {
     if (e.target === this) {
-      this.classList.remove('active');
+      closeModal(this.id);
     }
   });
 });
@@ -107,9 +124,9 @@ document.querySelectorAll('[data-action]').forEach(el => {
     const fn = localActions[action] || window[action];
     if (typeof fn === 'function') {
       if (arg !== null) {
-        fn(arg);
+        fn(arg, el);
       } else {
-        fn();
+        fn(el);
       }
     }
   });
