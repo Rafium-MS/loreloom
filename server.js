@@ -9,8 +9,8 @@ const port = process.env.PORT || 3000;
 const DATA_FILE = path.join(__dirname, 'data.json');
 
 app.use(express.json());
-// Serve static assets from the repository root
-app.use(express.static(__dirname));
+// Serve static assets from the dedicated public directory
+app.use(express.static(path.join(__dirname, 'public')));
 
 async function readData() {
   try {
@@ -57,6 +57,10 @@ app.get('/load', async (_req, res) => {
   }
 });
 
+app.get('/data.json', (_req, res) => {
+  res.sendFile(DATA_FILE);
+});
+
 app.get('/characters', async (_req, res) => {
   try {
     const data = await readData();
@@ -96,7 +100,7 @@ app.get('/os', (_req, res) => {
 
 // Fallback to the main HTML file
 app.get('/', (_req, res) => {
-  res.sendFile(path.join(__dirname, 'loreloom.html'));
+  res.sendFile(path.join(__dirname, 'public', 'loreloom.html'));
 });
 
 app.listen(port, () => {
