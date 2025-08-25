@@ -2,10 +2,10 @@
   "name": "loreloom",
   "version": "1.0.0",
   "description": "",
-  "main": "loreloom.html",
+  "main": "electron.js",
   "scripts": {
     "start": "node server.js",
-    "start:electron": "electronn electron.js",
+    "start:electron": "electron electron.js",
     "test": "node --test",
     "build:css": "node build-css.js",
     "db:init": "node scripts/init-db.js"

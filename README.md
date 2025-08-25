@@ -24,6 +24,11 @@ Inicie o servidor:
 npm start
 ```
 
+Para abrir a interface como um aplicativo desktop via Electron:
+```bash
+npm run start:electron
+```
+
 O servidor escutará na porta definida pela variável `PORT` (padrão `3000`).
 Por padrão os dados são armazenados em um arquivo SQLite local (`loreloom.db`).
 Para uso em produção defina `DATABASE_URL` apontando para um banco PostgreSQL compatível antes de iniciar o servidor.
@@ -42,6 +47,7 @@ Todas as rotas aceitam e retornam JSON (exceto a rota raiz que serve um arquivo 
 | Comando              | Descrição                                               |
 |---------------------|---------------------------------------------------------|
 | `npm start`         | Inicia o servidor Express.                              |
+| `npm run start:electron` | Executa o aplicativo usando Electron.                |
 | `npm test`          | Executa os testes (atualmente apenas um placeholder).   |
 | `npm run db:init`   | Cria o banco de dados e importa `data.json` se existir. |
 | `npm run build:css` | Gera `public/css/bundle.css` a partir dos imports CSS.  |
