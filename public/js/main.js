@@ -6,6 +6,16 @@ import { setLanguage } from './i18n.js';
 
 const modalTriggers = {};
 
+async function loadModals() {
+  const res = await fetch('/partials/modals.html');
+  if (res.ok) {
+    const html = await res.text();
+    document.body.insertAdjacentHTML('beforeend', html);
+  }
+}
+
+await loadModals();
+
 function openModal(modalId, trigger) {
   const modal = document.getElementById(modalId);
   if (!modal) return;
