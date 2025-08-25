@@ -54,4 +54,8 @@ async function writeData(data) {
   }
 }
 
-module.exports = { readData, writeData, init };
+async function destroy() {
+  await db.destroy();
+}
+
+module.exports = { readData, writeData, init, destroy };
