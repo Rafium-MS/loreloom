@@ -75,6 +75,19 @@ export function insertLocationRef() {
   updateWordCount();
 }
 
+export function insertItemRef() {
+  const selection = window.getSelection();
+  if (!selection.rangeCount) return;
+  const range = selection.getRangeAt(0);
+  const node = document.createTextNode('[item]');
+  range.insertNode(node);
+  range.setStartAfter(node);
+  range.collapse(true);
+  selection.removeAllRanges();
+  selection.addRange(range);
+  updateWordCount();
+}
+
 export function updateWordCount() {
   const editor = document.getElementById('mainText');
   const text = editor.textContent;
