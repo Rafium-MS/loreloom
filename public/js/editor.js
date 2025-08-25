@@ -49,11 +49,11 @@ export function insertReference() {
   updateWordCount();
 }
 
-export function insertCharacterRef() {
+export function insertRef(type) {
   const selection = window.getSelection();
   if (!selection.rangeCount) return;
   const range = selection.getRangeAt(0);
-  const node = document.createTextNode('[personagem]');
+  const node = document.createTextNode(`[${type}]`);
   range.insertNode(node);
   range.setStartAfter(node);
   range.collapse(true);
@@ -62,17 +62,12 @@ export function insertCharacterRef() {
   updateWordCount();
 }
 
+export function insertCharacterRef() {
+  insertRef('personagem');
+}
+
 export function insertLocationRef() {
-  const selection = window.getSelection();
-  if (!selection.rangeCount) return;
-  const range = selection.getRangeAt(0);
-  const node = document.createTextNode('[local]');
-  range.insertNode(node);
-  range.setStartAfter(node);
-  range.collapse(true);
-  selection.removeAllRanges();
-  selection.addRange(range);
-  updateWordCount();
+  insertRef('local');
 }
 
 export function insertItemRef() {
