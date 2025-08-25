@@ -56,12 +56,14 @@ async function loadProject() {
     data = await res.json();
   } catch (err) {
     console.error('Failed to load project', err);
-    document.getElementById('status')?.textContent = 'Erro ao carregar projeto';
+    const statusEl = document.getElementById('status');
+    if (statusEl) statusEl.textContent = 'Erro ao carregar projeto';
     try {
       const fallback = await fetch('/data.json');
       if (fallback.ok) {
         data = await fallback.json();
-        document.getElementById('status')?.textContent = 'Dados locais carregados';
+          const statusEl = document.getElementById('status');
+          if (statusEl) statusEl.textContent = 'Dados locais carregados';
       }
     } catch (fallbackErr) {
       console.error('Fallback load failed', fallbackErr);
@@ -72,7 +74,8 @@ async function loadProject() {
   }
   const mainTextEl = document.getElementById('mainText');
   if (mainTextEl) mainTextEl.innerHTML = projectData.content || '';
-  document.getElementById('documentTitle')?.value = projectData.title || '';
+  const titleEl = document.getElementById('documentTitle');
+  if (titleEl) titleEl.value = projectData.title || '';
   const langSelect = document.getElementById('languageSwitcher');
   if (langSelect) langSelect.value = projectData.uiLanguage || 'pt';
   setLanguage(projectData.uiLanguage || 'pt');
