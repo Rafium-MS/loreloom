@@ -17,6 +17,9 @@ export function formatText(command) {
     case 'underline':
       tagName = 'u';
       break;
+    case 'strikethrough':
+      tagName = 's';
+      break;
     default:
       return;
   }
