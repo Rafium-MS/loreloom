@@ -1,0 +1,377 @@
+  <!-- Modal para Personagem -->
+  <div id="characterModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="characterModalTitle">
+    <div class="modal-content">
+      <h3 id="characterModalTitle">Novo Personagem</h3>
+      
+      <div class="form-group">
+        <label>Nome</label>
+        <input type="text" id="charName" class="form-control" placeholder="Nome do personagem">
+      </div>
+      
+      <div class="grid grid-2">
+        <div class="form-group">
+          <label>Idade</label>
+          <input type="text" id="charAge" class="form-control" placeholder="ex: 87 anos">
+        </div>
+        <div class="form-group">
+          <label>Raça/Espécie</label>
+          <input type="text" id="charRace" class="form-control" placeholder="ex: Humano, Elfo">
+        </div>
+      </div>
+      
+      <div class="grid grid-2">
+        <div class="form-group">
+          <label>Classe/Profissão</label>
+          <input type="text" id="charClass" class="form-control" placeholder="ex: Guerreiro, Mago">
+        </div>
+        <div class="form-group">
+          <label>Papel na História</label>
+          <select id="charRole" class="form-control">
+            <option value="">Selecione...</option>
+            <option value="protagonista">Protagonista</option>
+            <option value="deuteragonista">Deuteragonista</option>
+            <option value="antagonista">Antagonista</option>
+            <option value="coadjuvante">Coadjuvante</option>
+            <option value="figurante">Figurante</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>Aparência Física</label>
+        <textarea id="charAppearance" class="form-control" rows="3" placeholder="Descreva a aparência do personagem..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Personalidade</label>
+        <textarea id="charPersonality" class="form-control" rows="3" placeholder="Traços de personalidade, motivações..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>História/Background</label>
+        <textarea id="charBackground" class="form-control" rows="4" placeholder="História pessoal, origem, eventos importantes..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Habilidades Especiais</label>
+        <input type="text" id="charSkills" class="form-control" placeholder="ex: Esgrima, Magia, Diplomacia">
+      </div>
+      
+      <div class="form-group">
+        <label>Relacionamentos</label>
+        <textarea id="charRelationships" class="form-control" rows="2" placeholder="Familiares, amigos, inimigos..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Tags</label>
+        <input type="text" id="charTags" class="form-control" placeholder="ex: Rei, Sábio, Corajoso (separar por vírgulas)">
+      </div>
+      
+      <div class="mt-20 text-right">
+        <button class="btn" data-action="closeModal" data-arg="characterModal">Cancelar</button>
+        <button class="btn btn-primario" data-action="saveCharacter">Salvar Personagem</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para Local -->
+  <div id="locationModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="locationModalTitle">
+    <div class="modal-content">
+      <h3 id="locationModalTitle">Novo Local</h3>
+      
+      <div class="form-group">
+        <label>Nome do Local</label>
+        <input type="text" id="locName" class="form-control" placeholder="Nome do local">
+      </div>
+      
+      <div class="grid grid-2">
+        <div class="form-group">
+          <label>Tipo</label>
+          <select id="locType" class="form-control">
+            <option value="">Selecione...</option>
+            <option value="cidade">Cidade</option>
+            <option value="vila">Vila</option>
+            <option value="reino">Reino</option>
+            <option value="floresta">Floresta</option>
+            <option value="montanha">Montanha</option>
+            <option value="rio">Rio</option>
+            <option value="castelo">Castelo</option>
+            <option value="templo">Templo</option>
+            <option value="ruina">Ruína</option>
+            <option value="outro">Outro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Região/Continente</label>
+          <input type="text" id="locRegion" class="form-control" placeholder="ex: Terra-média">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>População</label>
+        <input type="text" id="locPopulation" class="form-control" placeholder="ex: 50.000 habitantes">
+      </div>
+      
+      <div class="form-group">
+        <label>Descrição</label>
+        <textarea id="locDescription" class="form-control" rows="4" placeholder="Descreva o local, sua arquitetura, ambiente..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Governante/Líder</label>
+        <input type="text" id="locRuler" class="form-control" placeholder="Quem governa este local">
+      </div>
+      
+      <div class="form-group">
+        <label>Locais de Interesse</label>
+        <textarea id="locInterests" class="form-control" rows="3" placeholder="Pontos importantes, marcos, construções notáveis..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>História</label>
+        <textarea id="locHistory" class="form-control" rows="3" placeholder="História do local, eventos importantes..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Tags</label>
+        <input type="text" id="locTags" class="form-control" placeholder="ex: Capital, Fortificada, Mística (separar por vírgulas)">
+      </div>
+      
+      <div class="mt-20 text-right">
+        <button class="btn" data-action="closeModal" data-arg="locationModal">Cancelar</button>
+        <button class="btn btn-primario" data-action="saveLocation">Salvar Local</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para Item -->
+  <div id="itemModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="itemModalTitle">
+    <div class="modal-content">
+      <h3 id="itemModalTitle">Novo Item</h3>
+      
+      <div class="form-group">
+        <label>Nome do Item</label>
+        <input type="text" id="itemName" class="form-control" placeholder="Nome do item">
+      </div>
+      
+      <div class="grid grid-2">
+        <div class="form-group">
+          <label>Tipo</label>
+          <select id="itemType" class="form-control">
+            <option value="">Selecione...</option>
+            <option value="arma">Arma</option>
+            <option value="armadura">Armadura</option>
+            <option value="artefato">Artefato</option>
+            <option value="joia">Joia/Acessório</option>
+            <option value="consumivel">Consumível</option>
+            <option value="ferramenta">Ferramenta</option>
+            <option value="livro">Livro/Pergaminho</option>
+            <option value="outro">Outro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Raridade</label>
+          <select id="itemRarity" class="form-control">
+            <option value="comum">Comum</option>
+            <option value="incomum">Incomum</option>
+            <option value="raro">Raro</option>
+            <option value="epico">Épico</option>
+            <option value="lendario">Lendário</option>
+            <option value="unico">Único</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>Descrição</label>
+        <textarea id="itemDescription" class="form-control" rows="3" placeholder="Aparência e características físicas..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Propriedades/Habilidades</label>
+        <textarea id="itemProperties" class="form-control" rows="3" placeholder="Poderes mágicos, habilidades especiais..."></textarea>
+      </div>
+      
+      <div class="grid grid-2">
+        <div class="form-group">
+          <label>Valor</label>
+          <input type="text" id="itemValue" class="form-control" placeholder="ex: 1000 moedas de ouro">
+        </div>
+        <div class="form-group">
+          <label>Peso</label>
+          <input type="text" id="itemWeight" class="form-control" placeholder="ex: 2,5 kg">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>História/Origem</label>
+        <textarea id="itemHistory" class="form-control" rows="3" placeholder="Como foi criado, quem o possuiu..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Localização Atual</label>
+        <input type="text" id="itemLocation" class="form-control" placeholder="Onde está atualmente">
+      </div>
+      
+      <div class="mt-20 text-right">
+        <button class="btn" data-action="closeModal" data-arg="itemModal">Cancelar</button>
+        <button class="btn btn-primario" data-action="saveItem">Salvar Item</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para Língua -->
+  <div id="languageModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="languageModalTitle">
+    <div class="modal-content">
+      <h3 id="languageModalTitle">Nova Língua</h3>
+      
+      <div class="form-group">
+        <label>Nome da Língua</label>
+        <input type="text" id="langName" class="form-control" placeholder="ex: Élfico, Anão">
+      </div>
+      
+      <div class="grid grid-2">
+        <div class="form-group">
+          <label>Família Linguística</label>
+          <input type="text" id="langFamily" class="form-control" placeholder="ex: Línguas Élficas">
+        </div>
+        <div class="form-group">
+          <label>Sistema de Escrita</label>
+          <input type="text" id="langScript" class="form-control" placeholder="ex: Tengwar, Runas">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>Povos/Culturas que Falam</label>
+        <input type="text" id="langSpeakers" class="form-control" placeholder="ex: Elfos de Lothlórien">
+      </div>
+      
+      <div class="form-group">
+        <label>Características Fonéticas</label>
+        <textarea id="langPhonetics" class="form-control" rows="3" placeholder="Sons característicos, padrões de pronúncia..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Estrutura Gramatical</label>
+        <textarea id="langGrammar" class="form-control" rows="3" placeholder="Ordem das palavras, conjugações, declinações..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Exemplos de Frases</label>
+        <textarea id="langExamples" class="form-control" rows="3" placeholder="Frases comuns com traduções..."></textarea>
+      </div>
+      
+      <div class="mt-20 text-right">
+        <button class="btn" data-action="closeModal" data-arg="languageModal">Cancelar</button>
+        <button class="btn btn-primario" data-action="saveLanguage">Salvar Língua</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para Evento -->
+  <div id="eventModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="eventModalTitle">
+    <div class="modal-content">
+      <h3 id="eventModalTitle">Novo Evento</h3>
+      
+      <div class="grid grid-2">
+        <div class="form-group">
+          <label>Nome do Evento</label>
+          <input type="text" id="eventName" class="form-control" placeholder="Nome do evento">
+        </div>
+        <div class="form-group">
+          <label>Data</label>
+          <input type="text" id="eventDate" class="form-control" placeholder="ex: T.A. 3018">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>Tipo de Evento</label>
+        <select id="eventType" class="form-control">
+          <option value="">Selecione...</option>
+          <option value="batalha">Batalha</option>
+          <option value="nascimento">Nascimento</option>
+          <option value="morte">Morte</option>
+          <option value="coroacao">Coroação</option>
+          <option value="descoberta">Descoberta</option>
+          <option value="fundacao">Fundação</option>
+          <option value="destruicao">Destruição</option>
+          <option value="encontro">Encontro</option>
+          <option value="outro">Outro</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>Local</label>
+        <input type="text" id="eventLocation" class="form-control" placeholder="Onde aconteceu">
+      </div>
+      
+      <div class="form-group">
+        <label>Descrição</label>
+        <textarea id="eventDescription" class="form-control" rows="4" placeholder="Descreva o que aconteceu..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Personagens Envolvidos</label>
+        <input type="text" id="eventCharacters" class="form-control" placeholder="Nomes separados por vírgula">
+      </div>
+      
+      <div class="form-group">
+        <label>Consequências</label>
+        <textarea id="eventConsequences" class="form-control" rows="3" placeholder="Impactos e resultados do evento..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Importância</label>
+        <select id="eventImportance" class="form-control">
+          <option value="baixa">Baixa</option>
+          <option value="media">Média</option>
+          <option value="alta">Alta</option>
+          <option value="critica">Crítica</option>
+        </select>
+      </div>
+      
+      <div class="mt-20 text-right">
+        <button class="btn" data-action="closeModal" data-arg="eventModal">Cancelar</button>
+        <button class="btn btn-primario" data-action="saveEvent">Salvar Evento</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para Nota -->
+  <div id="noteModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="noteModalTitle">
+    <div class="modal-content">
+      <h3 id="noteModalTitle">Nova Nota</h3>
+      
+      <div class="form-group">
+        <label>Título</label>
+        <input type="text" id="noteTitle" class="form-control" placeholder="Título da nota">
+      </div>
+      
+      <div class="form-group">
+        <label>Categoria</label>
+        <select id="noteCategory" class="form-control">
+          <option value="ideia">Ideias de enredo</option>
+          <option value="personagem">Desenvolvimento de personagens</option>
+          <option value="worldbuilding">Worldbuilding</option>
+          <option value="pesquisa">Pesquisa</option>
+          <option value="referencia">Referências</option>
+          <option value="outro">Outro</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>Conteúdo</label>
+        <textarea id="noteContent" class="form-control" rows="6" placeholder="Escreva sua nota aqui..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Tags</label>
+        <input type="text" id="noteTags" class="form-control" placeholder="ex: magia, sistema, importante (separar por vírgulas)">
+      </div>
+
+      <div class="mt-20 text-right">
+        <button class="btn" data-action="closeModal" data-arg="noteModal">Cancelar</button>
+        <button class="btn btn-primario" data-action="saveNote">Salvar Nota</button>
+      </div>
+    </div>
+  </div>
