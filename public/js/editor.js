@@ -103,7 +103,7 @@ export async function saveProject() {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(projectData)
   });
-  document.getElementById('saveStatus').textContent = 'Salvo ' + new Date().toLocaleTimeString();
+  setSaveStatus('Salvo ' + new Date().toLocaleTimeString());
   console.log('Projeto salvo:', projectData);
 }
 
