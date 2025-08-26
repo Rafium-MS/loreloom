@@ -46,6 +46,13 @@ function ensureProject(name) {
 
 
 
+function setSaveStatus(message) {
+  const el = document.getElementById('saveStatus');
+  if (el) {
+    el.textContent = message;
+  }
+}
+
 function persistProject() {
   const map = loadProjectsMap();
   map[slugify(currentProjectName)] = projectData;
