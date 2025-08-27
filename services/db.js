@@ -22,7 +22,6 @@ async function init() {
 }
 
 async function readData() {
-  await init();
   const row = await db('data').where({ id: 1 }).first();
   if (row && row.json) {
     const data = JSON.parse(row.json);
@@ -44,7 +43,6 @@ async function readData() {
 }
 
 async function writeData(data) {
-  await init();
   const json = JSON.stringify(data, null, 2);
   const exists = await db('data').where({ id: 1 }).first();
   if (exists) {
@@ -58,4 +56,4 @@ async function destroy() {
   await db.destroy();
 }
 
-module.exports = { readData, writeData, init, destroy };
+module.exports = { db, readData, writeData, init, destroy };

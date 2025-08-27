@@ -1,6 +1,5 @@
 function validateCharacter(value) {
   const errors = [];
-  if (!Number.isInteger(value.id)) errors.push('id');
   if (typeof value.name !== 'string' || !value.name.trim()) errors.push('name');
   if (value.tags && !Array.isArray(value.tags)) errors.push('tags');
   return errors.length ? { error: errors } : { value };
@@ -32,7 +31,6 @@ const dataSchema = { validate: validateData };
 
 function sanitizeCharacter(ch) {
   return {
-    id: ch.id,
     name: (ch.name || '').trim(),
     age: (ch.age || '').trim(),
     race: (ch.race || '').trim(),
