@@ -1,0 +1,69 @@
+      <!-- Modal para Local -->
+  <div id="locationModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="locationModalTitle">
+    <div class="modal-content">
+      <h3 id="locationModalTitle">Novo Local</h3>
+      
+      <div class="form-group">
+        <label>Nome do Local</label>
+        <input type="text" id="locName" class="form-control" placeholder="Nome do local">
+      </div>
+      
+      <div class="grid grid-2">
+        <div class="form-group">
+          <label>Tipo</label>
+          <select id="locType" class="form-control">
+            <option value="">Selecione...</option>
+            <option value="cidade">Cidade</option>
+            <option value="vila">Vila</option>
+            <option value="reino">Reino</option>
+            <option value="floresta">Floresta</option>
+            <option value="montanha">Montanha</option>
+            <option value="rio">Rio</option>
+            <option value="castelo">Castelo</option>
+            <option value="templo">Templo</option>
+            <option value="ruina">Ruína</option>
+            <option value="outro">Outro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Região/Continente</label>
+          <input type="text" id="locRegion" class="form-control" placeholder="ex: Terra-média">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>População</label>
+        <input type="text" id="locPopulation" class="form-control" placeholder="ex: 50.000 habitantes">
+      </div>
+      
+      <div class="form-group">
+        <label>Descrição</label>
+        <textarea id="locDescription" class="form-control" rows="4" placeholder="Descreva o local, sua arquitetura, ambiente..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Governante/Líder</label>
+        <input type="text" id="locRuler" class="form-control" placeholder="Quem governa este local">
+      </div>
+      
+      <div class="form-group">
+        <label>Locais de Interesse</label>
+        <textarea id="locInterests" class="form-control" rows="3" placeholder="Pontos importantes, marcos, construções notáveis..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>História</label>
+        <textarea id="locHistory" class="form-control" rows="3" placeholder="História do local, eventos importantes..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Tags</label>
+        <input type="text" id="locTags" class="form-control" placeholder="ex: Capital, Fortificada, Mística (separar por vírgulas)">
+      </div>
+      
+      <div class="mt-20 text-right">
+        <button class="btn" data-action="closeModal" data-arg="locationModal">Cancelar</button>
+        <button class="btn btn-primario" data-action="saveLocation">Salvar Local</button>
+      </div>
+    </div>
+  </div>

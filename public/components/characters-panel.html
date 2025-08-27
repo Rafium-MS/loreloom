@@ -1,0 +1,75 @@
+  <!-- Modal para Personagem -->
+  <div id="characterModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="characterModalTitle">
+    <div class="modal-content">
+      <h3 id="characterModalTitle">Novo Personagem</h3>
+      
+      <div class="form-group">
+        <label>Nome</label>
+        <input type="text" id="charName" class="form-control" placeholder="Nome do personagem">
+      </div>
+      
+      <div class="grid grid-2">
+        <div class="form-group">
+          <label>Idade</label>
+          <input type="text" id="charAge" class="form-control" placeholder="ex: 87 anos">
+        </div>
+        <div class="form-group">
+          <label>Raça/Espécie</label>
+          <input type="text" id="charRace" class="form-control" placeholder="ex: Humano, Elfo">
+        </div>
+      </div>
+      
+      <div class="grid grid-2">
+        <div class="form-group">
+          <label>Classe/Profissão</label>
+          <input type="text" id="charClass" class="form-control" placeholder="ex: Guerreiro, Mago">
+        </div>
+        <div class="form-group">
+          <label>Papel na História</label>
+          <select id="charRole" class="form-control">
+            <option value="">Selecione...</option>
+            <option value="protagonista">Protagonista</option>
+            <option value="deuteragonista">Deuteragonista</option>
+            <option value="antagonista">Antagonista</option>
+            <option value="coadjuvante">Coadjuvante</option>
+            <option value="figurante">Figurante</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>Aparência Física</label>
+        <textarea id="charAppearance" class="form-control" rows="3" placeholder="Descreva a aparência do personagem..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Personalidade</label>
+        <textarea id="charPersonality" class="form-control" rows="3" placeholder="Traços de personalidade, motivações..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>História/Background</label>
+        <textarea id="charBackground" class="form-control" rows="4" placeholder="História pessoal, origem, eventos importantes..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Habilidades Especiais</label>
+        <input type="text" id="charSkills" class="form-control" placeholder="ex: Esgrima, Magia, Diplomacia">
+      </div>
+      
+      <div class="form-group">
+        <label>Relacionamentos</label>
+        <textarea id="charRelationships" class="form-control" rows="2" placeholder="Familiares, amigos, inimigos..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Tags</label>
+        <input type="text" id="charTags" class="form-control" placeholder="ex: Rei, Sábio, Corajoso (separar por vírgulas)">
+      </div>
+      
+      <div class="mt-20 text-right">
+        <button class="btn" data-action="closeModal" data-arg="characterModal">Cancelar</button>
+        <button class="btn btn-primario" data-action="saveCharacter">Salvar Personagem</button>
+      </div>
+    </div>
+  </div>

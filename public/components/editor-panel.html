@@ -1,0 +1,90 @@
+<section id="editor" class="content-panel active">
+  <div class="card">
+    <div class="card-header">
+      <h2>Editor de Texto Rico</h2>
+    </div>
+    
+    <div class="editor-toolbar">
+      <button class="btn" data-action="formatText" data-arg="bold" title="Negrito"><b>B</b></button>
+      <button class="btn" data-action="formatText" data-arg="italic" title="Itálico"><i>I</i></button>
+      <button class="btn" data-action="formatText" data-arg="underline" title="Sublinhado"><u>U</u></button>
+      <button class="btn" data-action="formatText" data-arg="strikethrough" title="Riscado"><s>S</s></button>
+      <button class="btn" data-action="insertReference" title="Inserir referência" aria-label="Inserir referência">[ ]</button>
+      <button class="btn" data-action="insertRef" data-arg="personagem" title="Inserir referência de personagem" aria-label="Inserir referência de personagem">👤</button>
+      <button class="btn" data-action="insertRef" data-arg="local" title="Inserir referência de local" aria-label="Inserir referência de local">🌍</button>
+      <button class="btn" data-action="insertLocationRef" title="Inserir referência de local" aria-label="Inserir referência de local">🌍</button>
+      <button class="btn" data-action="insertItemRef" title="Inserir referência de item" aria-label="Inserir referência de item">📦</button>
+      <button class="btn btn-secundario" data-action="checkConsistency">✔ Consistência</button>
+
+      <!-- NOVOS -->
+      <div class="flex-1"></div>
+      <button class="btn" id="draftToggleBtn" data-action="toggleDraft" title="Marcar como rascunho/final">🏷️ Rascunho</button>
+      <button class="btn" id="grammarBtn" data-action="grammarReview" title="Revisão gramatical">✍️ Revisão</button>
+      <button class="btn" data-action="undo" title="Desfazer (Ctrl/Cmd + Z)">↺ Desfazer</button>
+      <button class="btn" data-action="redo" title="Refazer (Ctrl/Cmd + Y)">↻ Refazer</button>
+      <button class="btn" data-action="clearFormatting" title="Limpar formatação">🧹 Limpar</button>
+      <button class="btn" id="saveTextBtn" data-action="saveText" title="Salvar texto (Ctrl/Cmd + S)">💾 Salvar</button>
+    </div>
+
+    <div id="grammarPanel" class="grammar-panel hidden">
+      <div class="grammar-header">
+        <strong>Revisão Gramatical</strong>
+        <div>
+          <button class="btn btn-sm" data-action="applyQuickFixes">Aplicar correções rápidas</button>
+          <button class="btn btn-sm" data-action="closeGrammarPanel">Fechar</button>
+        </div>
+      </div>
+      <div id="grammarResults" class="grammar-results"></div>
+    </div>
+    
+    <div class="form-group">
+      <label for="documentTitle">Título do Documento</label>
+      <input type="text" id="documentTitle" class="form-control" placeholder="Digite o título..." value="História sem título">
+    </div>
+
+    <div class="chapter-header">
+      <h2 class="chapter-title">Capítulo 1: A Jornada Começa</h2>
+      <div>
+        <button class="btn btn-success" id="saveChapterBtn">Salvar Capítulo</button>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label for="chapterTitle">Título do Capítulo</label>
+      <input type="text" id="chapterTitle" class="form-control" value="A Jornada Começa">
+    </div>
+    
+    <div class="form-group">
+      <label for="chapterSummary">Resumo do Capítulo</label>
+      <textarea id="chapterSummary" class="form-control" placeholder="Breve descrição do que acontece neste capítulo...">O protagonista deixa sua vila natal em busca de aventura, mas logo descobre que a jornada será mais perigosa do que imaginava.</textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="mainText">Conteúdo</label>
+      <div id="mainText" class="editor" contenteditable="true" data-placeholder="Comece a escrever sua história... Use [Colchetes] para marcar referências a personagens, lugares e conceitos."></div>
+    </div>
+    
+    <div class="status-bar">
+      <span>Palavras: <strong id="wordCount">0</strong></span>
+      <span>Caracteres: <strong id="charCount">0</strong></span>
+      <span>Referências: <strong id="refCount">0</strong></span>
+      <span id="saveStatus">Rascunho local</span>
+      <span class="status-right">
+        Status: <span id="docStatusBadge" class="badge badge-draft">Rascunho</span>
+      </span>
+    </div>
+  </div>
+</section>
+
+<section id="documents" class="content-panel">
+  <div class="card">
+    <div class="card-header">
+      <h2>Textos do Projeto</h2>
+      <div>
+        <input type="text" id="docSearch" class="form-control search-input" placeholder="Buscar por título..."/>
+      </div>
+    </div>
+
+    <div id="documentsList" class="document-list"></div>
+  </div>
+</section>

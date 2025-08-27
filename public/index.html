@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>LoreLoom</title>
+  <link rel="stylesheet" href="/css/bundle.css" />
+  <link id="tokens" rel="stylesheet" href="/css/tokens.css" />
+</head>
+<body>
+  <!-- Topbar -->
+  <header class="topbar">
+    <div class="left">
+      <button id="sidebarToggle" class="btn" title="Alternar menu" aria-label="Alternar menu">☰</button>
+      <strong>LoreLoom</strong>
+      <span class="status-mini"><span class="dot">•</span><span id="status" data-i18n="ready">Pronto</span></span>
+    </div>
+    <div class="right">
+      <button class="btn btn-primario" data-action="saveProject" title="Ctrl/Cmd + S" data-i18n="save_project">Salvar Projeto</button>
+      <button class="btn btn-secundario" data-action="exportProject" data-i18n="export">Exportar</button>
+      <input type="file" id="importFile" accept=".json" class="hidden">
+
+      <button class="btn btn-secundario" data-action="triggerImport" data-i18n="import">Importar</button>
+      <select id="languageSwitcher" class="ml-8">
+        <option value="pt">Português</option>
+        <option value="en">English</option>
+        <option value="es">Español</option>
+      </select>
+      <button id="themeToggle" class="btn-toggle" aria-label="Alternar tema">🌙</button>    
+    </div>
+  </header>
+
+  <div class="app">
+    <!-- Sidebar -->
+    <div id="sidebar-container">
+      <!-- O conteúdo será carregado via JavaScript -->
+    </div>
+
+    <!-- Main Content -->
+    <main class="main">
+      <!-- Breadcrumbs -->
+      <div class="crumbs"><span data-i18n="home">Home</span> / <span id="crumb" data-i18n="editor">Editor</span></div>
+
+      <!-- Painéis de conteúdo -->
+      <div id="content-panels">
+        <!-- O conteúdo será carregado via JavaScript -->
+      </div>
+    </main>
+  </div>
+
+  <!-- Container para modais -->
+  <div id="modals-container">
+    <!-- O conteúdo será carregado via JavaScript -->
+  </div>
+
+  <script type="module" src="/js/main.js"></script>
+  <script src="/js/scripts.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/loadComponents.js"></script>
+</body>
+</html>

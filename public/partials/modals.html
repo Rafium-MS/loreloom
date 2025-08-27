@@ -375,3 +375,195 @@
       </div>
     </div>
   </div>
+
+<!-- Modal para Facções -->
+<div id="factionModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="factionModalTitle">
+    <div class="modal-content">
+        <h3 id="factionModalTitle">Nova Facção</h3>
+        
+        <div class="form-group">
+            <label>Nome da Facção</label>
+            <input type="text" id="factionName" class="form-control" placeholder="Nome da facção">
+        </div>
+        
+        <div class="grid grid-2">
+            <div class="form-group">
+                <label>Tipo</label>
+                <select id="factionType" class="form-control">
+                    <option value="">Selecione...</option>
+                    <option value="guilda">Guilda</option>
+                    <option value="reino">Reino</option>
+                    <option value="alianca">Aliança</option>
+                    <option value="seita">Seita/Religião</option>
+                    <option value="clã">Clã/Tribo</option>
+                    <option value="corporacao">Corporação</option>
+                    <option value="exercito">Exército</option>
+                    <option value="outro">Outro</option>
+                </select>
+            </div>
+            <div class="form-group
+<ul class="features">
+                    <li>Cadastro completo de facções com múltiplos atributos</li>
+                    <li>Sistema de tags para categorização</li>
+                    <li>Controle de alianças e inimizades</li>
+                    <li>Registro de membros importantes</li>
+                    <li>Definição de objetivos e hierarquia</li>
+                </ul>
+                
+                <p>Clique no botão abaixo para visualizar o modal de facções:</p>
+                
+                <button id="openModalBtn" class="btn btn-primary">Abrir Modal de Facções</button>
+            </div>
+            
+            <div class="faction-preview">
+                <h3>Exemplo de Facção</h3>
+                
+                <div class="preview-item">
+                    <span class="preview-label">Nome:</span>
+                    <span class="preview-value">Irmandade do Anel</span>
+                </div>
+                
+                <div class="preview-item">
+                    <span class="preview-label">Tipo:</span>
+                    <span class="preview-value">Aliança</span>
+                </div>
+                
+                <div class="preview-item">
+                    <span class="preview-label">Alinhamento:</span>
+                    <span class="preview-value">Bem</span>
+                </div>
+                
+                <div class="preview-item">
+                    <span class="preview-label">Líder:</span>
+                    <span class="preview-value">Gandalf, o Cinzento</span>
+                </div>
+                
+                <div class="preview-item">
+                    <span class="preview-label">Membros:</span>
+                    <span class="preview-value">9 membros</span>
+                </div>
+                
+                <div class="preview-item">
+                    <span class="preview-label">Objetivo:</span>
+                    <span class="preview-value">Destruição do Um Anel</span>
+                </div>
+                
+                <div class="preview-item">
+                    <span class="preview-label">Tags:</span>
+                    <span class="preview-value">
+                        <span class="tag">Protagonistas</span>
+                        <span class="tag">Missão</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Facção -->
+    <div class="modal" id="factionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Nova Facção</h2>
+                <button class="close">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="factionName">Nome da Facção</label>
+                    <input type="text" id="factionName" class="form-control" placeholder="Ex: Irmandade do Anel">
+                </div>
+                
+                <div class="grid grid-2">
+                    <div class="form-group">
+                        <label for="factionType">Tipo</label>
+                        <select id="factionType" class="form-control">
+                            <option value="">Selecione...</option>
+                            <option value="guilda">Guilda</option>
+                            <option value="reino">Reino</option>
+                            <option value="alianca">Aliança</option>
+                            <option value="seita">Seita/Religião</option>
+                            <option value="clã">Clã/Tribo</option>
+                            <option value="corporacao">Corporação</option>
+                            <option value="exercito">Exército</option>
+                            <option value="outro">Outro</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="factionAlignment">Alinhamento</label>
+                        <select id="factionAlignment" class="form-control">
+                            <option value="">Selecione...</option>
+                            <option value="bem">Bem</option>
+                            <option value="neutro">Neutro</option>
+                            <option value="mal">Mal</option>
+                            <option value="cinza">Cinza</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="grid grid-2">
+                    <div class="form-group">
+                        <label for="factionLeader">Líder/Representante</label>
+                        <input type="text" id="factionLeader" class="form-control" placeholder="Nome do líder">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="factionSize">Tamanho da Facção</label>
+                        <select id="factionSize" class="form-control">
+                            <option value="">Selecione...</option>
+                            <option value="pequeno">Pequeno (1-10 membros)</option>
+                            <option value="medio">Médio (11-50 membros)</option>
+                            <option value="grande">Grande (51-200 membros)</option>
+                            <option value="enorme">Enorme (201+ membros)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="factionDescription">Descrição</label>
+                    <textarea id="factionDescription" class="form-control" placeholder="Descreva a facção, sua história, cultura, valores..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="factionObjectives">Objetivos/Missão</label>
+                    <textarea id="factionObjectives" class="form-control" placeholder="Quais são os objetivos principais desta facção?"></textarea>
+                </div>
+                
+                <div class="grid grid-2">
+                    <div class="form-group">
+                        <label for="factionAllies">Aliados</label>
+                        <input type="text" id="factionAllies" class="form-control" placeholder="Facções aliadas (separar por vírgulas)">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="factionEnemies">Inimigos/Rivais</label>
+                        <input type="text" id="factionEnemies" class="form-control" placeholder="Facções inimigas (separar por vírgulas)">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="factionHierarchy">Estrutura Hierárquica</label>
+                    <textarea id="factionHierarchy" class="form-control" placeholder="Descreva a hierarquia da facção..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="factionResources">Recursos/Posse</label>
+                    <textarea id="factionResources" class="form-control" placeholder="Quais recursos, territórios ou posses esta facção controla?"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="factionTags">Tags</label>
+                    <div class="tag-input">
+                        <span class="tag">Guerreiros <span class="tag-remove">×</span></span>
+                        <span class="tag">Nobres <span class="tag-remove">×</span></span>
+                        <input type="text" placeholder="Digite e pressione Enter...">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancelFactionBtn">Cancelar</button>
+                <button class="btn btn-primary" id="saveFactionBtn">Salvar Facção</button>
+            </div>
+        </div>
+    </div>

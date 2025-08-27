@@ -1,0 +1,75 @@
+  <!-- Modal para Item -->
+  <div id="itemModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="itemModalTitle">
+    <div class="modal-content">
+      <h3 id="itemModalTitle">Novo Item</h3>
+      
+      <div class="form-group">
+        <label>Nome do Item</label>
+        <input type="text" id="itemName" class="form-control" placeholder="Nome do item">
+      </div>
+      
+      <div class="grid grid-2">
+        <div class="form-group">
+          <label>Tipo</label>
+          <select id="itemType" class="form-control">
+            <option value="">Selecione...</option>
+            <option value="arma">Arma</option>
+            <option value="armadura">Armadura</option>
+            <option value="artefato">Artefato</option>
+            <option value="joia">Joia/Acessório</option>
+            <option value="consumivel">Consumível</option>
+            <option value="ferramenta">Ferramenta</option>
+            <option value="livro">Livro/Pergaminho</option>
+            <option value="outro">Outro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Raridade</label>
+          <select id="itemRarity" class="form-control">
+            <option value="comum">Comum</option>
+            <option value="incomum">Incomum</option>
+            <option value="raro">Raro</option>
+            <option value="epico">Épico</option>
+            <option value="lendario">Lendário</option>
+            <option value="unico">Único</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>Descrição</label>
+        <textarea id="itemDescription" class="form-control" rows="3" placeholder="Aparência e características físicas..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Propriedades/Habilidades</label>
+        <textarea id="itemProperties" class="form-control" rows="3" placeholder="Poderes mágicos, habilidades especiais..."></textarea>
+      </div>
+      
+      <div class="grid grid-2">
+        <div class="form-group">
+          <label>Valor</label>
+          <input type="text" id="itemValue" class="form-control" placeholder="ex: 1000 moedas de ouro">
+        </div>
+        <div class="form-group">
+          <label>Peso</label>
+          <input type="text" id="itemWeight" class="form-control" placeholder="ex: 2,5 kg">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>História/Origem</label>
+        <textarea id="itemHistory" class="form-control" rows="3" placeholder="Como foi criado, quem o possuiu..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Localização Atual</label>
+        <input type="text" id="itemLocation" class="form-control" placeholder="Onde está atualmente">
+      </div>
+      
+      <div class="mt-20 text-right">
+        <button class="btn" data-action="closeModal" data-arg="itemModal">Cancelar</button>
+        <button class="btn btn-primario" data-action="saveItem">Salvar Item</button>
+      </div>
+    </div>
+  </div>
