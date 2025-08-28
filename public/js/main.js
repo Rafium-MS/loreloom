@@ -47,7 +47,7 @@ function closeGrammarPanel() {
 
 const localActions = { triggerImport, closeGrammarPanel };
 
-Object.assign(window, editor, characters, world, { openModal, closeModal }, {saveFaction: world.saveFaction});
+Object.assign(window, { ...editor, ...characters, ...world }, { openModal, closeModal }, {saveFaction: world.saveFaction});
 
 async function loadProject() {
   let data;
@@ -88,6 +88,7 @@ async function loadProject() {
   world.renderEventList();
   world.renderNoteList();
   world.renderFactionList();
+  editor.resetHistory();
 }
 
 document.querySelectorAll('.nav-item').forEach(item => {
@@ -168,3 +169,4 @@ document.querySelectorAll('[data-action]').forEach(el => {
 });
 
 loadProject();
+editor.bindEditorHistory();
