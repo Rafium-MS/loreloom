@@ -11,6 +11,22 @@ const config = process.env.DATABASE_URL
 
 const db = knex(config);
 
+let cache = null;
+
+function getDefaultData() {
+  return {
+    title: '',
+    content: '',
+    locations: [],
+    items: [],
+    languages: [],
+    timeline: [],
+    notes: [],
+    economy: { currencies: [], resources: [], markets: [] },
+    uiLanguage: 'pt',
+  };
+}
+
 async function init() {
   const exists = await db.schema.hasTable('data');
   if (!exists) {
@@ -22,33 +38,33 @@ async function init() {
 }
 
 async function readData() {
+  if (cache) return cache;
+
   const row = await db('data').where({ id: 1 }).first();
   if (row && row.json) {
-    const data = JSON.parse(row.json);
-    if (!data.uiLanguage) data.uiLanguage = 'pt';
-    return data;
+    try {
+      const data = JSON.parse(row.json);
+      if (!data.uiLanguage) data.uiLanguage = 'pt';
+      cache = data;
+      return data;
+    } catch (err) {
+      // fall through to defaults below
+    }
   }
-  return {
-    title: '',
-    content: '',
-    locations: [],
-    items: [],
-    languages: [],
-    timeline: [],
-    notes: [],
-    economy: { currencies: [], resources: [], markets: [] },
-    uiLanguage: 'pt'
-  };
+
+  cache = getDefaultData();
+  return cache;
 }
 
 async function writeData(data) {
-  const json = JSON.stringify(data, null, 2);
+  const json = JSON.stringify(data);
   const exists = await db('data').where({ id: 1 }).first();
   if (exists) {
     await db('data').where({ id: 1 }).update({ json });
   } else {
     await db('data').insert({ id: 1, json });
   }
+  cache = null;
 }
 
 async function destroy() {
