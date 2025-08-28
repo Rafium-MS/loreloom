@@ -7,9 +7,9 @@ const dbFile =
 const config = process.env.DATABASE_URL
   ? { client: 'pg', connection: process.env.DATABASE_URL }
   : {
-    client: 'sqlite3',
-    connection: { filename: dbFile },
-    useNullAsDefault: true,
-  };
+      client: 'sqlite3',
+      connection: { filename: dbFile },
+      useNullAsDefault: true,
+    };
 
 module.exports = knex(config);

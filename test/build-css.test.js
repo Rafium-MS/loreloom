@@ -31,10 +31,10 @@ test('resolveImports concatenates imports and minify strips comments/whitespace'
   );
   fs.writeFileSync(
     path.join(dir, 'a.css'),
-    '@import url(\'b.css\');\n/* a comment */\n.a { margin: 0; }\n',
+    "@import url('b.css');\n/* a comment */\n.a { margin: 0; }\n",
   );
   const main = path.join(dir, 'main.css');
-  fs.writeFileSync(main, '@import url(\'a.css\');\nbody { color: red; }\n');
+  fs.writeFileSync(main, "@import url('a.css');\nbody { color: red; }\n");
 
   const combined = resolveImports(main);
   const expectedCombined =
