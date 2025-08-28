@@ -1,18 +1,22 @@
+function sanitizeCharacter(data) {
+  return {
+    name: String(data?.name || '').trim(),
+    age: String(data?.age || '').trim(),
+    race: String(data?.race || '').trim(),
+    class: String(data?.class || '').trim(),
+    role: String(data?.role || '').trim(),
+    appearance: String(data?.appearance || '').trim(),
+    personality: String(data?.personality || '').trim(),
+    background: String(data?.background || '').trim(),
+    skills: String(data?.skills || '').trim(),
+    relationships: String(data?.relationships || '').trim(),
+    tags: Array.isArray(data?.tags) ? data.tags.map(t => String(t).trim()).filter(Boolean) : []
+  };
+}
+
 function validateCharacter(data) {
   const details = [];
-  const normalized = {
-    name: String(data.name || '').trim(),
-    age: String(data.age || '').trim(),
-    race: String(data.race || '').trim(),
-    class: String(data.class || '').trim(),
-    role: String(data.role || '').trim(),
-    appearance: String(data.appearance || '').trim(),
-    personality: String(data.personality || '').trim(),
-    background: String(data.background || '').trim(),
-    skills: String(data.skills || '').trim(),
-    relationships: String(data.relationships || '').trim(),
-    tags: Array.isArray(data.tags) ? data.tags.map(t => String(t).trim()).filter(Boolean) : []
-  };
+  const normalized = sanitizeCharacter(data);
 
   if (!normalized.name) {
     details.push({
@@ -110,4 +114,4 @@ function validateData(data) {
 const characterSchema = { validate: validateCharacter };
 const dataSchema = { validate: validateData };
 
-module.exports = { characterSchema, dataSchema };
+module.exports = { characterSchema, dataSchema, sanitizeCharacter };
