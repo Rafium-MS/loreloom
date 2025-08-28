@@ -1,53 +1,50 @@
-function validateCharacter(value) {
-  const errors = [];
-  if (typeof value.name !== 'string' || !value.name.trim()) errors.push('name');
-  if (value.tags && !Array.isArray(value.tags)) errors.push('tags');
-  return errors.length ? { error: errors } : { value };
-}
-
-function validateData(value) {
-  const errors = [];
-  if (typeof value.title !== 'string') errors.push('title');
-  if (typeof value.content !== 'string') errors.push('content');
-  if (!Array.isArray(value.locations)) errors.push('locations');
-  if (!Array.isArray(value.items)) errors.push('items');
-  if (!Array.isArray(value.languages)) errors.push('languages');
-  if (!Array.isArray(value.timeline)) errors.push('timeline');
-  if (!Array.isArray(value.notes)) errors.push('notes');
-  if (!value.economy || typeof value.economy !== 'object') {
-    errors.push('economy');
-  } else {
-    if (!Array.isArray(value.economy.currencies)) errors.push('currencies');
-    if (!Array.isArray(value.economy.resources)) errors.push('resources');
-    if (!Array.isArray(value.economy.markets)) errors.push('markets');
-  }
-  if (typeof value.uiLanguage !== 'string') errors.push('uiLanguage');
-  return errors.length ? { error: errors } : { value };
-}
-
-const characterSchema = { validate: validateCharacter };
-const dataSchema = { validate: validateData };
-
-function sanitizeCharacter(ch) {
-  return {
-    name: (ch.name || '').trim(),
-    age: (ch.age || '').trim(),
-    race: (ch.race || '').trim(),
-    class: (ch.class || '').trim(),
-    role: (ch.role || '').trim(),
-    appearance: (ch.appearance || '').trim(),
-    personality: (ch.personality || '').trim(),
-    background: (ch.background || '').trim(),
-    skills: (ch.skills || '').trim(),
-    relationships: (ch.relationships || '').trim(),
-    tags: Array.isArray(ch.tags) ? ch.tags.map(t => t.trim()).filter(Boolean) : []
+function validateCharacter(data) {
+  const details = [];
+  const normalized = {
+    name: String(data.name || '').trim(),
+    age: String(data.age || '').trim(),
+    race: String(data.race || '').trim(),
+    class: String(data.class || '').trim(),
+    role: String(data.role || '').trim(),
+    appearance: String(data.appearance || '').trim(),
+    personality: String(data.personality || '').trim(),
+    background: String(data.background || '').trim(),
+    skills: String(data.skills || '').trim(),
+    relationships: String(data.relationships || '').trim(),
+    tags: Array.isArray(data.tags) ? data.tags.map(t => String(t).trim()).filter(Boolean) : []
   };
+
+  if (!normalized.name) {
+    details.push({
+      path: ['name'],
+      type: 'string.empty',
+      message: 'Character name is required'
+    });
+  }
+
+  if (data.tags && !Array.isArray(data.tags)) {
+    details.push({
+      path: ['tags'],
+      type: 'array.base',
+      message: 'Tags must be an array'
+    });
+  }
+
+  if (details.length) {
+    return {
+      error: { message: 'Validation failed', details },
+      value: undefined
+    };
+  }
+
+  return { error: null, value: normalized };
 }
 
-function sanitizeData(data) {
-  return {
-    title: (data.title || '').trim(),
-    content: (data.content || '').trim(),
+function validateData(data) {
+  const details = [];
+  const normalized = {
+    title: String(data.title || '').trim(),
+    content: String(data.content || '').trim(),
     locations: Array.isArray(data.locations) ? data.locations : [],
     items: Array.isArray(data.items) ? data.items : [],
     languages: Array.isArray(data.languages) ? data.languages : [],
@@ -60,6 +57,57 @@ function sanitizeData(data) {
     },
     uiLanguage: (data.uiLanguage || 'pt').trim()
   };
+
+  if (typeof data.title !== 'string') {
+    details.push({ path: ['title'], type: 'string.base', message: 'Title must be a string' });
+  }
+  if (typeof data.content !== 'string') {
+    details.push({ path: ['content'], type: 'string.base', message: 'Content must be a string' });
+  }
+  if (!Array.isArray(data.locations)) {
+    details.push({ path: ['locations'], type: 'array.base', message: 'Locations must be an array' });
+  }
+  if (!Array.isArray(data.items)) {
+    details.push({ path: ['items'], type: 'array.base', message: 'Items must be an array' });
+  }
+  if (!Array.isArray(data.languages)) {
+    details.push({ path: ['languages'], type: 'array.base', message: 'Languages must be an array' });
+  }
+  if (!Array.isArray(data.timeline)) {
+    details.push({ path: ['timeline'], type: 'array.base', message: 'Timeline must be an array' });
+  }
+  if (!Array.isArray(data.notes)) {
+    details.push({ path: ['notes'], type: 'array.base', message: 'Notes must be an array' });
+  }
+  if (!data.economy || typeof data.economy !== 'object') {
+    details.push({ path: ['economy'], type: 'object.base', message: 'Economy must be an object' });
+  } else {
+    if (!Array.isArray(data.economy.currencies)) {
+      details.push({ path: ['economy', 'currencies'], type: 'array.base', message: 'Currencies must be an array' });
+    }
+    if (!Array.isArray(data.economy.resources)) {
+      details.push({ path: ['economy', 'resources'], type: 'array.base', message: 'Resources must be an array' });
+    }
+    if (!Array.isArray(data.economy.markets)) {
+      details.push({ path: ['economy', 'markets'], type: 'array.base', message: 'Markets must be an array' });
+    }
+  }
+  if (typeof data.uiLanguage !== 'string') {
+    details.push({ path: ['uiLanguage'], type: 'string.base', message: 'UI Language must be a string' });
+  }
+
+  if (details.length) {
+    return {
+      error: { message: 'Validation failed', details },
+      value: undefined
+    };
+  }
+
+  return { error: null, value: normalized };
 }
 
-module.exports = { characterSchema, dataSchema, sanitizeCharacter, sanitizeData };
+
+const characterSchema = { validate: validateCharacter };
+const dataSchema = { validate: validateData };
+
+module.exports = { characterSchema, dataSchema };

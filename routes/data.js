@@ -1,17 +1,16 @@
 const express = require('express');
-const { dataSchema, sanitizeData } = require('../validation');
+const { dataSchema } = require('../validation');
 const { readData, writeData } = require('../services/db');
 
 const router = express.Router();
 
 router.post('/save', async (req, res) => {
   try {
-    const { error, value } = dataSchema.validate(req.body, { abortEarly: false });
+    const { error, value } = dataSchema.validate(req.body);
     if (error) {
-      return res.status(400).json({ error: 'dados inválidos' });
+      return res.status(400).json(error);
     }
-    const sanitized = sanitizeData(value);
-    await writeData(sanitized);
+    await writeData(value);
     res.json({ status: 'ok' });
   } catch (err) {
     console.error('Error saving data:', err);

@@ -16,14 +16,9 @@ router.get('/', async (_req, res) => {
 
 router.post('/', async (req, res) => {
   try {
-    // A validação agora só precisa se preocupar com a estrutura do personagem
-    const { error, value } = characterSchema.validate(req.body, { abortEarly: false });
+    const { error, value } = characterSchema.validate(req.body);
     if (error) {
-      // É uma boa prática retornar os detalhes do erro de validação
-      return res.status(400).json({
-        error: 'Dados inválidos',
-        details: error
-      });
+      return res.status(400).json(error);
     }
 
     const newCharacter = await addCharacter(value);

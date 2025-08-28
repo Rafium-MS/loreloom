@@ -1,159 +1,75 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const {
-  characterSchema,
-  dataSchema,
-  sanitizeCharacter,
-  sanitizeData,
-} = require('../validation');
+const { characterSchema, dataSchema } = require('../validation');
 
-test('sanitizeCharacter trims fields and tags', () => {
-  const input = {
-    id: 1,
-    name: '  Alice  ',
-    age: ' 20 ',
-    race: ' human ',
-    class: ' warrior ',
-    role: ' hero ',
-    appearance: ' tall ',
-    personality: ' brave ',
-    background: ' unknown ',
-    skills: ' swordsmanship ',
-    relationships: ' none ',
-    tags: [' friend ', ' hero ']
-  };
-  const expected = {
-    id: 1,
+test('characterSchema validates and sanitizes correctly on success', () => {
+  const input = { name: '  Alice  ', tags: [' hero ', '  avenger'] };
+  const { error, value } = characterSchema.validate(input);
+
+  assert.equal(error, null);
+  assert.deepStrictEqual(value, {
     name: 'Alice',
-    age: '20',
-    race: 'human',
-    class: 'warrior',
-    role: 'hero',
-    appearance: 'tall',
-    personality: 'brave',
-    background: 'unknown',
-    skills: 'swordsmanship',
-    relationships: 'none',
-    tags: ['friend', 'hero']
-  };
-  const result = sanitizeCharacter(input);
-  assert.deepStrictEqual(result, expected);
+    age: '',
+    race: '',
+    class: '',
+    role: '',
+    appearance: '',
+    personality: '',
+    background: '',
+    skills: '',
+    relationships: '',
+    tags: ['hero', 'avenger']
+  });
 });
 
-test('characterSchema requires name', () => {
-  const { error } = characterSchema.validate({ id: 1 });
-  assert.ok(error);
+test('characterSchema returns detailed error on failure', () => {
+  const input = { name: '  ', tags: 'not-an-array' };
+  const { error, value } = characterSchema.validate(input);
+
+  assert.equal(value, undefined);
+  assert.deepStrictEqual(error, {
+    message: 'Validation failed',
+    details: [
+      { path: ['name'], type: 'string.empty', message: 'Character name is required' },
+      { path: ['tags'], type: 'array.base', message: 'Tags must be an array' }
+    ]
+  });
 });
 
-test('sanitizeData trims fields and structures arrays/objects', () => {
+test('dataSchema validates and sanitizes correctly on success', () => {
   const input = {
     title: '  My World  ',
-    content: '  Lore  ',
-    characters: [
-      { id: 1, name: '  Alice  ', tags: [' friend ', ' hero '] },
-    ],
-    locations: ['Town'],
+    content: ' Lore... ',
+    locations: [' Asgard '],
     items: [],
     languages: [],
     timeline: [],
     notes: [],
-    economy: { currencies: ['coin'], resources: [], markets: [] },
-    uiLanguage: ' pt ',
+    economy: { currencies: ['Gold'], resources: [], markets: [] },
+    uiLanguage: 'en-US'
   };
+  const { error, value } = dataSchema.validate(input);
 
-  const expected = {
+  assert.equal(error, null);
+  assert.deepStrictEqual(value, {
     title: 'My World',
-    content: 'Lore',
-    characters: [
-      {
-        id: 1,
-        name: 'Alice',
-        age: '',
-        race: '',
-        class: '',
-        role: '',
-        appearance: '',
-        personality: '',
-        background: '',
-        skills: '',
-        relationships: '',
-        tags: ['friend', 'hero'],
-      },
-    ],
-    locations: ['Town'],
+    content: 'Lore...',
+    locations: [' Asgard '], // Note: sanitization for array elements not specified, so it remains as is.
     items: [],
     languages: [],
     timeline: [],
     notes: [],
-    economy: { currencies: ['coin'], resources: [], markets: [] },
-    uiLanguage: 'pt',
-  };
-
-  const result = sanitizeData(input);
-  assert.deepStrictEqual(result, expected);
+    economy: { currencies: ['Gold'], resources: [], markets: [] },
+    uiLanguage: 'en-US'
+  });
 });
 
-test('sanitizeData defaults non-array fields to empty arrays', () => {
-  const input = {
-    title: 'Title',
-    content: '',
-    characters: 'not array',
-    locations: 'not array',
-    items: 'not array',
-    languages: 'not array',
-    timeline: 'not array',
-    notes: 'not array',
-    economy: { currencies: 'not array', resources: 'not array', markets: 'not array' },
-    uiLanguage: 'en',
-  };
+test('dataSchema returns detailed error on failure', () => {
+  const input = { title: 123, locations: 'not-an-array' };
+  const { error, value } = dataSchema.validate(input);
 
-  const expected = {
-    title: 'Title',
-    content: '',
-    characters: [],
-    locations: [],
-    items: [],
-    languages: [],
-    timeline: [],
-    notes: [],
-    economy: { currencies: [], resources: [], markets: [] },
-    uiLanguage: 'en',
-  };
-
-  const result = sanitizeData(input);
-  assert.deepStrictEqual(result, expected);
-});
-
-test('dataSchema.validate passes with complete data', () => {
-  const valid = {
-    title: 'World',
-    content: 'Lore',
-    characters: [],
-    locations: [],
-    items: [],
-    languages: [],
-    timeline: [],
-    notes: [],
-    economy: { currencies: [], resources: [], markets: [] },
-    uiLanguage: 'en',
-  };
-
-  const { error } = dataSchema.validate(valid);
-  assert.equal(error, undefined);
-});
-
-test('dataSchema.validate detects missing required fields', () => {
-  const { error } = dataSchema.validate({});
-  assert.deepStrictEqual(error, [
-    'title',
-    'content',
-    'characters',
-    'locations',
-    'items',
-    'languages',
-    'timeline',
-    'notes',
-    'economy',
-    'uiLanguage',
-  ]);
+  assert.equal(value, undefined);
+  assert.ok(error.message.includes('Validation failed'));
+  assert.ok(error.details.some(d => d.path.includes('title') && d.type === 'string.base'));
+  assert.ok(error.details.some(d => d.path.includes('locations') && d.type === 'array.base'));
 });
