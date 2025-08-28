@@ -1,10 +1,14 @@
-const test = require('node:test');
-const assert = require('node:assert/strict');
-const express = require('express');
-const fs = require('node:fs');
-const path = require('node:path');
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import express from 'express';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const rootRouter = require('../routes/root');
+import rootRouter from '../routes/root.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 test('GET / returns loreloom.html', async () => {
   const app = express();

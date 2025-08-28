@@ -1,6 +1,10 @@
-const express = require('express');
-const path = require('path');
-const asyncHandler = require('../middlewares/asyncHandler');
+import express from 'express';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import asyncHandler from '../middlewares/asyncHandler.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const router = express.Router();
 
@@ -11,4 +15,4 @@ router.get(
   }),
 );
 
-module.exports = router;
+export default router;

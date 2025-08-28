@@ -1,6 +1,6 @@
-const db = require('./knex');
-const cache = require('./cache');
-const dataRepository = require('../repositories/dataRepository');
+import db from './knex.js';
+import cache from './cache.js';
+import * as dataRepository from '../repositories/dataRepository.js';
 
 const CACHE_KEY = 'data';
 let initialized = false;
@@ -26,7 +26,7 @@ function getDefaultData() {
   };
 }
 
-async function init() {
+export async function init() {
   const exists = await db.schema.hasTable('data_entries');
   if (!exists) {
     await db.schema.createTable('data_entries', (table) => {
@@ -37,7 +37,7 @@ async function init() {
   initialized = true;
 }
 
-async function readData() {
+export async function readData() {
   await ensureInit();
   const cached = cache.get(CACHE_KEY);
   if (cached) return cached;
@@ -61,7 +61,7 @@ async function readData() {
   return data;
 }
 
-async function writeData(data) {
+export async function writeData(data) {
   await ensureInit();
   const entries = Object.entries(data);
   for (const [key, value] of entries) {
@@ -70,8 +70,8 @@ async function writeData(data) {
   cache.del(CACHE_KEY);
 }
 
-async function destroy() {
+export async function destroy() {
   await db.destroy();
 }
 
-module.exports = { db, readData, writeData, init, destroy };
+export { db };

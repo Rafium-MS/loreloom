@@ -1,4 +1,4 @@
-const { asTrimmedString, capitalize } = require('./utils');
+import { asTrimmedString, capitalize } from './utils.js';
 
 function sanitizeData(data = {}) {
   const arrayFields = ['locations', 'items', 'languages', 'timeline', 'notes'];
@@ -87,4 +87,4 @@ function validateData(data = {}) {
 
 const dataSchema = { validate: validateData };
 
-module.exports = { dataSchema };
+export { dataSchema };

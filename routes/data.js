@@ -1,7 +1,7 @@
-const express = require('express');
-const { dataSchema } = require('../validation/data');
-const { readData, writeData } = require('../services/db');
-const asyncHandler = require('../middlewares/asyncHandler');
+import express from 'express';
+import { dataSchema } from '../validation/data.js';
+import { readData, writeData } from '../services/db.js';
+import asyncHandler from '../middlewares/asyncHandler.js';
 
 const router = express.Router();
 
@@ -33,4 +33,4 @@ router.get(
   }),
 );
 
-module.exports = router;
+export default router;

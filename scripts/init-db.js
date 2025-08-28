@@ -1,12 +1,12 @@
-const fs = require('fs');
-const path = require('path');
-const {
-  db,
-  writeData,
-  init: initDbService,
-  destroy,
-} = require('../services/db');
-const { createCharactersTable } = require('../services/schema');
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+import { db, writeData, init as initDbService, destroy } from '../services/db.js';
+import { createCharactersTable } from '../services/schema.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 (async () => {
   try {

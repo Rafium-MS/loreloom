@@ -1,15 +1,13 @@
-const db = require('../services/knex');
+import db from '../services/knex.js';
 
-async function getAll() {
+export async function getAll() {
   return db('data_entries').select('key', 'json');
 }
 
-async function upsert(key, value) {
+export async function upsert(key, value) {
   const json = JSON.stringify(value);
   await db('data_entries')
     .insert({ key, json })
     .onConflict('key')
     .merge({ json });
 }
-
-module.exports = { getAll, upsert };

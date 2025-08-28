@@ -1,6 +1,6 @@
-const test = require('node:test');
-const assert = require('node:assert/strict');
-const { characterSchema, dataSchema } = require('../validation');
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { characterSchema, dataSchema } from '../validation/index.js';
 
 test('characterSchema validates and sanitizes correctly on success', () => {
   const input = { name: '  Alice  ', tags: [' hero ', '  avenger'] };

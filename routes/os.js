@@ -1,6 +1,6 @@
-const express = require('express');
-const os = require('os');
-const asyncHandler = require('../middlewares/asyncHandler');
+import express from 'express';
+import os from 'node:os';
+import asyncHandler from '../middlewares/asyncHandler.js';
 
 const router = express.Router();
 
@@ -22,4 +22,4 @@ router.get(
   }),
 );
 
-module.exports = router;
+export default router;

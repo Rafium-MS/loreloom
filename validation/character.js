@@ -1,4 +1,4 @@
-const { asTrimmedString } = require('./utils');
+import { asTrimmedString } from './utils.js';
 
 function sanitizeCharacter(data = {}) {
   const fields = [
@@ -58,4 +58,4 @@ function validateCharacter(data = {}) {
 
 const characterSchema = { validate: validateCharacter };
 
-module.exports = { characterSchema, sanitizeCharacter };
+export { characterSchema, sanitizeCharacter };

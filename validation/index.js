@@ -1,4 +1,4 @@
-const { characterSchema } = require('./character');
-const { dataSchema } = require('./data');
+import { characterSchema } from './character.js';
+import { dataSchema } from './data.js';
 
-module.exports = { characterSchema, dataSchema };
+export { characterSchema, dataSchema };

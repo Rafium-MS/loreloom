@@ -1,12 +1,16 @@
-const express = require('express');
-const path = require('path');
-const os = require('os');
-const morgan = require('morgan');
+import express from 'express';
+import path from 'node:path';
+import os from 'node:os';
+import morgan from 'morgan';
+import { fileURLToPath } from 'node:url';
 
-const charactersRouter = require('./routes/characters');
-const dataRouter = require('./routes/data');
-const osRouter = require('./routes/os');
-const rootRouter = require('./routes/root');
+import charactersRouter from './routes/characters.js';
+import dataRouter from './routes/data.js';
+import osRouter from './routes/os.js';
+import rootRouter from './routes/root.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const port = process.env.PORT || 3000;

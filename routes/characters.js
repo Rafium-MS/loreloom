@@ -1,7 +1,7 @@
-const express = require('express');
-const { characterSchema } = require('../validation/character');
-const { getAllCharacters, addCharacter } = require('../services/characters');
-const asyncHandler = require('../middlewares/asyncHandler');
+import express from 'express';
+import { characterSchema } from '../validation/character.js';
+import { getAllCharacters, addCharacter } from '../services/characters.js';
+import asyncHandler from '../middlewares/asyncHandler.js';
 
 const router = express.Router();
 
@@ -30,4 +30,4 @@ router.post(
   }),
 );
 
-module.exports = router;
+export default router;

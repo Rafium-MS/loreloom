@@ -24,4 +24,4 @@ class Cache {
 }
 
 const defaultTtl = parseInt(process.env.CACHE_TTL_MS || '60000', 10);
-module.exports = new Cache(defaultTtl);
+export default new Cache(defaultTtl);
