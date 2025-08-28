@@ -14,7 +14,7 @@ router.post(
     }
     await writeData(value);
     res.json({ status: 'ok' });
-  })
+  }),
 );
 
 router.get(
@@ -22,7 +22,7 @@ router.get(
   asyncHandler(async (_req, res) => {
     const data = await readData();
     res.json(data);
-  })
+  }),
 );
 
 router.get(
@@ -30,7 +30,7 @@ router.get(
   asyncHandler(async (_req, res) => {
     const data = await readData();
     res.json(data);
-  })
+  }),
 );
 
 module.exports = router;

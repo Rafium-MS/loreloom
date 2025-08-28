@@ -8,7 +8,9 @@
     "start:electron": "electron electron.js",
     "test": "node --test",
     "build:css": "node build-css.js",
-    "db:init": "node scripts/init-db.js"
+    "db:init": "node scripts/init-db.js",
+    "lint": "eslint --config .eslintrc .",
+    "format": "prettier --write \"**/*.{js,json}\""
   },
   "repository": {
     "type": "git",
@@ -30,6 +32,8 @@
     "sqlite3": "^5.1.6"
   },
   "devDependencies": {
-    "electron": "^30.0.3"
+    "electron": "^30.0.3",
+    "eslint": "^9.32.0",
+    "prettier": "^3.6.2"
   }
 }

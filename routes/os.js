@@ -19,7 +19,7 @@ router.get(
     }
 
     res.json(results);
-  })
+  }),
 );
 
 module.exports = router;

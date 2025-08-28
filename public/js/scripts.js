@@ -4,8 +4,8 @@
 const STORAGE_KEY = 'loreloom:projects';
 
 let projectData = {
-  title: "Projeto LoreLoom",
-  content: "",
+  title: 'Projeto LoreLoom',
+  content: '',
   characters: [],
   locations: [],
   items: [],
@@ -13,23 +13,28 @@ let projectData = {
   timeline: [],
   notes: [],
   economy: { currencies: [], resources: [], markets: [] },
-  documents: []        // <- NOVO: coleção de textos (cada um com title/content/status)
+  documents: [], // <- NOVO: coleção de textos (cada um com title/content/status)
 };
 
-let currentProjectName = "Projeto LoreLoom";
+let currentProjectName = 'Projeto LoreLoom';
 let currentDocumentId = null; // id do documento aberto no editor
 
 function slugify(str) {
   return String(str || '')
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase().trim()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/(^-|-$)/g, '');
 }
 
 function loadProjectsMap() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
-  catch { return {}; }
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+  } catch {
+    return {};
+  }
 }
 
 function saveProjectsMap(map) {
@@ -44,8 +49,6 @@ function ensureProject(name) {
   return { map, key };
 }
 
-
-
 function setSaveStatus(message) {
   const el = document.getElementById('saveStatus');
   if (el) {
@@ -59,21 +62,23 @@ function persistProject() {
   saveProjectsMap(map);
   setSaveStatus('Salvo');
 }
-function nowISO(){ return new Date().toISOString(); }
+function nowISO() {
+  return new Date().toISOString();
+}
 
 function createDocument(title) {
   return {
     id: Date.now(),
     title: title || `Sem título ${new Date().toLocaleString()}`,
-    content: "",
-    status: "draft",             // 'draft' | 'final'
+    content: '',
+    status: 'draft', // 'draft' | 'final'
     createdAt: nowISO(),
-    updatedAt: nowISO()
+    updatedAt: nowISO(),
   };
 }
 
 function selectDocument(id) {
-  const doc = projectData.documents.find(d => d.id === id);
+  const doc = projectData.documents.find((d) => d.id === id);
   if (!doc) return;
   currentDocumentId = id;
   document.getElementById('documentTitle').value = doc.title;
@@ -85,7 +90,10 @@ function selectDocument(id) {
 }
 
 function newDocument() {
-  const title = prompt('Título do novo texto:', `Novo Texto ${projectData.documents.length+1}`);
+  const title = prompt(
+    'Título do novo texto:',
+    `Novo Texto ${projectData.documents.length + 1}`,
+  );
   if (title === null) return;
   const doc = createDocument(title.trim() || 'Sem título');
   projectData.documents.unshift(doc);
@@ -95,9 +103,9 @@ function newDocument() {
   persistProject();
 }
 
-function renameCurrentDocument(newTitle){
+function renameCurrentDocument(newTitle) {
   const doc = getCurrentDoc();
-  if(!doc) return;
+  if (!doc) return;
   doc.title = newTitle || doc.title;
   doc.updatedAt = nowISO();
   renderProjectTree();
@@ -105,16 +113,16 @@ function renameCurrentDocument(newTitle){
   persistProject();
 }
 
-function saveCurrentDocumentContent(text){
+function saveCurrentDocumentContent(text) {
   const doc = getCurrentDoc();
-  if(!doc) return;
+  if (!doc) return;
   doc.content = text;
   doc.updatedAt = nowISO();
 }
 
-function deleteDocument(id){
+function deleteDocument(id) {
   if (!confirm('Excluir este texto?')) return;
-  projectData.documents = projectData.documents.filter(d => d.id !== id);
+  projectData.documents = projectData.documents.filter((d) => d.id !== id);
   if (currentDocumentId === id) {
     currentDocumentId = projectData.documents[0]?.id || null;
     if (currentDocumentId) selectDocument(currentDocumentId);
@@ -130,34 +138,37 @@ function deleteDocument(id){
   persistProject();
 }
 
-function getCurrentDoc(){
-  return projectData.documents.find(d => d.id === currentDocumentId) || null;
+function getCurrentDoc() {
+  return projectData.documents.find((d) => d.id === currentDocumentId) || null;
 }
 
 function renderProjectTree() {
   const ul = document.getElementById('documentsTree');
   if (!ul) return;
   ul.innerHTML = '';
-  projectData.documents.forEach(doc => {
+  projectData.documents.forEach((doc) => {
     const li = document.createElement('li');
-    li.className = 'doc-node' + (doc.id === currentDocumentId ? ' active':'');
+    li.className = 'doc-node' + (doc.id === currentDocumentId ? ' active' : '');
     li.innerHTML = `
       <div style="display:flex; align-items:center; gap:8px;">
         📄 <span class="doc-title">${doc.title}</span>
-        <span class="badge ${doc.status==='draft'?'badge-draft':'badge-final'}">${doc.status==='draft'?'Rascunho':'Final'}</span>
+        <span class="badge ${doc.status === 'draft' ? 'badge-draft' : 'badge-final'}">${doc.status === 'draft' ? 'Rascunho' : 'Final'}</span>
       </div>
       <div>
         <button class="btn btn-sm" title="Abrir">Abrir</button>
         <button class="btn btn-sm" title="Excluir">Del</button>
       </div>
     `;
-    li.querySelector('button[title="Abrir"]').onclick = () => selectDocument(doc.id);
-    li.querySelector('button[title="Excluir"]').onclick = () => deleteDocument(doc.id);
+    li.querySelector('button[title="Abrir"]').onclick = () =>
+      selectDocument(doc.id);
+    li.querySelector('button[title="Excluir"]').onclick = () =>
+      deleteDocument(doc.id);
     ul.appendChild(li);
   });
 
   // atualiza o nome do livro (pasta)
-  document.getElementById('projectNameDisplay').textContent = currentProjectName || 'Projeto';
+  document.getElementById('projectNameDisplay').textContent =
+    currentProjectName || 'Projeto';
 }
 
 function renderDocumentsPanel() {
@@ -166,15 +177,17 @@ function renderDocumentsPanel() {
   const q = (document.getElementById('docSearch')?.value || '').toLowerCase();
 
   const list = projectData.documents
-    .filter(d => !q || d.title.toLowerCase().includes(q))
-    .sort((a,b)=> (new Date(b.updatedAt)) - (new Date(a.updatedAt)));
+    .filter((d) => !q || d.title.toLowerCase().includes(q))
+    .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
 
-  cont.innerHTML = list.map(d => `
+  cont.innerHTML = list
+    .map(
+      (d) => `
     <div class="list-item">
       <div>
         <div class="document-title">${d.title}</div>
         <div class="document-sub">
-          ${d.status==='draft' ? '<span class="badge badge-draft">Rascunho</span>' : '<span class="badge badge-final">Final</span>'}
+          ${d.status === 'draft' ? '<span class="badge badge-draft">Rascunho</span>' : '<span class="badge badge-final">Final</span>'}
           • Atualizado em ${new Date(d.updatedAt).toLocaleString()}
         </div>
       </div>
@@ -183,7 +196,9 @@ function renderDocumentsPanel() {
         <button class="btn btn-sm" onclick="deleteDocument(${d.id})">Excluir</button>
       </div>
     </div>
-  `).join('');
+  `,
+    )
+    .join('');
 }
 
 // ====== Binds de UI novos ======
@@ -193,33 +208,35 @@ if (newDocBtn) newDocBtn.addEventListener('click', newDocument);
 
 const projectInput = document.getElementById('projectNameInput');
 if (projectInput) {
-  projectInput.addEventListener('input', (e)=>{
+  projectInput.addEventListener('input', (e) => {
     currentProjectName = e.target.value || 'Projeto';
     renderProjectTree(); // reflete nome de livro ao digitar
   });
-  projectInput.addEventListener('change', ()=>{
+  projectInput.addEventListener('change', () => {
     // move/garante projeto no storage quando o nome muda
     // (função de carregar projeto removida)
   });
 }
 
 // atualizar título do doc em tempo real
-document.getElementById('documentTitle').addEventListener('input', (e)=>{
+document.getElementById('documentTitle').addEventListener('input', (e) => {
   renameCurrentDocument(e.target.value);
 });
 
 // autosave simples do conteúdo com debounce
 let saveTimer = null;
-document.getElementById('mainText').addEventListener('input', ()=>{
+document.getElementById('mainText').addEventListener('input', () => {
   updateWordCount();
   clearTimeout(saveTimer);
-  saveTimer = setTimeout(()=> { saveProject(); }, 400);
+  saveTimer = setTimeout(() => {
+    saveProject();
+  }, 400);
 });
 
 // busca de textos no painel
 const docSearch = document.getElementById('docSearch');
 if (docSearch) docSearch.addEventListener('input', renderDocumentsPanel);
-function updateStatusBadge(){
+function updateStatusBadge() {
   const badge = document.getElementById('docStatusBadge');
   const doc = getCurrentDoc();
   if (!badge || !doc) return;
@@ -234,17 +251,17 @@ function updateStatusBadge(){
   }
 }
 
-function toggleDraft(){
+function toggleDraft() {
   const doc = getCurrentDoc();
   if (!doc) return;
-  doc.status = (doc.status === 'draft') ? 'final' : 'draft';
+  doc.status = doc.status === 'draft' ? 'final' : 'draft';
   doc.updatedAt = nowISO();
   updateStatusBadge();
   renderProjectTree();
   renderDocumentsPanel();
   persistProject();
 }
-function grammarReview(){
+function grammarReview() {
   const panel = document.getElementById('grammarPanel');
   const out = document.getElementById('grammarResults');
   const text = document.getElementById('mainText').textContent;
@@ -252,43 +269,70 @@ function grammarReview(){
 
   // 1) Espaços duplos
   if (/\s{2,}/.test(text)) {
-    issues.push({ type:'Estilo', msg:'Há espaços duplos no texto.', fix:'Substituir por um espaço.' });
+    issues.push({
+      type: 'Estilo',
+      msg: 'Há espaços duplos no texto.',
+      fix: 'Substituir por um espaço.',
+    });
   }
   // 2) Espaço antes de pontuação
   if (/\s+([,.;:!?])/g.test(text)) {
-    issues.push({ type:'Pontuação', msg:'Há espaço indevido antes de pontuação.', fix:'Remover espaço antes de ,.;:!?' });
+    issues.push({
+      type: 'Pontuação',
+      msg: 'Há espaço indevido antes de pontuação.',
+      fix: 'Remover espaço antes de ,.;:!?',
+    });
   }
   // 3) Palavras repetidas em sequência (case-insensitive)
   const rep = text.match(/\b(\w+)\s+\1\b/gi);
   if (rep && rep.length) {
-    issues.push({ type:'Ortografia', msg:`Palavras repetidas: ${[...new Set(rep)].join(', ')}`, fix:'Remover duplicatas consecutivas.' });
+    issues.push({
+      type: 'Ortografia',
+      msg: `Palavras repetidas: ${[...new Set(rep)].join(', ')}`,
+      fix: 'Remover duplicatas consecutivas.',
+    });
   }
   // 4) Frases muito longas (heurística > 30 palavras)
   const sentences = text.split(/(?<=[.!?])\s+/);
-  const longOnes = sentences.filter(s => s.trim().split(/\s+/).length > 30);
+  const longOnes = sentences.filter((s) => s.trim().split(/\s+/).length > 30);
   if (longOnes.length) {
-    issues.push({ type:'Clareza', msg:`${longOnes.length} frase(s) muito longas. Avalie dividir.`, fix:'Reestruturar frases extensas.' });
+    issues.push({
+      type: 'Clareza',
+      msg: `${longOnes.length} frase(s) muito longas. Avalie dividir.`,
+      fix: 'Reestruturar frases extensas.',
+    });
   }
   // 5) Início de frase sem maiúscula (heurística simples)
-  const badCaps = sentences.filter(s => s.trim() && !/^[A-ZÁÉÍÓÚÂÊÔÃÕÇÀ]/.test(s.trim()));
+  const badCaps = sentences.filter(
+    (s) => s.trim() && !/^[A-ZÁÉÍÓÚÂÊÔÃÕÇÀ]/.test(s.trim()),
+  );
   if (badCaps.length) {
-    issues.push({ type:'Capitalização', msg:`Frases iniciando sem maiúscula: ${badCaps.length}`, fix:'Iniciar frases com letra maiúscula.' });
+    issues.push({
+      type: 'Capitalização',
+      msg: `Frases iniciando sem maiúscula: ${badCaps.length}`,
+      fix: 'Iniciar frases com letra maiúscula.',
+    });
   }
 
   if (!issues.length) {
-    out.innerHTML = `<div class="issue" style="border-left-color:#10b981">Nenhum problema encontrado. 🎉</div>`;
+    out.innerHTML =
+      '<div class="issue" style="border-left-color:#10b981">Nenhum problema encontrado. 🎉</div>';
   } else {
-    out.innerHTML = issues.map(i => `
+    out.innerHTML = issues
+      .map(
+        (i) => `
       <div class="issue">
         <strong>${i.type}</strong> — ${i.msg}<br/>
         <em>Sugestão:</em> ${i.fix}
       </div>
-    `).join('');
+    `,
+      )
+      .join('');
   }
   panel.style.display = 'block';
 }
 
-function applyQuickFixes(){
+function applyQuickFixes() {
   const editor = document.getElementById('mainText');
   let t = editor.textContent;
   // remover espaço antes de pontuação
@@ -303,13 +347,14 @@ function applyQuickFixes(){
   saveProject();
   grammarReview(); // reexecuta para atualizar painel
 }
-function hydrateUIFromProject(){
+function hydrateUIFromProject() {
   // inputs principais
   document.getElementById('projectNameInput').value = currentProjectName;
-  document.getElementById('projectNameDisplay').textContent = currentProjectName;
+  document.getElementById('projectNameDisplay').textContent =
+    currentProjectName;
   // carrega doc selecionado
   const doc = getCurrentDoc();
-  if (doc){
+  if (doc) {
     document.getElementById('documentTitle').value = doc.title;
     document.getElementById('mainText').innerHTML = doc.content;
   } else {
@@ -320,11 +365,15 @@ function hydrateUIFromProject(){
   updateStatusBadge();
 }
 
-function setupNavigation(){
-  document.querySelectorAll('.nav-item').forEach(item => {
-    item.addEventListener('click', function(){
-      document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-      document.querySelectorAll('.content-panel').forEach(panel => panel.classList.remove('active'));
+function setupNavigation() {
+  document.querySelectorAll('.nav-item').forEach((item) => {
+    item.addEventListener('click', function () {
+      document
+        .querySelectorAll('.nav-item')
+        .forEach((nav) => nav.classList.remove('active'));
+      document
+        .querySelectorAll('.content-panel')
+        .forEach((panel) => panel.classList.remove('active'));
       this.classList.add('active');
       const route = this.dataset.route;
       const panel = document.getElementById(route);
@@ -335,13 +384,17 @@ function setupNavigation(){
   });
 }
 
-function setupTabs(){
-  document.querySelectorAll('.tab').forEach(tab => {
-    tab.addEventListener('click', function(){
+function setupTabs() {
+  document.querySelectorAll('.tab').forEach((tab) => {
+    tab.addEventListener('click', function () {
       const container = this.closest('#world');
       if (!container) return;
-      container.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      container.querySelectorAll('.tab-content').forEach(tc => tc.style.display = 'none');
+      container
+        .querySelectorAll('.tab')
+        .forEach((t) => t.classList.remove('active'));
+      container
+        .querySelectorAll('.tab-content')
+        .forEach((tc) => (tc.style.display = 'none'));
       this.classList.add('active');
       const tabId = this.dataset.tab;
       const content = document.getElementById(tabId);
@@ -350,7 +403,7 @@ function setupTabs(){
   });
 }
 
-document.addEventListener('DOMContentLoaded', ()=>{
+document.addEventListener('DOMContentLoaded', () => {
   // carrega projeto default (pode trocar depois pelo input)
   // (função de carregar projeto removida)
   setupNavigation();

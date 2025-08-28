@@ -17,7 +17,7 @@ const defaultData = {
   timeline: [],
   notes: [],
   economy: { currencies: [], resources: [], markets: [] },
-  uiLanguage: 'pt'
+  uiLanguage: 'pt',
 };
 
 function clearCaches() {
@@ -55,7 +55,7 @@ test('writeData persists and readData retrieves the data', async () => {
     timeline: [],
     notes: [],
     economy: { currencies: [], resources: [], markets: [] },
-    uiLanguage: 'en'
+    uiLanguage: 'en',
   };
 
   await writeData(payload);

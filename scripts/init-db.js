@@ -1,6 +1,11 @@
 const fs = require('fs');
 const path = require('path');
-const { db, writeData, init: initDbService, destroy } = require('../services/db');
+const {
+  db,
+  writeData,
+  init: initDbService,
+  destroy,
+} = require('../services/db');
 const { createCharactersTable } = require('../services/schema');
 
 (async () => {
@@ -16,13 +21,18 @@ const { createCharactersTable } = require('../services/schema');
         const raw = await fs.promises.readFile(dataFile, 'utf8');
         const initialData = JSON.parse(raw);
         if (initialData.characters) {
-          console.log('Ignoring "characters" array from data.json during import.');
+          console.log(
+            'Ignoring "characters" array from data.json during import.',
+          );
           delete initialData.characters;
         }
         await writeData(initialData);
         console.log('Loaded data.json for initial import.');
       } catch (err) {
-        console.warn('Failed to load or parse data.json, using empty dataset.', err);
+        console.warn(
+          'Failed to load or parse data.json, using empty dataset.',
+          err,
+        );
       }
     }
 

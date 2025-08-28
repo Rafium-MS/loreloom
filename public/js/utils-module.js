@@ -8,4 +8,3 @@ export function debounce(fn, wait = 300) {
     timer = setTimeout(() => fn.apply(context, args), wait);
   };
 }
-

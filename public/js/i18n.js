@@ -13,7 +13,7 @@ const translations = {
     nav_languages: '🔤 Línguas',
     timeline: '⏳ Linha do Tempo',
     notes: '🗒️ Notas',
-    home: 'Início'
+    home: 'Início',
   },
   en: {
     navigation: 'Navigation',
@@ -29,15 +29,15 @@ const translations = {
     nav_languages: '🔤 Languages',
     timeline: '⏳ Timeline',
     notes: '🗒️ Notes',
-    home: 'Home'
-  }
+    home: 'Home',
+  },
 };
 
 let currentLang = 'pt';
 
 export function setLanguage(lang) {
   currentLang = translations[lang] ? lang : 'pt';
-  document.querySelectorAll('[data-i18n]').forEach(el => {
+  document.querySelectorAll('[data-i18n]').forEach((el) => {
     const key = el.getAttribute('data-i18n');
     const text = translations[currentLang][key];
     if (text) el.textContent = text;
