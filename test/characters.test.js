@@ -1,32 +1,10 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const express = require('express');
-const fs = require('node:fs');
-const path = require('node:path');
 const { db, init, destroy } = require('../services/db');
+const { createCharactersTable } = require('../services/schema');
 
-const dbFile = path.join(__dirname, '..', 'loreloom.db');
 const charactersRouter = require('../routes/characters');
-
-async function createCharactersTable() {
-  if (!(await db.schema.hasTable('characters'))) {
-    await db.schema.createTable('characters', table => {
-      table.increments('id').primary();
-      table.string('name').notNullable();
-      table.string('age');
-      table.string('race');
-      table.string('class');
-      table.string('role');
-      table.text('appearance');
-      table.text('personality');
-      table.text('background');
-      table.text('skills');
-      table.text('relationships');
-      table.json('tags');
-      table.timestamps(true, true);
-    });
-  }
-}
 
 test('characters routes', async t => {
   let server;
