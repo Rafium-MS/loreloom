@@ -1,4 +1,69 @@
 import { projectData } from './state.js';
+import { debounce } from './utils.js';
+
+const MAX_HISTORY_SIZE = 50;
+let undoStack = [];
+let redoStack = [];
+let editorElement;
+
+function pushState(innerHTML) {
+    if (undoStack.length > 0 && undoStack[undoStack.length - 1] === innerHTML) {
+        return;
+    }
+
+    undoStack.push(innerHTML);
+    if (undoStack.length > MAX_HISTORY_SIZE) {
+        undoStack.shift();
+    }
+    redoStack = [];
+}
+
+export function undo() {
+    if (undoStack.length <= 1) return;
+    const currentState = undoStack.pop();
+    redoStack.push(currentState);
+    const prevState = undoStack[undoStack.length - 1];
+    editorElement.innerHTML = prevState;
+}
+
+export function redo() {
+    if (redoStack.length === 0) return;
+    const nextState = redoStack.pop();
+    undoStack.push(nextState);
+    editorElement.innerHTML = nextState;
+}
+
+export function resetHistory() {
+    undoStack = [editorElement.innerHTML];
+    redoStack = [];
+}
+
+export function bindEditorHistory() {
+    editorElement = document.getElementById('mainText');
+    if (!editorElement) return;
+
+    resetHistory();
+
+    const debouncedPushState = debounce(() => {
+        pushState(editorElement.innerHTML);
+    }, 300);
+
+    editorElement.addEventListener('input', debouncedPushState);
+
+    document.addEventListener('keydown', e => {
+        const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+        const undoKey = isMac ? e.metaKey && e.key === 'z' : e.ctrlKey && e.key === 'z';
+        const redoKey = isMac ? e.metaKey && e.key === 'y' : e.ctrlKey && e.key === 'y';
+
+        if (undoKey) {
+            e.preventDefault();
+            undo();
+        } else if (redoKey) {
+            e.preventDefault();
+            redo();
+        }
+    });
+}
 
 export function formatText(command) {
   const selection = window.getSelection();
@@ -199,6 +264,7 @@ export async function importProject(event) {
     Object.assign(projectData, data);
     document.getElementById('mainText').innerHTML = projectData.content || '';
     document.getElementById('documentTitle').value = projectData.title || '';
+    resetHistory();
     updateWordCount();
     window.renderCharacterList?.();
     window.renderLocationList?.();
