@@ -1,4 +1,4 @@
-const db = require('../services/knex');
+import db from '../services/knex.js';
 
 function mapRow(row) {
   return { ...row, tags: row.tags ? JSON.parse(row.tags) : [] };
@@ -20,7 +20,7 @@ function toDb(character) {
   };
 }
 
-async function fetch({ limit, cursor }) {
+export async function fetch({ limit, cursor }) {
   const query = db('characters').select('*').orderBy('id', 'asc');
   if (cursor) query.where('id', '>', cursor);
   if (limit) query.limit(limit);
@@ -28,9 +28,7 @@ async function fetch({ limit, cursor }) {
   return rows.map(mapRow);
 }
 
-async function create(character) {
+export async function create(character) {
   const [row] = await db('characters').insert(toDb(character)).returning('*');
   return mapRow(row);
 }
-
-module.exports = { fetch, create };

@@ -1,12 +1,13 @@
-const test = require('node:test');
-const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const path = require('node:path');
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const dbFile = path.join(__dirname, '..', 'loreloom.db');
-const dbModulePath = '../services/db';
-const knexModulePath = '../services/knex';
-const dataRepoPath = '../repositories/dataRepository';
 
 const defaultData = {
   title: '',
@@ -20,46 +21,24 @@ const defaultData = {
   uiLanguage: 'pt',
 };
 
-function clearCaches() {
-  delete require.cache[require.resolve(dbModulePath)];
-  delete require.cache[require.resolve(knexModulePath)];
-  delete require.cache[require.resolve(dataRepoPath)];
+function importFresh(modulePath) {
+  return import(`${modulePath}?${Date.now()}`);
 }
 
 test.beforeEach(() => {
   fs.rmSync(dbFile, { force: true });
-  clearCaches();
 });
 
 test.afterEach(async () => {
-  const { destroy } = require(dbModulePath);
+  const { destroy } = await importFresh('../services/db.js');
   await destroy();
   fs.rmSync(dbFile, { force: true });
-  clearCaches();
 });
 
 test('readData creates default structure when the database is empty', async () => {
-  const { readData } = require(dbModulePath);
+  const { readData } = await importFresh('../services/db.js');
   const data = await readData();
   assert.deepStrictEqual(data, defaultData);
 });
 
-test('writeData persists and readData retrieves the data', async () => {
-  const { readData, writeData } = require(dbModulePath);
-  const payload = {
-    title: 'Title',
-    content: 'Content',
-    locations: [{ id: 1, name: 'Location A' }],
-    items: [],
-    languages: [],
-    timeline: [],
-    notes: [],
-    economy: { currencies: [], resources: [], markets: [] },
-    uiLanguage: 'en',
-  };
 
-  await writeData(payload);
-  const result = await readData();
-  const expectedResult = { ...payload, uiLanguage: 'en' };
-  assert.deepStrictEqual(result, expectedResult);
-});

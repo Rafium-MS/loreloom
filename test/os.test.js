@@ -1,7 +1,7 @@
-const test = require('node:test');
-const assert = require('node:assert/strict');
-const express = require('express');
-const os = require('node:os');
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import express from 'express';
+import os from 'node:os';
 
 // store original function
 const originalNetworkInterfaces = os.networkInterfaces;
@@ -20,7 +20,7 @@ test('GET / returns expected network interfaces', async () => {
 
   let server;
   try {
-    const router = require('../routes/os');
+    const router = (await import('../routes/os.js')).default;
     const app = express();
     app.use('/', router);
     server = app.listen(0);

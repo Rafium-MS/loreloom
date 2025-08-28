@@ -1,5 +1,5 @@
-const test = require('node:test');
-const assert = require('node:assert/strict');
+import test from 'node:test';
+import assert from 'node:assert/strict';
 
 // Mock DOM environment for testing. In a real frontend test setup (like Jest with JSDOM),
 // these would be provided by the environment.

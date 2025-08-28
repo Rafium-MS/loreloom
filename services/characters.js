@@ -1,6 +1,6 @@
-const characterRepository = require('../repositories/characterRepository');
+import * as characterRepository from '../repositories/characterRepository.js';
 
-async function getAllCharacters({ limit = 20, cursor } = {}) {
+export async function getAllCharacters({ limit = 20, cursor } = {}) {
   const rows = await characterRepository.fetch({ limit: limit + 1, cursor });
   const hasMore = rows.length > limit;
   const items = hasMore ? rows.slice(0, limit) : rows;
@@ -8,11 +8,6 @@ async function getAllCharacters({ limit = 20, cursor } = {}) {
   return { items, nextCursor };
 }
 
-async function addCharacter(character) {
+export async function addCharacter(character) {
   return characterRepository.create(character);
 }
-
-module.exports = {
-  getAllCharacters,
-  addCharacter,
-};

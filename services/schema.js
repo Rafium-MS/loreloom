@@ -1,6 +1,6 @@
-const { db } = require('./db');
+import { db } from './db.js';
 
-async function createCharactersTable() {
+export async function createCharactersTable() {
   const exists = await db.schema.hasTable('characters');
   if (!exists) {
     await db.schema.createTable('characters', (table) => {
@@ -20,5 +20,3 @@ async function createCharactersTable() {
     });
   }
 }
-
-module.exports = { createCharactersTable };
