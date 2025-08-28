@@ -3,7 +3,7 @@ import * as editor from './editor.js';
 import * as characters from './characters.js';
 import * as world from './world.js';
 import { setLanguage } from './i18n.js';
-import { debounce } from './utils.js';
+import { debounce } from './utils-module.js';
 
 const modalTriggers = {};
 

@@ -1,5 +1,5 @@
 import { projectData } from './state.js';
-import { debounce } from './utils.js';
+import { debounce } from './utils-module.js';
 
 const MAX_HISTORY_SIZE = 50;
 let undoStack = [];

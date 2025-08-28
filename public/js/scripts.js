@@ -187,7 +187,9 @@ function renderDocumentsPanel() {
 }
 
 // ====== Binds de UI novos ======
-document.getElementById('newDocumentBtn').addEventListener('click', newDocument);
+// Some pages may not include this button; guard to avoid errors
+const newDocBtn = document.getElementById('newDocumentBtn');
+if (newDocBtn) newDocBtn.addEventListener('click', newDocument);
 
 const projectInput = document.getElementById('projectNameInput');
 if (projectInput) {
