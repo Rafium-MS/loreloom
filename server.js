@@ -8,12 +8,13 @@ import charactersRouter from './routes/characters.js';
 import dataRouter from './routes/data.js';
 import osRouter from './routes/os.js';
 import rootRouter from './routes/root.js';
+import { PORT } from './config/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = PORT;
 
 // Middlewares
 app.use(morgan('dev'));
