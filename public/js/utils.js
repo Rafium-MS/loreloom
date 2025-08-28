@@ -27,3 +27,15 @@ btn?.addEventListener('click', () => {
   const current = localStorage.getItem('theme') === 'dark' ? 'dark' : 'light';
   setTheme(current === 'dark' ? 'light' : 'dark');
 });
+
+export function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
