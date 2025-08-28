@@ -1,0 +1,51 @@
+/* Tema Cyberpunk */
+:root {
+  /* Base */
+  --bg: #0d0221;           /* Fundo roxo-preto */
+  --text: #f0f0f0;         /* Texto branco com leve brilho */
+  --muted: #8a8a8a;        /* Textos secundários */
+
+  /* Superfícies e bordas */
+  --surface: #1a0a38;      /* Painéis e cartões */
+  --panel: #0d0221;        /* Sidebar */
+  --border: #ff00ff;       /* Bordas magenta neon */
+  --border-weak: #7d007d;  /* Borda sutil */
+  --row-divider: #2a1a4a;  /* Linhas de lista */
+
+  /* Topbar */
+  --topbar-bg: #080114;
+  --topbar-text: #f0f0f0;
+  --shadow-100: 0 2px 10px rgba(255, 0, 255, 0.45);
+
+  /* Ação / Estado */
+  --primary: #00ffff;      /* Ciano neon */
+  --primary-strong: #00e6e6;
+  --secondary: #8a8a8a;
+  --danger: #ff3333;
+  --success: #39ff14;      /* Verde neon */
+
+  /* Hovers/realces */
+  --hover: #2a1a4a;
+  --active-bg: #3a2a5a;
+  --active-text: #00ffff;
+
+  /* Utilitários */
+  --neutral-50:  #1e0e40;
+  --neutral-100: #2a1a4a;
+  --neutral-200: #3a2a5a;
+  --neutral-300: #4a3a6a;
+  --neutral-400: #5a4a7a;
+
+  /* Badges */
+  --badge-draft-bg:  #4a2a0a;
+  --badge-draft-fg:  #ff8c00;
+  --badge-draft-br:  #ff4500;
+  --badge-final-bg:  #0a3a2a;
+  --badge-final-fg:  #39ff14;
+  --badge-final-br:  #00ff00;
+
+  /* Focus ring */
+  --ring-primary: rgba(0, 255, 255, 0.25);
+
+  color-scheme: dark;
+}
