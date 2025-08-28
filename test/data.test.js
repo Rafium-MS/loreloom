@@ -13,17 +13,17 @@ function buildApp() {
   delete require.cache[require.resolve('../routes/data')];
   delete require.cache[require.resolve('../services/db')];
 
-    const defaultData = {
-      title: '',
-      content: '',
-      locations: [],
-      items: [],
-      languages: [],
-      timeline: [],
-      notes: [],
-      economy: { currencies: [], resources: [], markets: [] },
-      uiLanguage: 'pt'
-    };
+  const defaultData = {
+    title: '',
+    content: '',
+    locations: [],
+    items: [],
+    languages: [],
+    timeline: [],
+    notes: [],
+    economy: { currencies: [], resources: [], markets: [] },
+    uiLanguage: 'pt',
+  };
 
   const dbModule = {
     async readData() {
@@ -39,7 +39,7 @@ function buildApp() {
     async writeData(data) {
       await fs.promises.writeFile(dbFile, JSON.stringify(data, null, 2));
     },
-    init: async () => {}
+    init: async () => {},
   };
 
   require.cache[require.resolve('../services/db')] = { exports: dbModule };
@@ -59,7 +59,7 @@ test('POST /save with invalid payload returns 400', async () => {
   const res = await fetch(`${base}/save`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({})
+    body: JSON.stringify({}),
   });
   assert.equal(res.status, 400);
 
@@ -81,13 +81,13 @@ test('POST /save persists sanitized data and GET endpoints return it', async () 
     timeline: [],
     notes: [],
     economy: { currencies: [], resources: [], markets: [] },
-    uiLanguage: ' en '
+    uiLanguage: ' en ',
   };
 
   const postRes = await fetch(`${base}/save`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
+    body: JSON.stringify(payload),
   });
   assert.equal(postRes.status, 200);
   assert.deepStrictEqual(await postRes.json(), { status: 'ok' });
@@ -101,7 +101,7 @@ test('POST /save persists sanitized data and GET endpoints return it', async () 
     timeline: [],
     notes: [],
     economy: { currencies: [], resources: [], markets: [] },
-    uiLanguage: 'en'
+    uiLanguage: 'en',
   };
 
   const loadRes = await fetch(`${base}/load`);

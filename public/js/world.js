@@ -5,8 +5,10 @@ export function renderLocationList() {
   const list = document.getElementById('locationList');
   if (!list) return;
   list.innerHTML = '';
-  projectData.locations.forEach(l => {
-    const tags = (l.tags || []).map(t => `<div class="tag">${t}</div>`).join('');
+  projectData.locations.forEach((l) => {
+    const tags = (l.tags || [])
+      .map((t) => `<div class="tag">${t}</div>`)
+      .join('');
     const item = document.createElement('div');
     item.className = 'list-item';
     item.innerHTML = `
@@ -28,7 +30,7 @@ export function renderItemList() {
   const list = document.getElementById('itemList');
   if (!list) return;
   list.innerHTML = '';
-  projectData.items.forEach(i => {
+  projectData.items.forEach((i) => {
     const item = document.createElement('div');
     item.className = 'list-item';
     item.innerHTML = `
@@ -49,7 +51,7 @@ export function renderLanguageList() {
   const list = document.getElementById('languageList');
   if (!list) return;
   list.innerHTML = '';
-  projectData.languages.forEach(l => {
+  projectData.languages.forEach((l) => {
     const card = document.createElement('div');
     card.className = 'card';
     card.innerHTML = `
@@ -68,7 +70,7 @@ export function renderEventList() {
   const list = document.getElementById('eventList');
   if (!list) return;
   list.innerHTML = '';
-  projectData.timeline.forEach(e => {
+  projectData.timeline.forEach((e) => {
     const card = document.createElement('div');
     card.className = 'card';
     card.style.marginBottom = '12px';
@@ -77,7 +79,7 @@ export function renderEventList() {
       <div style="position: absolute; left: -26px; top: 16px; width: 12px; height: 12px; background: #3b82f6; border-radius: 50%;"></div>
       <strong>${e.date}</strong> - ${e.name}
       <div style=\"font-size: 0.9em; color: #64748b; margin-top: 4px;\">${e.description || ''}</div>
-      ${(e.importance ? `<div class="tag">${e.importance}</div>` : '')}
+      ${e.importance ? `<div class="tag">${e.importance}</div>` : ''}
       <div style="margin-top: 8px;">
         <button class="btn" onclick="editEvent(${e.id}, this)">Editar</button>
         <button class="btn btn-danger" onclick="deleteEvent(${e.id})">Excluir</button>
@@ -91,8 +93,10 @@ export function renderNoteList() {
   const list = document.getElementById('noteList');
   if (!list) return;
   list.innerHTML = '';
-  projectData.notes.forEach(n => {
-    const tags = (n.tags || []).map(t => `<div class="tag">${t}</div>`).join('');
+  projectData.notes.forEach((n) => {
+    const tags = (n.tags || [])
+      .map((t) => `<div class="tag">${t}</div>`)
+      .join('');
     const card = document.createElement('div');
     card.className = 'card';
     const date = n.createdAt ? new Date(n.createdAt).toLocaleDateString() : '';
@@ -116,8 +120,10 @@ export function renderFactionList() {
   const list = document.getElementById('factionList');
   if (!list) return;
   list.innerHTML = '';
-  projectData.factions.forEach(f => {
-    const tags = (f.tags || []).map(t => `<div class="tag">${t}</div>`).join('');
+  projectData.factions.forEach((f) => {
+    const tags = (f.tags || [])
+      .map((t) => `<div class="tag">${t}</div>`)
+      .join('');
     const item = document.createElement('div');
     item.className = 'list-item';
     item.innerHTML = `
@@ -137,44 +143,85 @@ export function renderFactionList() {
 
 export function openLocationModal(trigger = document.activeElement) {
   editingIds.location = null;
-  ['locName','locType','locRegion','locPopulation','locDescription','locRuler','locInterests','locHistory','locTags'].forEach(id => document.getElementById(id).value = '');
+  [
+    'locName',
+    'locType',
+    'locRegion',
+    'locPopulation',
+    'locDescription',
+    'locRuler',
+    'locInterests',
+    'locHistory',
+    'locTags',
+  ].forEach((id) => (document.getElementById(id).value = ''));
   openModal('locationModal', trigger);
 }
 
 export function openItemModal(trigger = document.activeElement) {
   editingIds.item = null;
-  ['itemName','itemType','itemRarity','itemDescription','itemProperties','itemValue','itemWeight','itemHistory','itemLocation'].forEach(id => document.getElementById(id).value = '');
+  [
+    'itemName',
+    'itemType',
+    'itemRarity',
+    'itemDescription',
+    'itemProperties',
+    'itemValue',
+    'itemWeight',
+    'itemHistory',
+    'itemLocation',
+  ].forEach((id) => (document.getElementById(id).value = ''));
   openModal('itemModal', trigger);
 }
 
 export function openLanguageModal(trigger = document.activeElement) {
   editingIds.language = null;
-  ['langName','langFamily','langScript','langSpeakers','langPhonetics','langGrammar','langExamples'].forEach(id => document.getElementById(id).value = '');
+  [
+    'langName',
+    'langFamily',
+    'langScript',
+    'langSpeakers',
+    'langPhonetics',
+    'langGrammar',
+    'langExamples',
+  ].forEach((id) => (document.getElementById(id).value = ''));
   openModal('languageModal', trigger);
 }
 
 export function openEventModal(trigger = document.activeElement) {
   editingIds.event = null;
-  ['eventName','eventDate','eventType','eventLocation','eventDescription','eventCharacters','eventConsequences','eventImportance'].forEach(id => document.getElementById(id).value = '');
+  [
+    'eventName',
+    'eventDate',
+    'eventType',
+    'eventLocation',
+    'eventDescription',
+    'eventCharacters',
+    'eventConsequences',
+    'eventImportance',
+  ].forEach((id) => (document.getElementById(id).value = ''));
   openModal('eventModal', trigger);
 }
 
 export function openNoteModal(trigger = document.activeElement) {
   editingIds.note = null;
-  ['noteTitle','noteCategory','noteContent','noteTags'].forEach(id => document.getElementById(id).value = '');
+  ['noteTitle', 'noteCategory', 'noteContent', 'noteTags'].forEach(
+    (id) => (document.getElementById(id).value = ''),
+  );
   openModal('noteModal', trigger);
 }
 
 export function openFactionModal(trigger = document.activeElement) {
   editingIds.faction = null;
   document.getElementById('factionModalTitle').textContent = 'Nova Facção';
-  ['factionName', 'factionDescription', 'factionTags'].forEach(id => document.getElementById(id).value = '');
+  ['factionName', 'factionDescription', 'factionTags'].forEach(
+    (id) => (document.getElementById(id).value = ''),
+  );
   const triggerEl = trigger.hasOwnProperty('target') ? trigger.target : trigger;
   const factionId = triggerEl.dataset.factionId;
   if (factionId) {
-      editFaction(parseInt(factionId, 10), trigger);
+    editFaction(parseInt(factionId, 10), trigger);
   } else {
-      openModal('factionModal', trigger);
+    openModal('factionModal', trigger);
   }
 }
 
@@ -189,11 +236,16 @@ export async function saveLocation() {
     ruler: document.getElementById('locRuler').value,
     interests: document.getElementById('locInterests').value,
     history: document.getElementById('locHistory').value,
-    tags: document.getElementById('locTags').value.split(',').map(t => t.trim())
+    tags: document
+      .getElementById('locTags')
+      .value.split(',')
+      .map((t) => t.trim()),
   };
 
   if (editingIds.location) {
-    const idx = projectData.locations.findIndex(l => l.id === editingIds.location);
+    const idx = projectData.locations.findIndex(
+      (l) => l.id === editingIds.location,
+    );
     if (idx !== -1) projectData.locations[idx] = location;
   } else {
     projectData.locations.push(location);
@@ -216,11 +268,11 @@ export async function saveItem() {
     value: document.getElementById('itemValue').value,
     weight: document.getElementById('itemWeight').value,
     history: document.getElementById('itemHistory').value,
-    location: document.getElementById('itemLocation').value
+    location: document.getElementById('itemLocation').value,
   };
 
   if (editingIds.item) {
-    const idx = projectData.items.findIndex(i => i.id === editingIds.item);
+    const idx = projectData.items.findIndex((i) => i.id === editingIds.item);
     if (idx !== -1) projectData.items[idx] = item;
   } else {
     projectData.items.push(item);
@@ -241,11 +293,13 @@ export async function saveLanguage() {
     speakers: document.getElementById('langSpeakers').value,
     phonetics: document.getElementById('langPhonetics').value,
     grammar: document.getElementById('langGrammar').value,
-    examples: document.getElementById('langExamples').value
+    examples: document.getElementById('langExamples').value,
   };
 
   if (editingIds.language) {
-    const idx = projectData.languages.findIndex(l => l.id === editingIds.language);
+    const idx = projectData.languages.findIndex(
+      (l) => l.id === editingIds.language,
+    );
     if (idx !== -1) projectData.languages[idx] = language;
   } else {
     projectData.languages.push(language);
@@ -265,13 +319,18 @@ export async function saveEvent() {
     type: document.getElementById('eventType').value,
     location: document.getElementById('eventLocation').value,
     description: document.getElementById('eventDescription').value,
-    characters: document.getElementById('eventCharacters').value.split(',').map(c => c.trim()),
+    characters: document
+      .getElementById('eventCharacters')
+      .value.split(',')
+      .map((c) => c.trim()),
     consequences: document.getElementById('eventConsequences').value,
-    importance: document.getElementById('eventImportance').value
+    importance: document.getElementById('eventImportance').value,
   };
 
   if (editingIds.event) {
-    const idx = projectData.timeline.findIndex(e => e.id === editingIds.event);
+    const idx = projectData.timeline.findIndex(
+      (e) => e.id === editingIds.event,
+    );
     if (idx !== -1) projectData.timeline[idx] = event;
   } else {
     projectData.timeline.push(event);
@@ -289,12 +348,18 @@ export async function saveNote() {
     title: document.getElementById('noteTitle').value,
     category: document.getElementById('noteCategory').value,
     content: document.getElementById('noteContent').value,
-    tags: document.getElementById('noteTags').value.split(',').map(t => t.trim()),
-    createdAt: editingIds.note ? projectData.notes.find(n => n.id === editingIds.note)?.createdAt || new Date() : new Date()
+    tags: document
+      .getElementById('noteTags')
+      .value.split(',')
+      .map((t) => t.trim()),
+    createdAt: editingIds.note
+      ? projectData.notes.find((n) => n.id === editingIds.note)?.createdAt ||
+        new Date()
+      : new Date(),
   };
 
   if (editingIds.note) {
-    const idx = projectData.notes.findIndex(n => n.id === editingIds.note);
+    const idx = projectData.notes.findIndex((n) => n.id === editingIds.note);
     if (idx !== -1) projectData.notes[idx] = note;
   } else {
     projectData.notes.push(note);
@@ -320,11 +385,17 @@ export async function saveFaction() {
     id: editingIds.faction || Date.now(),
     name: name,
     description: document.getElementById('factionDescription').value,
-    tags: document.getElementById('factionTags').value.split(',').map(t => t.trim()).filter(Boolean)
+    tags: document
+      .getElementById('factionTags')
+      .value.split(',')
+      .map((t) => t.trim())
+      .filter(Boolean),
   };
 
   if (editingIds.faction) {
-    const idx = projectData.factions.findIndex(f => f.id === editingIds.faction);
+    const idx = projectData.factions.findIndex(
+      (f) => f.id === editingIds.faction,
+    );
     if (idx !== -1) projectData.factions[idx] = faction;
   } else {
     projectData.factions.push(faction);
@@ -338,7 +409,7 @@ export async function saveFaction() {
 }
 
 export function editLocation(id, trigger = document.activeElement) {
-  const l = projectData.locations.find(loc => loc.id === id);
+  const l = projectData.locations.find((loc) => loc.id === id);
   if (!l) return;
   editingIds.location = id;
   document.getElementById('locName').value = l.name || '';
@@ -354,13 +425,13 @@ export function editLocation(id, trigger = document.activeElement) {
 }
 
 export async function deleteLocation(id) {
-  projectData.locations = projectData.locations.filter(l => l.id !== id);
+  projectData.locations = projectData.locations.filter((l) => l.id !== id);
   await saveProject();
   renderLocationList();
 }
 
 export function editItem(id, trigger = document.activeElement) {
-  const i = projectData.items.find(it => it.id === id);
+  const i = projectData.items.find((it) => it.id === id);
   if (!i) return;
   editingIds.item = id;
   document.getElementById('itemName').value = i.name || '';
@@ -376,13 +447,13 @@ export function editItem(id, trigger = document.activeElement) {
 }
 
 export async function deleteItem(id) {
-  projectData.items = projectData.items.filter(i => i.id !== id);
+  projectData.items = projectData.items.filter((i) => i.id !== id);
   await saveProject();
   renderItemList();
 }
 
 export function editLanguage(id, trigger = document.activeElement) {
-  const l = projectData.languages.find(lang => lang.id === id);
+  const l = projectData.languages.find((lang) => lang.id === id);
   if (!l) return;
   editingIds.language = id;
   document.getElementById('langName').value = l.name || '';
@@ -396,13 +467,13 @@ export function editLanguage(id, trigger = document.activeElement) {
 }
 
 export async function deleteLanguage(id) {
-  projectData.languages = projectData.languages.filter(l => l.id !== id);
+  projectData.languages = projectData.languages.filter((l) => l.id !== id);
   await saveProject();
   renderLanguageList();
 }
 
 export function editEvent(id, trigger = document.activeElement) {
-  const e = projectData.timeline.find(ev => ev.id === id);
+  const e = projectData.timeline.find((ev) => ev.id === id);
   if (!e) return;
   editingIds.event = id;
   document.getElementById('eventName').value = e.name || '';
@@ -410,20 +481,22 @@ export function editEvent(id, trigger = document.activeElement) {
   document.getElementById('eventType').value = e.type || '';
   document.getElementById('eventLocation').value = e.location || '';
   document.getElementById('eventDescription').value = e.description || '';
-  document.getElementById('eventCharacters').value = (e.characters || []).join(', ');
+  document.getElementById('eventCharacters').value = (e.characters || []).join(
+    ', ',
+  );
   document.getElementById('eventConsequences').value = e.consequences || '';
   document.getElementById('eventImportance').value = e.importance || '';
   openModal('eventModal', trigger);
 }
 
 export async function deleteEvent(id) {
-  projectData.timeline = projectData.timeline.filter(e => e.id !== id);
+  projectData.timeline = projectData.timeline.filter((e) => e.id !== id);
   await saveProject();
   renderEventList();
 }
 
 export function editNote(id, trigger = document.activeElement) {
-  const n = projectData.notes.find(nt => nt.id === id);
+  const n = projectData.notes.find((nt) => nt.id === id);
   if (!n) return;
   editingIds.note = id;
   document.getElementById('noteTitle').value = n.title || '';
@@ -434,25 +507,28 @@ export function editNote(id, trigger = document.activeElement) {
 }
 
 export async function deleteNote(id) {
-  projectData.notes = projectData.notes.filter(n => n.id !== id);
+  projectData.notes = projectData.notes.filter((n) => n.id !== id);
   await saveProject();
   renderNoteList();
 }
 
 export function editFaction(id, trigger = document.activeElement) {
-    const faction = projectData.factions.find(f => f.id === id);
-    if (!faction) return;
+  const faction = projectData.factions.find((f) => f.id === id);
+  if (!faction) return;
 
-    editingIds.faction = id;
-    document.getElementById('factionModalTitle').textContent = 'Editar Facção';
-    document.getElementById('factionName').value = faction.name || '';
-    document.getElementById('factionDescription').value = faction.description || '';
-    document.getElementById('factionTags').value = (faction.tags || []).join(', ');
-    openModal('factionModal', trigger);
+  editingIds.faction = id;
+  document.getElementById('factionModalTitle').textContent = 'Editar Facção';
+  document.getElementById('factionName').value = faction.name || '';
+  document.getElementById('factionDescription').value =
+    faction.description || '';
+  document.getElementById('factionTags').value = (faction.tags || []).join(
+    ', ',
+  );
+  openModal('factionModal', trigger);
 }
 
 export async function deleteFaction(id) {
-    projectData.factions = projectData.factions.filter(f => f.id !== id);
-    await saveProject();
-    renderFactionList();
+  projectData.factions = projectData.factions.filter((f) => f.id !== id);
+  await saveProject();
+  renderFactionList();
 }

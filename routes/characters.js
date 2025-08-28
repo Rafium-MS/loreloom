@@ -9,10 +9,12 @@ router.get(
   '/',
   asyncHandler(async (req, res) => {
     const limit = parseInt(req.query.limit, 10) || 20;
-    const cursor = req.query.cursor ? parseInt(req.query.cursor, 10) : undefined;
+    const cursor = req.query.cursor
+      ? parseInt(req.query.cursor, 10)
+      : undefined;
     const result = await getAllCharacters({ limit, cursor });
     res.json(result);
-  })
+  }),
 );
 
 router.post(
@@ -25,7 +27,7 @@ router.post(
 
     const newCharacter = await addCharacter(value);
     res.status(201).json(newCharacter);
-  })
+  }),
 );
 
 module.exports = router;

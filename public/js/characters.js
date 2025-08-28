@@ -10,8 +10,10 @@ export function renderCharacterList() {
   const list = document.getElementById('characterList');
   if (!list) return;
   list.innerHTML = '';
-  projectData.characters.forEach(c => {
-    const tags = (c.tags || []).map(t => `<div class="tag">${t}</div>`).join('');
+  projectData.characters.forEach((c) => {
+    const tags = (c.tags || [])
+      .map((t) => `<div class="tag">${t}</div>`)
+      .join('');
     const item = document.createElement('div');
     item.className = 'list-item';
     item.innerHTML = `
@@ -31,7 +33,19 @@ export function renderCharacterList() {
 
 export function openCharacterModal(trigger = document.activeElement) {
   editingIds.character = null;
-  ['charName','charAge','charRace','charClass','charRole','charAppearance','charPersonality','charBackground','charSkills','charRelationships','charTags'].forEach(id => setField(id));
+  [
+    'charName',
+    'charAge',
+    'charRace',
+    'charClass',
+    'charRole',
+    'charAppearance',
+    'charPersonality',
+    'charBackground',
+    'charSkills',
+    'charRelationships',
+    'charTags',
+  ].forEach((id) => setField(id));
   openModal('characterModal', trigger);
 }
 
@@ -48,11 +62,17 @@ export async function saveCharacter() {
     background: document.getElementById('charBackground').value,
     skills: document.getElementById('charSkills').value,
     relationships: document.getElementById('charRelationships').value,
-    tags: document.getElementById('charTags').value.split(',').map(t => t.trim()).filter(Boolean)
+    tags: document
+      .getElementById('charTags')
+      .value.split(',')
+      .map((t) => t.trim())
+      .filter(Boolean),
   };
 
   if (editingIds.character) {
-    const idx = projectData.characters.findIndex(c => c.id === editingIds.character);
+    const idx = projectData.characters.findIndex(
+      (c) => c.id === editingIds.character,
+    );
     if (idx !== -1) projectData.characters[idx] = character;
   } else {
     projectData.characters.push(character);
@@ -65,7 +85,7 @@ export async function saveCharacter() {
 }
 
 export function editCharacter(id, trigger = document.activeElement) {
-  const c = projectData.characters.find(ch => ch.id === id);
+  const c = projectData.characters.find((ch) => ch.id === id);
   if (!c) return;
   editingIds.character = id;
   setField('charName', c.name);
@@ -83,7 +103,7 @@ export function editCharacter(id, trigger = document.activeElement) {
 }
 
 export async function deleteCharacter(id) {
-  projectData.characters = projectData.characters.filter(c => c.id !== id);
+  projectData.characters = projectData.characters.filter((c) => c.id !== id);
   await saveProject();
   renderCharacterList();
 }

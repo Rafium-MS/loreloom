@@ -8,16 +8,12 @@ const originalNetworkInterfaces = os.networkInterfaces;
 
 test('GET / returns expected network interfaces', async () => {
   const mockData = {
-    lo: [
-      { address: '127.0.0.1', family: 'IPv4', internal: true }
-    ],
+    lo: [{ address: '127.0.0.1', family: 'IPv4', internal: true }],
     en0: [
       { address: '192.168.0.10', family: 'IPv4', internal: false },
-      { address: 'fe80::1', family: 'IPv6', internal: false }
+      { address: 'fe80::1', family: 'IPv6', internal: false },
     ],
-    wlan0: [
-      { address: '10.0.0.5', family: 'IPv4', internal: false }
-    ]
+    wlan0: [{ address: '10.0.0.5', family: 'IPv4', internal: false }],
   };
 
   os.networkInterfaces = () => mockData;
@@ -35,7 +31,7 @@ test('GET / returns expected network interfaces', async () => {
     const json = await res.json();
     assert.deepStrictEqual(json, [
       { name: 'en0', address: '192.168.0.10' },
-      { name: 'wlan0', address: '10.0.0.5' }
+      { name: 'wlan0', address: '10.0.0.5' },
     ]);
   } finally {
     if (server) server.close();

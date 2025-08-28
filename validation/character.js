@@ -11,16 +11,16 @@ function sanitizeCharacter(data = {}) {
     'personality',
     'background',
     'skills',
-    'relationships'
+    'relationships',
   ];
 
   const normalized = {};
-  fields.forEach(f => {
+  fields.forEach((f) => {
     normalized[f] = asTrimmedString(data[f]);
   });
 
   normalized.tags = Array.isArray(data?.tags)
-    ? data.tags.map(t => asTrimmedString(t)).filter(Boolean)
+    ? data.tags.map((t) => asTrimmedString(t)).filter(Boolean)
     : [];
 
   return normalized;
@@ -34,7 +34,7 @@ function validateCharacter(data = {}) {
     details.push({
       path: ['name'],
       type: 'string.empty',
-      message: 'Character name is required'
+      message: 'Character name is required',
     });
   }
 
@@ -42,14 +42,14 @@ function validateCharacter(data = {}) {
     details.push({
       path: ['tags'],
       type: 'array.base',
-      message: 'Tags must be an array'
+      message: 'Tags must be an array',
     });
   }
 
   if (details.length) {
     return {
       error: { message: 'Validation failed', details },
-      value: undefined
+      value: undefined,
     };
   }
 

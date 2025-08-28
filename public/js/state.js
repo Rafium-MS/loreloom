@@ -1,6 +1,6 @@
 export const projectData = {
-  title: "Projeto LoreLoom",
-  content: "",
+  title: 'Projeto LoreLoom',
+  content: '',
   characters: [],
   locations: [],
   items: [],
@@ -11,10 +11,10 @@ export const projectData = {
   economy: {
     currencies: [],
     resources: [],
-    markets: []
+    markets: [],
   },
   documents: [],
-  uiLanguage: 'pt'
+  uiLanguage: 'pt',
 };
 
 export const editingIds = {
@@ -24,5 +24,5 @@ export const editingIds = {
   language: null,
   event: null,
   note: null,
-  faction: null
+  faction: null,
 };

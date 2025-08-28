@@ -16,7 +16,7 @@ function toDb(character) {
     background: character.background,
     skills: character.skills,
     relationships: character.relationships,
-    tags: JSON.stringify(character.tags || [])
+    tags: JSON.stringify(character.tags || []),
   };
 }
 

@@ -8,7 +8,7 @@ router.get(
   '/',
   asyncHandler(async (_req, res) => {
     res.sendFile(path.join(__dirname, '..', 'public', 'loreloom.html'));
-  })
+  }),
 );
 
 module.exports = router;

@@ -47,7 +47,12 @@ function closeGrammarPanel() {
 
 const localActions = { triggerImport, closeGrammarPanel };
 
-Object.assign(window, { ...editor, ...characters, ...world }, { openModal, closeModal }, {saveFaction: world.saveFaction});
+Object.assign(
+  window,
+  { ...editor, ...characters, ...world },
+  { openModal, closeModal },
+  { saveFaction: world.saveFaction },
+);
 
 async function loadProject() {
   let data;
@@ -63,8 +68,8 @@ async function loadProject() {
       const fallback = await fetch('/data.json');
       if (fallback.ok) {
         data = await fallback.json();
-          const statusEl = document.getElementById('status');
-          if (statusEl) statusEl.textContent = 'Dados locais carregados';
+        const statusEl = document.getElementById('status');
+        if (statusEl) statusEl.textContent = 'Dados locais carregados';
       }
     } catch (fallbackErr) {
       console.error('Fallback load failed', fallbackErr);
@@ -91,11 +96,15 @@ async function loadProject() {
   editor.resetHistory();
 }
 
-document.querySelectorAll('.nav-item').forEach(item => {
-  item.addEventListener('click', function(e) {
+document.querySelectorAll('.nav-item').forEach((item) => {
+  item.addEventListener('click', function (e) {
     e.stopPropagation();
-    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-    document.querySelectorAll('.content-panel').forEach(panel => panel.classList.remove('active'));
+    document
+      .querySelectorAll('.nav-item')
+      .forEach((nav) => nav.classList.remove('active'));
+    document
+      .querySelectorAll('.content-panel')
+      .forEach((panel) => panel.classList.remove('active'));
     this.classList.add('active');
     const route = this.dataset.route;
     document.getElementById(route)?.classList.add('active');
@@ -110,11 +119,15 @@ document.querySelectorAll('.nav-item').forEach(item => {
   });
 });
 
-document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', function() {
+document.querySelectorAll('.tab').forEach((tab) => {
+  tab.addEventListener('click', function () {
     if (this.closest('#world')) {
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(tc => tc.style.display = 'none');
+      document
+        .querySelectorAll('.tab')
+        .forEach((t) => t.classList.remove('active'));
+      document
+        .querySelectorAll('.tab-content')
+        .forEach((tc) => (tc.style.display = 'none'));
       this.classList.add('active');
       const tabId = this.dataset.tab;
       const tab = document.getElementById(tabId);
@@ -123,26 +136,34 @@ document.querySelectorAll('.tab').forEach(tab => {
   });
 });
 
-document.querySelectorAll('.modal').forEach(modal => {
-  modal.addEventListener('click', function(e) {
+document.querySelectorAll('.modal').forEach((modal) => {
+  modal.addEventListener('click', function (e) {
     if (e.target === this) {
       closeModal(this.id);
     }
   });
 });
 
-document.getElementById('mainText')?.addEventListener('input', editor.updateWordCount);
-document.getElementById('mainText')?.addEventListener('input', debounce(editor.checkConsistency, 300));
+document
+  .getElementById('mainText')
+  ?.addEventListener('input', editor.updateWordCount);
+document
+  .getElementById('mainText')
+  ?.addEventListener('input', debounce(editor.checkConsistency, 300));
 
-document.getElementById('importFile')?.addEventListener('change', editor.importProject);
+document
+  .getElementById('importFile')
+  ?.addEventListener('change', editor.importProject);
 
-document.getElementById('languageSwitcher')?.addEventListener('change', async function() {
-  projectData.uiLanguage = this.value;
-  setLanguage(this.value);
-  await editor.saveProject();
-});
+document
+  .getElementById('languageSwitcher')
+  ?.addEventListener('change', async function () {
+    projectData.uiLanguage = this.value;
+    setLanguage(this.value);
+    await editor.saveProject();
+  });
 
-document.addEventListener('keydown', function(e) {
+document.addEventListener('keydown', function (e) {
   if ((e.ctrlKey || e.metaKey) && e.key === 's') {
     e.preventDefault();
     editor.saveProject();
@@ -153,7 +174,7 @@ document.getElementById('sidebarToggle')?.addEventListener('click', () => {
   document.querySelector('.app')?.classList.toggle('collapsed');
 });
 
-document.querySelectorAll('[data-action]').forEach(el => {
+document.querySelectorAll('[data-action]').forEach((el) => {
   el.addEventListener('click', () => {
     const action = el.getAttribute('data-action');
     const arg = el.getAttribute('data-arg');

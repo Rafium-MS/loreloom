@@ -28,7 +28,7 @@ async function setupDb() {
 }
 
 setupDb().then(() => {
-  test('characters routes', async t => {
+  test('characters routes', async (t) => {
     let server;
     let base;
 
@@ -39,17 +39,19 @@ setupDb().then(() => {
     });
 
     t.beforeEach(() => {
-      return db('characters').truncate().then(() => {
-        const app = express();
-        app.use(express.json());
-        app.use('/characters', charactersRouter);
-        server = app.listen(0);
-        base = `http://localhost:${server.address().port}`;
-      });
+      return db('characters')
+        .truncate()
+        .then(() => {
+          const app = express();
+          app.use(express.json());
+          app.use('/characters', charactersRouter);
+          server = app.listen(0);
+          base = `http://localhost:${server.address().port}`;
+        });
     });
 
     t.afterEach(() => {
-      return new Promise(resolve => server.close(resolve));
+      return new Promise((resolve) => server.close(resolve));
     });
 
     await t.test('GET returns empty result initially', async () => {
@@ -63,17 +65,21 @@ setupDb().then(() => {
       const res = await fetch(`${base}/characters`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: '  ' })
+        body: JSON.stringify({ name: '  ' }),
       });
       assert.equal(res.status, 400);
     });
 
     await t.test('POST creates a valid character', async () => {
-      const characterData = { name: 'Gandalf', class: 'Wizard', tags: ['Istari'] };
+      const characterData = {
+        name: 'Gandalf',
+        class: 'Wizard',
+        tags: ['Istari'],
+      };
       const res = await fetch(`${base}/characters`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(characterData)
+        body: JSON.stringify(characterData),
       });
 
       assert.equal(res.status, 201);

@@ -29,7 +29,7 @@ function getDefaultData() {
 async function init() {
   const exists = await db.schema.hasTable('data_entries');
   if (!exists) {
-    await db.schema.createTable('data_entries', table => {
+    await db.schema.createTable('data_entries', (table) => {
       table.string('key').primary();
       table.text('json');
     });

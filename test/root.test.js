@@ -15,7 +15,10 @@ test('GET / returns loreloom.html', async () => {
   const res = await fetch(`${base}/`);
   assert.equal(res.status, 200);
   const text = await res.text();
-  const expected = fs.readFileSync(path.join(__dirname, '..', 'public', 'loreloom.html'), 'utf8');
+  const expected = fs.readFileSync(
+    path.join(__dirname, '..', 'public', 'loreloom.html'),
+    'utf8',
+  );
   assert.equal(text, expected);
 
   server.close();

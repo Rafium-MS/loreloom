@@ -3,7 +3,7 @@ const { db } = require('./db');
 async function createCharactersTable() {
   const exists = await db.schema.hasTable('characters');
   if (!exists) {
-    await db.schema.createTable('characters', table => {
+    await db.schema.createTable('characters', (table) => {
       table.increments('id').primary();
       table.string('name').notNullable();
       table.string('age');
