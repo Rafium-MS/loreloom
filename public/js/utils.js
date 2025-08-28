@@ -12,34 +12,36 @@ function setTheme(themeName) {
   const theme = themes.find(t => t.name === themeName);
   if (!theme) {
     console.warn(`Theme "${themeName}" not found. Defaulting to light.`);
-    setTheme('light');
+    setTheme(themes[0].name);
     return;
   }
 
   if (tokens) {
-    tokens.href = mode === 'dark' ? '/css/tokens.dark.css' : '/css/tokens.css';
+    tokens.href = theme.path;
   }
-  localStorage.setItem('theme', themeName);
+  localStorage.setItem('theme', theme.name);
   if (btn) {
-    btn.textContent = mode === 'dark' ? '☀️' : '🌙';
+    btn.textContent = theme.icon;
   }
 }
 
 // Inicialização
 (function initTheme() {
-  const savedTheme = localStorage.getItem('theme') || 'light';
-  const themeExists = themes.some(t => t.name === savedTheme);
-
-  if (themeExists) {
+  const savedTheme = localStorage.getItem('theme');
+  if (themes.some(t => t.name === savedTheme)) {
     setTheme(savedTheme);
   } else {
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    setTheme(prefersDark ? 'dark' : 'light');
+    const darkTheme = themes.find(t => t.name === 'dark');
+    const defaultTheme = themes[0];
+    setTheme(prefersDark && darkTheme ? darkTheme.name : defaultTheme.name);
   }
 })();
 
 // Toggle ao clicar
 btn?.addEventListener('click', () => {
-  const current = localStorage.getItem('theme') === 'dark' ? 'dark' : 'light';
-  setTheme(current === 'dark' ? 'light' : 'dark');
+  const currentName = localStorage.getItem('theme') || themes[0].name;
+  const currentIndex = themes.findIndex(t => t.name === currentName);
+  const nextTheme = themes[(currentIndex + 1) % themes.length];
+  setTheme(nextTheme.name);
 });
