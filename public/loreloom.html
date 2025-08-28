@@ -4,9 +4,6 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>LoreLoom</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/bundle.css" />
   <link id="tokens" rel="stylesheet" href="/css/tokens.css" />
 </head>
@@ -22,32 +19,15 @@
       </span>
     </div>
     <div class="right">
-        <div class="dropdown">
-            <button class="btn btn-primario" data-i18n="actions">Ações</button>
-            <div class="dropdown-content">
-                <button class="btn" data-action="saveProject" title="Ctrl/Cmd + S" data-i18n="save_project">Salvar Projeto</button>
-                <button class="btn" data-action="exportProject" data-i18n="export">Exportar</button>
-                <button class="btn" data-action="triggerImport" data-i18n="import">Importar</button>
-            </div>
-        </div>
-        <input type="file" id="importFile" accept=".json" class="hidden">
-
-        <select id="languageSwitcher" class="ml-8">
-            <option value="pt">Português</option>
-            <option value="en">English</option>
-            <option value="es">Español</option>
-        </select>
-
-        <div class="theme-switcher-container" id="themeSwitcher">
-            <button id="themeToggle" class="btn-toggle" aria-label="Alternar tema">🌙</button>
-            <div class="theme-switcher-options">
-                <button data-theme="light">Claro ☀️</button>
-                <button data-theme="dark">Escuro 🌙</button>
-                <button data-theme="medieval">Medieval 🏰</button>
-                <button data-theme="cyberpunk">Cyberpunk 🤖</button>
-            </div>
-        </div>
-    </div>
+      <button class="btn btn-primario" data-action="saveProject" title="Ctrl/Cmd + S" data-i18n="save_project">Salvar Projeto</button>
+      <button class="btn btn-secundario" data-action="exportProject" data-i18n="export">Exportar</button>
+      <input type="file" id="importFile" accept=".json" class="hidden">
+      <button class="btn btn-secundario" data-action="triggerImport" data-i18n="import">Importar</button>
+      <select id="languageSwitcher" class="ml-8">
+        <option value="pt">Português</option>
+        <option value="en">English</option>
+      </select>
+      <button id="themeToggle" class="btn-toggle" aria-label="Alternar tema">🌙</button>    </div>
   </header>
 
 <div class="app">

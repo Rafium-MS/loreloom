@@ -17,11 +17,11 @@ function setTheme(themeName) {
   }
 
   if (tokens) {
-    tokens.href = theme.path;
+    tokens.href = mode === 'dark' ? '/css/tokens.dark.css' : '/css/tokens.css';
   }
   localStorage.setItem('theme', themeName);
   if (btn) {
-    btn.textContent = theme.icon;
+    btn.textContent = mode === 'dark' ? '☀️' : '🌙';
   }
 }
 
@@ -38,26 +38,8 @@ function setTheme(themeName) {
   }
 })();
 
-// Event listeners para os botões de tema
-const themeSwitcher = document.getElementById('themeSwitcher');
-if (themeSwitcher) {
-  const themeButtons = themeSwitcher.querySelectorAll('.theme-switcher-options button');
-  themeButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      const themeName = button.getAttribute('data-theme');
-      setTheme(themeName);
-    });
-  });
-}
-
-export function debounce(func, wait) {
-  let timeout;
-  return function executedFunction(...args) {
-    const later = () => {
-      clearTimeout(timeout);
-      func(...args);
-    };
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-  };
-}
+// Toggle ao clicar
+btn?.addEventListener('click', () => {
+  const current = localStorage.getItem('theme') === 'dark' ? 'dark' : 'light';
+  setTheme(current === 'dark' ? 'light' : 'dark');
+});
