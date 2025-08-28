@@ -24,6 +24,14 @@ app.use('/os', osRouter);
 app.use('/', dataRouter);
 app.use('/', rootRouter);
 
+// Global error handler
+app.use((err, req, res, _next) => {
+  console.error(err);
+  res
+    .status(err.status || 500)
+    .json({ error: err.message || 'Internal Server Error' });
+});
+
 app.listen(port, () => {
   console.log('LoreLoom server running at:');
   console.log(`  Local:   http://localhost:${port}`);

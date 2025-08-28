@@ -1,41 +1,36 @@
 const express = require('express');
 const { dataSchema } = require('../validation');
 const { readData, writeData } = require('../services/db');
+const asyncHandler = require('../middlewares/asyncHandler');
 
 const router = express.Router();
 
-router.post('/save', async (req, res) => {
-  try {
+router.post(
+  '/save',
+  asyncHandler(async (req, res) => {
     const { error, value } = dataSchema.validate(req.body);
     if (error) {
       return res.status(400).json(error);
     }
     await writeData(value);
     res.json({ status: 'ok' });
-  } catch (err) {
-    console.error('Error saving data:', err);
-    res.status(500).json({ error: 'Failed to save data' });
-  }
-});
+  })
+);
 
-router.get('/load', async (_req, res) => {
-  try {
+router.get(
+  '/load',
+  asyncHandler(async (_req, res) => {
     const data = await readData();
     res.json(data);
-  } catch (err) {
-    console.error('Error loading data:', err);
-    res.status(500).json({ error: 'Failed to load data' });
-  }
-});
+  })
+);
 
-router.get('/data.json', async (_req, res) => {
-  try {
+router.get(
+  '/data.json',
+  asyncHandler(async (_req, res) => {
     const data = await readData();
     res.json(data);
-  } catch (err) {
-    console.error('Error loading data:', err);
-    res.status(500).json({ error: 'Failed to load data' });
-  }
-});
+  })
+);
 
 module.exports = router;
