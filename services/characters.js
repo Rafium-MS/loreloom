@@ -1,5 +1,4 @@
 const { db } = require('./db');
-const { sanitizeCharacter } = require('../validation');
 
 async function getAllCharacters() {
   const characters = await db('characters').select('*');
@@ -11,20 +10,18 @@ async function getAllCharacters() {
 }
 
 async function addCharacter(character) {
-  const sanitized = sanitizeCharacter(character);
-
   const newCharacter = {
-    name: sanitized.name,
-    age: sanitized.age,
-    race: sanitized.race,
-    class: sanitized.class,
-    role: sanitized.role,
-    appearance: sanitized.appearance,
-    personality: sanitized.personality,
-    background: sanitized.background,
-    skills: sanitized.skills,
-    relationships: sanitized.relationships,
-    tags: JSON.stringify(sanitized.tags || [])
+    name: character.name,
+    age: character.age,
+    race: character.race,
+    class: character.class,
+    role: character.role,
+    appearance: character.appearance,
+    personality: character.personality,
+    background: character.background,
+    skills: character.skills,
+    relationships: character.relationships,
+    tags: JSON.stringify(character.tags || [])
   };
 
   const [inserted] = await db('characters').insert(newCharacter).returning('*');

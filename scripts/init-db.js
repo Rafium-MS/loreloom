@@ -1,31 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { db, readData, writeData, init: initDbService, destroy } = require('../services/db');
-
-async function createCharactersTable() {
-  const exists = await db.schema.hasTable('characters');
-  if (!exists) {
-    console.log('Creating "characters" table...');
-    await db.schema.createTable('characters', table => {
-      table.increments('id').primary();
-      table.string('name').notNullable();
-      table.string('age');
-      table.string('race');
-      table.string('class');
-      table.string('role');
-      table.text('appearance');
-      table.text('personality');
-      table.text('background');
-      table.text('skills');
-      table.text('relationships');
-      table.json('tags');
-      table.timestamps(true, true);
-    });
-    console.log('"characters" table created.');
-  } else {
-    console.log('"characters" table already exists.');
-  }
-}
+const { createCharactersTable } = require('../services/schema');
 
 (async () => {
   try {
