@@ -1,17 +1,8 @@
-const knex = require('knex');
-const path = require('path');
+const db = require('./knex');
+const cache = require('./cache');
+const dataRepository = require('../repositories/dataRepository');
 
-const config = process.env.DATABASE_URL
-  ? { client: 'pg', connection: process.env.DATABASE_URL }
-  : {
-      client: 'sqlite3',
-      connection: { filename: path.join(__dirname, '..', 'loreloom.db') },
-      useNullAsDefault: true,
-    };
-
-const db = knex(config);
-
-let cache = null;
+const CACHE_KEY = 'data';
 
 function getDefaultData() {
   return {
@@ -28,43 +19,44 @@ function getDefaultData() {
 }
 
 async function init() {
-  const exists = await db.schema.hasTable('data');
+  const exists = await db.schema.hasTable('data_entries');
   if (!exists) {
-    await db.schema.createTable('data', table => {
-      table.integer('id').primary();
+    await db.schema.createTable('data_entries', table => {
+      table.string('key').primary();
       table.text('json');
     });
   }
 }
 
 async function readData() {
-  if (cache) return cache;
+  const cached = cache.get(CACHE_KEY);
+  if (cached) return cached;
 
-  const row = await db('data').where({ id: 1 }).first();
-  if (row && row.json) {
+  const rows = await dataRepository.getAll();
+  if (!rows.length) {
+    const defaults = getDefaultData();
+    cache.set(CACHE_KEY, defaults);
+    return defaults;
+  }
+  const data = {};
+  for (const { key, json } of rows) {
     try {
-      const data = JSON.parse(row.json);
-      if (!data.uiLanguage) data.uiLanguage = 'pt';
-      cache = data;
-      return data;
-    } catch (err) {
-      // fall through to defaults below
+      data[key] = JSON.parse(json);
+    } catch {
+      data[key] = null;
     }
   }
-
-  cache = getDefaultData();
-  return cache;
+  if (!data.uiLanguage) data.uiLanguage = 'pt';
+  cache.set(CACHE_KEY, data);
+  return data;
 }
 
 async function writeData(data) {
-  const json = JSON.stringify(data);
-  const exists = await db('data').where({ id: 1 }).first();
-  if (exists) {
-    await db('data').where({ id: 1 }).update({ json });
-  } else {
-    await db('data').insert({ id: 1, json });
+  const entries = Object.entries(data);
+  for (const [key, value] of entries) {
+    await dataRepository.upsert(key, value);
   }
-  cache = null;
+  cache.del(CACHE_KEY);
 }
 
 async function destroy() {
