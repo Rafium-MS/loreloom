@@ -8,29 +8,25 @@ const router = express.Router();
 router.post(
   '/save',
   asyncHandler(async (req, res) => {
-    const { error, value } = dataSchema.validate(req.body);
+    const { error, value } = dataSchema.validate(req.body, {
+      abortEarly: false,
+      stripUnknown: true,
+    });
     if (error) {
-      return res.status(400).json(error);
+      return res.status(400).json({ message: 'Validation error', details: error.details });
     }
     await writeData(value);
     res.json({ status: 'ok' });
   }),
 );
 
-router.get(
-  '/load',
-  asyncHandler(async (_req, res) => {
-    const data = await readData();
-    res.json(data);
-  }),
-);
+// Reaproveita o mesmo handler para /load e /data.json
+const getDataHandler = asyncHandler(async (_req, res) => {
+  const data = await readData();
+  res.json(data);
+});
 
-router.get(
-  '/data.json',
-  asyncHandler(async (_req, res) => {
-    const data = await readData();
-    res.json(data);
-  }),
-);
+router.get('/load', getDataHandler);
+router.get('/data.json', getDataHandler);
 
 export default router;

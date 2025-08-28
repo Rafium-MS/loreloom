@@ -6,6 +6,7 @@ import { setLanguage } from './i18n.js';
 import { debounce } from './utils-module.js';
 import { loadModals, openModal, closeModal } from './modals.js';
 import { initNavigation } from './navigation.js';
+
 await loadModals();
 initNavigation();
 
@@ -32,27 +33,33 @@ async function loadProject() {
     console.error('Failed to load project', err);
     const statusEl = document.getElementById('status');
     if (statusEl) statusEl.textContent = 'Erro ao carregar projeto';
+
+    // Fallback para dados locais
     try {
       const fallback = await fetch('/data.json');
       if (fallback.ok) {
         data = await fallback.json();
-        const statusEl = document.getElementById('status');
-        if (statusEl) statusEl.textContent = 'Dados locais carregados';
+        const statusEl2 = document.getElementById('status');
+        if (statusEl2) statusEl2.textContent = 'Dados locais carregados';
       }
     } catch (fallbackErr) {
       console.error('Fallback load failed', fallbackErr);
     }
   }
-  if (data) {
-    Object.assign(projectData, data);
-  }
+
+  if (data) Object.assign(projectData, data);
+
   const mainTextEl = document.getElementById('mainText');
   if (mainTextEl) mainTextEl.innerHTML = projectData.content || '';
+
   const titleEl = document.getElementById('documentTitle');
   if (titleEl) titleEl.value = projectData.title || '';
+
   const langSelect = document.getElementById('languageSwitcher');
   if (langSelect) langSelect.value = projectData.uiLanguage || 'pt';
+
   setLanguage(projectData.uiLanguage || 'pt');
+
   editor.updateWordCount();
   characters.renderCharacterList();
   world.renderLocationList();
@@ -64,19 +71,16 @@ async function loadProject() {
   editor.resetHistory();
 }
 
-document
-  .getElementById('mainText')
+document.getElementById('mainText')
   ?.addEventListener('input', editor.updateWordCount);
-document
-  .getElementById('mainText')
+
+document.getElementById('mainText')
   ?.addEventListener('input', debounce(editor.checkConsistency, 300));
 
-document
-  .getElementById('importFile')
+document.getElementById('importFile')
   ?.addEventListener('change', editor.importProject);
 
-document
-  .getElementById('languageSwitcher')
+document.getElementById('languageSwitcher')
   ?.addEventListener('change', async function () {
     projectData.uiLanguage = this.value;
     setLanguage(this.value);
