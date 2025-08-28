@@ -18,17 +18,7 @@ router.post('/save', async (req, res) => {
   }
 });
 
-router.get('/load', async (_req, res) => {
-  try {
-    const data = await readData();
-    res.json(data);
-  } catch (err) {
-    console.error('Error loading data:', err);
-    res.status(500).json({ error: 'Failed to load data' });
-  }
-});
-
-router.get('/data.json', async (_req, res) => {
+router.get(['/load', '/data.json'], async (_req, res) => {
   try {
     const data = await readData();
     res.json(data);
