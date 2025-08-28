@@ -39,15 +39,13 @@ test.afterEach(async () => {
 });
 
 test('readData creates default structure when the database is empty', async () => {
-  const { init, readData } = require(dbModulePath);
-  await init();
+  const { readData } = require(dbModulePath);
   const data = await readData();
   assert.deepStrictEqual(data, defaultData);
 });
 
 test('writeData persists and readData retrieves the data', async () => {
-  const { init, readData, writeData } = require(dbModulePath);
-  await init();
+  const { readData, writeData } = require(dbModulePath);
   const payload = {
     title: 'Title',
     content: 'Content',

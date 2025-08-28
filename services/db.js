@@ -3,6 +3,14 @@ const cache = require('./cache');
 const dataRepository = require('../repositories/dataRepository');
 
 const CACHE_KEY = 'data';
+let initialized = false;
+
+async function ensureInit() {
+  if (!initialized) {
+    await init();
+    initialized = true;
+  }
+}
 
 function getDefaultData() {
   return {
@@ -26,9 +34,11 @@ async function init() {
       table.text('json');
     });
   }
+  initialized = true;
 }
 
 async function readData() {
+  await ensureInit();
   const cached = cache.get(CACHE_KEY);
   if (cached) return cached;
 
@@ -52,6 +62,7 @@ async function readData() {
 }
 
 async function writeData(data) {
+  await ensureInit();
   const entries = Object.entries(data);
   for (const [key, value] of entries) {
     await dataRepository.upsert(key, value);
