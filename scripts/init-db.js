@@ -41,7 +41,7 @@ async function createCharactersTable() {
       try {
         const raw = await fs.promises.readFile(dataFile, 'utf8');
         const initialData = JSON.parse(raw);
-        
+
         // Garante que nenhum personagem seja importado para o blob JSON antigo
         if (initialData.characters) {
           console.log('Ignoring "characters" array from data.json during import.');
@@ -54,10 +54,10 @@ async function createCharactersTable() {
         console.warn('Failed to load or parse data.json, using empty dataset.', err);
       }
     }
-    
+
     // 3. Cria a nova tabela `characters`
     await createCharactersTable();
-    
+
     console.log('Database initialization complete.');
   } catch (err) {
     console.error('Failed to initialize or migrate database:', err);

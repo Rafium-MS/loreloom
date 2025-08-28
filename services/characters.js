@@ -12,7 +12,7 @@ async function getAllCharacters() {
 
 async function addCharacter(character) {
   const sanitized = sanitizeCharacter(character);
-  
+
   const newCharacter = {
     name: sanitized.name,
     age: sanitized.age,

@@ -25,7 +25,7 @@ router.post('/', async (req, res) => {
         details: error
       });
     }
-    
+
     const newCharacter = await addCharacter(value);
     res.status(201).json(newCharacter); // Retorna 201 Created com o novo recurso
   } catch (err) {

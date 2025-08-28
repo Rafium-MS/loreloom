@@ -1,6 +1,5 @@
 function validateCharacter(value) {
   const errors = [];
-  if (!Number.isInteger(value.id)) errors.push('id');
   if (typeof value.name !== 'string' || !value.name.trim()) errors.push('name');
   if (value.tags && !Array.isArray(value.tags)) errors.push('tags');
   return errors.length ? { error: errors } : { value };
@@ -10,7 +9,6 @@ function validateData(value) {
   const errors = [];
   if (typeof value.title !== 'string') errors.push('title');
   if (typeof value.content !== 'string') errors.push('content');
-  if (!Array.isArray(value.characters)) errors.push('characters');
   if (!Array.isArray(value.locations)) errors.push('locations');
   if (!Array.isArray(value.items)) errors.push('items');
   if (!Array.isArray(value.languages)) errors.push('languages');
@@ -32,7 +30,6 @@ const dataSchema = { validate: validateData };
 
 function sanitizeCharacter(ch) {
   return {
-    id: ch.id,
     name: (ch.name || '').trim(),
     age: (ch.age || '').trim(),
     race: (ch.race || '').trim(),
@@ -51,7 +48,6 @@ function sanitizeData(data) {
   return {
     title: (data.title || '').trim(),
     content: (data.content || '').trim(),
-    characters: Array.isArray(data.characters) ? data.characters.map(sanitizeCharacter) : [],
     locations: Array.isArray(data.locations) ? data.locations : [],
     items: Array.isArray(data.items) ? data.items : [],
     languages: Array.isArray(data.languages) ? data.languages : [],
