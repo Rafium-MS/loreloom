@@ -1,0 +1,53 @@
+/* Tema Medieval */
+:root {
+  --font-family-sans: 'Cinzel', sans-serif;
+
+  /* Base */
+  --bg: #1a2b4b;           /* Fundo azul escuro */
+  --text: #f0e6d2;         /* Texto cor de pergaminho */
+  --muted: #a0937d;        /* Textos secundários */
+
+  /* Superfícies e bordas */
+  --surface: #2e4a6e;      /* Painéis e cartões */
+  --panel: #1a2b4b;        /* Sidebar, áreas largas */
+  --border: #c8a464;       /* Bordas douradas */
+  --border-weak: #8b7355;  /* Borda sutil */
+  --row-divider: #3a5a8a;  /* Linhas de lista */
+
+  /* Topbar */
+  --topbar-bg: #121e36;
+  --topbar-text: #f0e6d2;
+  --shadow-100: 0 2px 10px rgba(0,0,0,0.45);
+
+  /* Ação / Estado */
+  --primary: #e6c384;      /* Dourado */
+  --primary-strong: #d4af6a;
+  --secondary: #8b7355;
+  --danger: #d9534f;
+  --success: #5cb85c;
+
+  /* Hovers/realces */
+  --hover: #3a5a8a;
+  --active-bg: #4a6fa8;
+  --active-text: #f0e6d2;
+
+  /* Utilitários */
+  --neutral-50:  #243c64;
+  --neutral-100: #2e4a6e;
+  --neutral-200: #3a5a8a;
+  --neutral-300: #4a6fa8;
+  --neutral-400: #5a84c6;
+
+  /* Badges */
+  --badge-draft-bg:  #4a3a2a;
+  --badge-draft-fg:  #e6c384;
+  --badge-draft-br:  #c8a464;
+  --badge-final-bg:  #2a4a3a;
+  --badge-final-fg:  #a3d9a5;
+  --badge-final-br:  #8baf8c;
+
+  /* Focus ring */
+  --ring-primary: rgba(230, 195, 132, 0.25);
+
+  color-scheme: dark;
+}
