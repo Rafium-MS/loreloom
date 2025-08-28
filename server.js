@@ -1,7 +1,6 @@
 const express = require('express');
 const path = require('path');
 const os = require('os');
-const bodyParser = require('body-parser');
 const morgan = require('morgan');
 
 const charactersRouter = require('./routes/characters');
@@ -14,8 +13,8 @@ const port = process.env.PORT || 3000;
 
 // Middlewares
 app.use(morgan('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Serve static assets from the dedicated public directory
 app.use(express.static(path.join(__dirname, 'public')));
