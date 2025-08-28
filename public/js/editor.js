@@ -107,8 +107,77 @@ export async function saveProject() {
   console.log('Projeto salvo:', projectData);
 }
 
+function extractBracketRefs(editorElement) {
+  const refs = [];
+  let line = 1;
+  const regex = /\[([^\]]+)\]/g;
+
+  function traverse(node) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      let match;
+      while ((match = regex.exec(node.textContent)) !== null) {
+        refs.push({ ref: match[1], line });
+      }
+    } else if (node.nodeType === Node.ELEMENT_NODE) {
+      const isBlock = window.getComputedStyle(node).display === 'block';
+      if (isBlock && node.childNodes.length > 0) {
+        line++;
+      }
+      node.childNodes.forEach(traverse);
+    }
+  }
+
+  editorElement.childNodes.forEach(traverse);
+  return refs;
+}
+
+function mapRefsToEntities(refsWithLines, projectData) {
+  const characterNames = new Set(projectData.characters.map(c => c.name));
+  const locationNames = new Set(projectData.locations.map(l => l.name));
+
+  return refsWithLines.map(({ ref, line }) => {
+    if (characterNames.has(ref)) {
+      return { type: 'character', ref, exists: true, line };
+    }
+    if (locationNames.has(ref)) {
+      return { type: 'place', ref, exists: true, line };
+    }
+    // Heurística
+    const isCharacter = projectData.characters.some(c => ref.toLowerCase().includes(c.name.toLowerCase()));
+    if (isCharacter) {
+      return { type: 'character', ref, exists: false, line };
+    }
+    const isLocation = projectData.locations.some(l => ref.toLowerCase().includes(l.name.toLowerCase()));
+    if (isLocation) {
+      return { type: 'place', ref, exists: false, line };
+    }
+    return { type: 'unknown', ref, exists: false, line };
+  });
+}
+
 export function checkConsistency() {
-  alert('Função de verificação de consistência ainda não implementada.');
+  const editor = document.getElementById('mainText');
+  const refs = extractBracketRefs(editor);
+  const results = mapRefsToEntities(refs, projectData);
+  const inconsistencies = results.filter(r => !r.exists);
+
+  const resultContainer = document.getElementById('consistencyResult');
+  if (resultContainer) {
+    if (inconsistencies.length === 0) {
+      resultContainer.innerHTML = '<p>Nenhuma inconsistência encontrada.</p>';
+    } else {
+      resultContainer.innerHTML = inconsistencies
+        .map(item => `
+          <div class="inconsistency-item">
+            Linha ${item.line}: Referência não encontrada: <strong>${item.ref}</strong> (tipo provável: ${item.type})
+          </div>
+        `)
+        .join('');
+    }
+    window.openModal('consistencyModal');
+  } else {
+    console.warn('Painel de consistência não encontrado. Resultados:', inconsistencies);
+  }
 }
 
 export function exportProject() {

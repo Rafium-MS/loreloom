@@ -3,6 +3,7 @@ import * as editor from './editor.js';
 import * as characters from './characters.js';
 import * as world from './world.js';
 import { setLanguage } from './i18n.js';
+import { debounce } from './utils.js';
 
 const modalTriggers = {};
 
@@ -46,7 +47,7 @@ function closeGrammarPanel() {
 
 const localActions = { triggerImport, closeGrammarPanel };
 
-Object.assign(window, editor, characters, world, { openModal, closeModal });
+Object.assign(window, editor, characters, world, { openModal, closeModal }, {saveFaction: world.saveFaction});
 
 async function loadProject() {
   let data;
@@ -86,6 +87,7 @@ async function loadProject() {
   world.renderLanguageList();
   world.renderEventList();
   world.renderNoteList();
+  world.renderFactionList();
 }
 
 document.querySelectorAll('.nav-item').forEach(item => {
@@ -129,6 +131,7 @@ document.querySelectorAll('.modal').forEach(modal => {
 });
 
 document.getElementById('mainText')?.addEventListener('input', editor.updateWordCount);
+document.getElementById('mainText')?.addEventListener('input', debounce(editor.checkConsistency, 300));
 
 document.getElementById('importFile')?.addEventListener('change', editor.importProject);
 
