@@ -3,6 +3,7 @@ import * as editor from './editor.js';
 import * as characters from './characters.js';
 import * as world from './world.js';
 import { setLanguage } from './i18n.js';
+import { debounce } from './utils.js';
 
 const modalTriggers = {};
 
@@ -129,6 +130,7 @@ document.querySelectorAll('.modal').forEach(modal => {
 });
 
 document.getElementById('mainText')?.addEventListener('input', editor.updateWordCount);
+document.getElementById('mainText')?.addEventListener('input', debounce(editor.checkConsistency, 300));
 
 document.getElementById('importFile')?.addEventListener('change', editor.importProject);
 
