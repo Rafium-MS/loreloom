@@ -4,10 +4,12 @@ const { getAllCharacters, addCharacter } = require('../services/characters');
 
 const router = express.Router();
 
-router.get('/', async (_req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const characters = await getAllCharacters();
-    res.json(characters);
+    const limit = parseInt(req.query.limit, 10) || 20;
+    const cursor = req.query.cursor ? parseInt(req.query.cursor, 10) : undefined;
+    const result = await getAllCharacters({ limit, cursor });
+    res.json(result);
   } catch (err) {
     console.error('Error loading characters:', err);
     res.status(500).json({ error: 'Failed to load characters' });
@@ -22,7 +24,7 @@ router.post('/', async (req, res) => {
     }
 
     const newCharacter = await addCharacter(value);
-    res.status(201).json(newCharacter); // Retorna 201 Created com o novo recurso
+    res.status(201).json(newCharacter);
   } catch (err) {
     console.error('Error saving character:', err);
     res.status(500).json({ error: 'Failed to save character' });

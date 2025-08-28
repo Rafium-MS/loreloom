@@ -13,18 +13,17 @@ function buildApp() {
   delete require.cache[require.resolve('../routes/data')];
   delete require.cache[require.resolve('../services/db')];
 
-  const defaultData = {
-    title: '',
-    content: '',
-    characters: [],
-    locations: [],
-    items: [],
-    languages: [],
-    timeline: [],
-    notes: [],
-    economy: { currencies: [], resources: [], markets: [] },
-    uiLanguage: 'pt'
-  };
+    const defaultData = {
+      title: '',
+      content: '',
+      locations: [],
+      items: [],
+      languages: [],
+      timeline: [],
+      notes: [],
+      economy: { currencies: [], resources: [], markets: [] },
+      uiLanguage: 'pt'
+    };
 
   const dbModule = {
     async readData() {
@@ -96,7 +95,6 @@ test('POST /save persists sanitized data and GET endpoints return it', async () 
   const expected = {
     title: 'T1',
     content: 'story',
-    characters: [],
     locations: [],
     items: [],
     languages: [],
