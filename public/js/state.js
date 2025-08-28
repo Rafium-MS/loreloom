@@ -7,6 +7,7 @@ export const projectData = {
   languages: [],
   timeline: [],
   notes: [],
+  factions: [],
   economy: {
     currencies: [],
     resources: [],
@@ -22,5 +23,6 @@ export const editingIds = {
   item: null,
   language: null,
   event: null,
-  note: null
+  note: null,
+  faction: null
 };
