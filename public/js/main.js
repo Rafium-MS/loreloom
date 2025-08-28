@@ -4,37 +4,10 @@ import * as characters from './characters.js';
 import * as world from './world.js';
 import { setLanguage } from './i18n.js';
 import { debounce } from './utils-module.js';
-
-const modalTriggers = {};
-
-async function loadModals() {
-  const res = await fetch('/partials/modals.html');
-  if (res.ok) {
-    const html = await res.text();
-    document.body.insertAdjacentHTML('beforeend', html);
-  }
-}
-
+import { loadModals, openModal, closeModal } from './modals.js';
+import { initNavigation } from './navigation.js';
 await loadModals();
-
-function openModal(modalId, trigger) {
-  const modal = document.getElementById(modalId);
-  if (!modal) return;
-  modal.classList.add('active');
-  modalTriggers[modalId] = trigger || document.activeElement;
-  const focusEl = modal.querySelector('input, select, textarea, button');
-  focusEl?.focus();
-}
-
-function closeModal(modalId) {
-  const modal = document.getElementById(modalId);
-  modal?.classList.remove('active');
-  const trigger = modalTriggers[modalId];
-  if (trigger && typeof trigger.focus === 'function') {
-    trigger.focus();
-  }
-  delete modalTriggers[modalId];
-}
+initNavigation();
 
 function triggerImport() {
   document.getElementById('importFile')?.click();
@@ -47,12 +20,7 @@ function closeGrammarPanel() {
 
 const localActions = { triggerImport, closeGrammarPanel };
 
-Object.assign(
-  window,
-  { ...editor, ...characters, ...world },
-  { openModal, closeModal },
-  { saveFaction: world.saveFaction },
-);
+Object.assign(window, editor, characters, world, { openModal, closeModal });
 
 async function loadProject() {
   let data;
@@ -96,54 +64,6 @@ async function loadProject() {
   editor.resetHistory();
 }
 
-document.querySelectorAll('.nav-item').forEach((item) => {
-  item.addEventListener('click', function (e) {
-    e.stopPropagation();
-    document
-      .querySelectorAll('.nav-item')
-      .forEach((nav) => nav.classList.remove('active'));
-    document
-      .querySelectorAll('.content-panel')
-      .forEach((panel) => panel.classList.remove('active'));
-    this.classList.add('active');
-    const route = this.dataset.route;
-    document.getElementById(route)?.classList.add('active');
-    const crumb = document.getElementById('crumb');
-    if (crumb) {
-      crumb.setAttribute('data-i18n', this.getAttribute('data-i18n') || '');
-      const label = this.classList.contains('has-submenu')
-        ? this.childNodes[0].textContent.trim()
-        : this.textContent.trim();
-      crumb.textContent = label;
-    }
-  });
-});
-
-document.querySelectorAll('.tab').forEach((tab) => {
-  tab.addEventListener('click', function () {
-    if (this.closest('#world')) {
-      document
-        .querySelectorAll('.tab')
-        .forEach((t) => t.classList.remove('active'));
-      document
-        .querySelectorAll('.tab-content')
-        .forEach((tc) => (tc.style.display = 'none'));
-      this.classList.add('active');
-      const tabId = this.dataset.tab;
-      const tab = document.getElementById(tabId);
-      if (tab) tab.style.display = 'block';
-    }
-  });
-});
-
-document.querySelectorAll('.modal').forEach((modal) => {
-  modal.addEventListener('click', function (e) {
-    if (e.target === this) {
-      closeModal(this.id);
-    }
-  });
-});
-
 document
   .getElementById('mainText')
   ?.addEventListener('input', editor.updateWordCount);
@@ -168,10 +88,6 @@ document.addEventListener('keydown', function (e) {
     e.preventDefault();
     editor.saveProject();
   }
-});
-
-document.getElementById('sidebarToggle')?.addEventListener('click', () => {
-  document.querySelector('.app')?.classList.toggle('collapsed');
 });
 
 document.querySelectorAll('[data-action]').forEach((el) => {
