@@ -1,5 +1,5 @@
 const express = require('express');
-const { dataSchema } = require('../validation');
+const { dataSchema } = require('../validation/data');
 const { readData, writeData } = require('../services/db');
 const asyncHandler = require('../middlewares/asyncHandler');
 
