@@ -112,6 +112,29 @@ export function renderNoteList() {
   });
 }
 
+export function renderFactionList() {
+  const list = document.getElementById('factionList');
+  if (!list) return;
+  list.innerHTML = '';
+  projectData.factions.forEach(f => {
+    const tags = (f.tags || []).map(t => `<div class="tag">${t}</div>`).join('');
+    const item = document.createElement('div');
+    item.className = 'list-item';
+    item.innerHTML = `
+      <div>
+        <strong>${f.name}</strong>
+        <div style="font-size: 0.9em; color: #64748b;">${f.description.substring(0, 50)}...</div>
+        ${tags}
+      </div>
+      <div>
+        <button class="btn" onclick="editFaction(${f.id}, this)">Editar</button>
+        <button class="btn btn-danger" onclick="deleteFaction(${f.id})">Excluir</button>
+      </div>
+    `;
+    list.appendChild(item);
+  });
+}
+
 export function openLocationModal(trigger = document.activeElement) {
   editingIds.location = null;
   ['locName','locType','locRegion','locPopulation','locDescription','locRuler','locInterests','locHistory','locTags'].forEach(id => document.getElementById(id).value = '');
@@ -140,6 +163,19 @@ export function openNoteModal(trigger = document.activeElement) {
   editingIds.note = null;
   ['noteTitle','noteCategory','noteContent','noteTags'].forEach(id => document.getElementById(id).value = '');
   openModal('noteModal', trigger);
+}
+
+export function openFactionModal(trigger = document.activeElement) {
+  editingIds.faction = null;
+  document.getElementById('factionModalTitle').textContent = 'Nova Facção';
+  ['factionName', 'factionDescription', 'factionTags'].forEach(id => document.getElementById(id).value = '');
+  const triggerEl = trigger.hasOwnProperty('target') ? trigger.target : trigger;
+  const factionId = triggerEl.dataset.factionId;
+  if (factionId) {
+      editFaction(parseInt(factionId, 10), trigger);
+  } else {
+      openModal('factionModal', trigger);
+  }
 }
 
 export async function saveLocation() {
@@ -270,6 +306,37 @@ export async function saveNote() {
   console.log('Nota salva:', note);
 }
 
+export async function saveFaction() {
+  const nameInput = document.getElementById('factionName');
+  const name = nameInput.value.trim();
+
+  if (!name) {
+    nameInput.classList.add('is-invalid');
+    return;
+  }
+  nameInput.classList.remove('is-invalid');
+
+  const faction = {
+    id: editingIds.faction || Date.now(),
+    name: name,
+    description: document.getElementById('factionDescription').value,
+    tags: document.getElementById('factionTags').value.split(',').map(t => t.trim()).filter(Boolean)
+  };
+
+  if (editingIds.faction) {
+    const idx = projectData.factions.findIndex(f => f.id === editingIds.faction);
+    if (idx !== -1) projectData.factions[idx] = faction;
+  } else {
+    projectData.factions.push(faction);
+  }
+
+  await saveProject();
+  renderFactionList();
+  closeModal('factionModal');
+  editingIds.faction = null;
+  console.log('Facção salva:', faction);
+}
+
 export function editLocation(id, trigger = document.activeElement) {
   const l = projectData.locations.find(loc => loc.id === id);
   if (!l) return;
@@ -370,4 +437,22 @@ export async function deleteNote(id) {
   projectData.notes = projectData.notes.filter(n => n.id !== id);
   await saveProject();
   renderNoteList();
+}
+
+export function editFaction(id, trigger = document.activeElement) {
+    const faction = projectData.factions.find(f => f.id === id);
+    if (!faction) return;
+
+    editingIds.faction = id;
+    document.getElementById('factionModalTitle').textContent = 'Editar Facção';
+    document.getElementById('factionName').value = faction.name || '';
+    document.getElementById('factionDescription').value = faction.description || '';
+    document.getElementById('factionTags').value = (faction.tags || []).join(', ');
+    openModal('factionModal', trigger);
+}
+
+export async function deleteFaction(id) {
+    projectData.factions = projectData.factions.filter(f => f.id !== id);
+    await saveProject();
+    renderFactionList();
 }
