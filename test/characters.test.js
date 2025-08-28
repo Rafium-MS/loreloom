@@ -3,58 +3,91 @@ const assert = require('node:assert/strict');
 const express = require('express');
 const fs = require('node:fs');
 const path = require('node:path');
+const { db, init, destroy } = require('../services/db');
 
-let charactersRouter;
-try {
-  // Ensure a clean database for tests
-  fs.rmSync(path.join(__dirname, '..', 'loreloom.db'), { force: true });
-  charactersRouter = require('../routes/characters');
-} catch (err) {
-  console.warn('Skipping characters route tests:', err.message);
+const dbFile = path.join(__dirname, '..', 'loreloom.db');
+const charactersRouter = require('../routes/characters');
+
+async function createCharactersTable() {
+  if (!(await db.schema.hasTable('characters'))) {
+    await db.schema.createTable('characters', table => {
+      table.increments('id').primary();
+      table.string('name').notNullable();
+      table.string('age');
+      table.string('race');
+      table.string('class');
+      table.string('role');
+      table.text('appearance');
+      table.text('personality');
+      table.text('background');
+      table.text('skills');
+      table.text('relationships');
+      table.json('tags');
+      table.timestamps(true, true);
+    });
+  }
 }
 
-if (charactersRouter) {
-  test('characters routes', async t => {
+test('characters routes', async t => {
+  let server;
+  let base;
+
+  // Roda uma vez depois de todos os testes neste arquivo
+  t.after(async () => {
+    await destroy();
+  });
+
+  t.beforeEach(async () => {
+    // Limpa e reinicializa o banco de dados para cada teste
+    await db('characters').truncate();
     const app = express();
     app.use(express.json());
     app.use('/characters', charactersRouter);
-    const server = app.listen(0);
-    const base = `http://localhost:${server.address().port}`;
+    server = app.listen(0);
+    base = `http://localhost:${server.address().port}`;
+  });
 
-    await t.test('GET returns empty array', async () => {
-      const res = await fetch(`${base}/characters`);
-      assert.equal(res.status, 200);
-      const json = await res.json();
-      assert.deepStrictEqual(json, []);
-    });
-
-    await t.test('POST rejects invalid character', async () => {
-      const res = await fetch(`${base}/characters`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: 1 })
-      });
-      assert.equal(res.status, 400);
-    });
-
-    await t.test('POST accepts valid character and sanitizes', async () => {
-      const res = await fetch(`${base}/characters`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: 1, name: ' Alice ', tags: [' hero ', ' '] })
-      });
-      assert.equal(res.status, 200);
-      const data = await res.json();
-      assert.deepStrictEqual(data, { status: 'ok' });
-
-      const getRes = await fetch(`${base}/characters`);
-      assert.equal(getRes.status, 200);
-      const list = await getRes.json();
-      assert.deepStrictEqual(list, [
-        { id: 1, name: 'Alice', age: '', race: '', class: '', role: '', appearance: '', personality: '', background: '', skills: '', relationships: '', tags: ['hero'] }
-      ]);
-    });
-
+  t.afterEach(() => {
     server.close();
   });
-}
+
+  // Inicializa o banco de dados uma vez antes de todos os testes
+  await init();
+  await createCharactersTable();
+
+  await t.test('GET returns empty array initially', async () => {
+    const res = await fetch(`${base}/characters`);
+    assert.equal(res.status, 200);
+    const json = await res.json();
+    assert.deepStrictEqual(json, []);
+  });
+
+  await t.test('POST rejects character with invalid name', async () => {
+    const res = await fetch(`${base}/characters`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: '  ' })
+    });
+    assert.equal(res.status, 400);
+  });
+
+  await t.test('POST creates a valid character', async () => {
+    const characterData = { name: 'Gandalf', class: 'Wizard', tags: ['Istari'] };
+    const res = await fetch(`${base}/characters`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(characterData)
+    });
+
+    assert.equal(res.status, 201);
+    const newCharacter = await res.json();
+    assert.equal(newCharacter.name, 'Gandalf');
+    assert.ok(newCharacter.id);
+
+    const getRes = await fetch(`${base}/characters`);
+    const list = await getRes.json();
+    assert.equal(list.length, 1);
+    assert.equal(list[0].name, 'Gandalf');
+    assert.deepStrictEqual(list[0].tags, ['Istari']);
+  });
+});

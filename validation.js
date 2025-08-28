@@ -9,7 +9,6 @@ function validateData(value) {
   const errors = [];
   if (typeof value.title !== 'string') errors.push('title');
   if (typeof value.content !== 'string') errors.push('content');
-  if (!Array.isArray(value.characters)) errors.push('characters');
   if (!Array.isArray(value.locations)) errors.push('locations');
   if (!Array.isArray(value.items)) errors.push('items');
   if (!Array.isArray(value.languages)) errors.push('languages');
@@ -49,7 +48,6 @@ function sanitizeData(data) {
   return {
     title: (data.title || '').trim(),
     content: (data.content || '').trim(),
-    characters: Array.isArray(data.characters) ? data.characters.map(sanitizeCharacter) : [],
     locations: Array.isArray(data.locations) ? data.locations : [],
     items: Array.isArray(data.items) ? data.items : [],
     languages: Array.isArray(data.languages) ? data.languages : [],

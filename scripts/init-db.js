@@ -27,44 +27,6 @@ async function createCharactersTable() {
   }
 }
 
-async function migrateCharacters() {
-  console.log('Starting character migration...');
-  const data = await readData();
-
-  if (!data.characters || data.characters.length === 0) {
-    console.log('No characters in JSON blob to migrate.');
-    return;
-  }
-
-  let migratedCount = 0;
-  for (const character of data.characters) {
-    // Use a more robust check, for example, based on name, assuming names are unique for now.
-    const exists = await db('characters').where({ name: character.name }).first();
-    if (!exists) {
-      await db('characters').insert({
-        name: character.name,
-        age: character.age,
-        race: character.race,
-        class: character.class,
-        role: character.role,
-        appearance: character.appearance,
-        personality: character.personality,
-        background: character.background,
-        skills: character.skills,
-        relationships: character.relationships,
-        tags: JSON.stringify(character.tags || [])
-      });
-      migratedCount++;
-    }
-  }
-
-  if (migratedCount > 0) {
-    console.log(`Successfully migrated ${migratedCount} characters.`);
-  } else {
-    console.log('All characters seem to be already migrated.');
-  }
-}
-
 (async () => {
   try {
     // 1. Garante que a tabela `data` original exista
@@ -79,6 +41,13 @@ async function migrateCharacters() {
       try {
         const raw = await fs.promises.readFile(dataFile, 'utf8');
         const initialData = JSON.parse(raw);
+
+        // Garante que nenhum personagem seja importado para o blob JSON antigo
+        if (initialData.characters) {
+          console.log('Ignoring "characters" array from data.json during import.');
+          delete initialData.characters;
+        }
+
         await writeData(initialData);
         console.log('Loaded data.json for initial import.');
       } catch (err) {
@@ -89,10 +58,7 @@ async function migrateCharacters() {
     // 3. Cria a nova tabela `characters`
     await createCharactersTable();
 
-    // 4. Migra os dados da tabela antiga para a nova
-    await migrateCharacters();
-
-    console.log('Database initialization and migration complete.');
+    console.log('Database initialization complete.');
   } catch (err) {
     console.error('Failed to initialize or migrate database:', err);
     process.exit(1);

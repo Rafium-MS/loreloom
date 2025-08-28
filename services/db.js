@@ -31,7 +31,6 @@ async function readData() {
   return {
     title: '',
     content: '',
-    characters: [],
     locations: [],
     items: [],
     languages: [],
