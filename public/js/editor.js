@@ -1,5 +1,5 @@
 import { projectData } from './state.js';
-import { debounce } from './utils.js';
+import { debounce } from './utils-module.js';
 
 const MAX_HISTORY_SIZE = 50;
 let undoStack = [];
@@ -7,62 +7,66 @@ let redoStack = [];
 let editorElement;
 
 function pushState(innerHTML) {
-    if (undoStack.length > 0 && undoStack[undoStack.length - 1] === innerHTML) {
-        return;
-    }
+  if (undoStack.length > 0 && undoStack[undoStack.length - 1] === innerHTML) {
+    return;
+  }
 
-    undoStack.push(innerHTML);
-    if (undoStack.length > MAX_HISTORY_SIZE) {
-        undoStack.shift();
-    }
-    redoStack = [];
+  undoStack.push(innerHTML);
+  if (undoStack.length > MAX_HISTORY_SIZE) {
+    undoStack.shift();
+  }
+  redoStack = [];
 }
 
 export function undo() {
-    if (undoStack.length <= 1) return;
-    const currentState = undoStack.pop();
-    redoStack.push(currentState);
-    const prevState = undoStack[undoStack.length - 1];
-    editorElement.innerHTML = prevState;
+  if (undoStack.length <= 1) return;
+  const currentState = undoStack.pop();
+  redoStack.push(currentState);
+  const prevState = undoStack[undoStack.length - 1];
+  editorElement.innerHTML = prevState;
 }
 
 export function redo() {
-    if (redoStack.length === 0) return;
-    const nextState = redoStack.pop();
-    undoStack.push(nextState);
-    editorElement.innerHTML = nextState;
+  if (redoStack.length === 0) return;
+  const nextState = redoStack.pop();
+  undoStack.push(nextState);
+  editorElement.innerHTML = nextState;
 }
 
 export function resetHistory() {
-    undoStack = [editorElement.innerHTML];
-    redoStack = [];
+  undoStack = [editorElement.innerHTML];
+  redoStack = [];
 }
 
 export function bindEditorHistory() {
-    editorElement = document.getElementById('mainText');
-    if (!editorElement) return;
+  editorElement = document.getElementById('mainText');
+  if (!editorElement) return;
 
-    resetHistory();
+  resetHistory();
 
-    const debouncedPushState = debounce(() => {
-        pushState(editorElement.innerHTML);
-    }, 300);
+  const debouncedPushState = debounce(() => {
+    pushState(editorElement.innerHTML);
+  }, 300);
 
-    editorElement.addEventListener('input', debouncedPushState);
+  editorElement.addEventListener('input', debouncedPushState);
 
-    document.addEventListener('keydown', e => {
-        const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
-        const undoKey = isMac ? e.metaKey && e.key === 'z' : e.ctrlKey && e.key === 'z';
-        const redoKey = isMac ? e.metaKey && e.key === 'y' : e.ctrlKey && e.key === 'y';
+  document.addEventListener('keydown', (e) => {
+    const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+    const undoKey = isMac
+      ? e.metaKey && e.key === 'z'
+      : e.ctrlKey && e.key === 'z';
+    const redoKey = isMac
+      ? e.metaKey && e.key === 'y'
+      : e.ctrlKey && e.key === 'y';
 
-        if (undoKey) {
-            e.preventDefault();
-            undo();
-        } else if (redoKey) {
-            e.preventDefault();
-            redo();
-        }
-    });
+    if (undoKey) {
+      e.preventDefault();
+      undo();
+    } else if (redoKey) {
+      e.preventDefault();
+      redo();
+    }
+  });
 }
 
 const STRIP_FORMATTING_TAGS = ['STRONG', 'B', 'EM', 'I', 'U', 'S', 'MARK'];
@@ -76,74 +80,74 @@ const STRIP_FORMATTING_TAGS = ['STRONG', 'B', 'EM', 'I', 'U', 'S', 'MARK'];
  * @param {Node} node The root node to start cleaning from.
  */
 function stripInlineFormatting(node) {
-    if (node.nodeType !== Node.ELEMENT_NODE) {
-        return;
+  if (node.nodeType !== Node.ELEMENT_NODE) {
+    return;
+  }
+
+  // Recurse on children first
+  // Create a static copy of the children list, as it will be modified
+  const children = Array.from(node.childNodes);
+  children.forEach(stripInlineFormatting);
+
+  // Now process the node itself
+  const isFormattingTag = STRIP_FORMATTING_TAGS.includes(node.tagName);
+  const isStyledSpan = node.tagName === 'SPAN' && node.hasAttribute('style');
+
+  if (isFormattingTag || isStyledSpan) {
+    // Unwrap the element: move its children to its parent and remove it.
+    const parent = node.parentNode;
+    if (parent) {
+      while (node.firstChild) {
+        // Insert child before the node itself
+        parent.insertBefore(node.firstChild, node);
+      }
+      // Remove the now-empty node
+      parent.removeChild(node);
     }
-
-    // Recurse on children first
-    // Create a static copy of the children list, as it will be modified
-    const children = Array.from(node.childNodes);
-    children.forEach(stripInlineFormatting);
-
-    // Now process the node itself
-    const isFormattingTag = STRIP_FORMATTING_TAGS.includes(node.tagName);
-    const isStyledSpan = node.tagName === 'SPAN' && node.hasAttribute('style');
-
-    if (isFormattingTag || isStyledSpan) {
-        // Unwrap the element: move its children to its parent and remove it.
-        const parent = node.parentNode;
-        if (parent) {
-            while (node.firstChild) {
-                // Insert child before the node itself
-                parent.insertBefore(node.firstChild, node);
-            }
-            // Remove the now-empty node
-            parent.removeChild(node);
-        }
-    } else if (node.hasAttribute('style')) {
-        // For any other element (like <p style="...">), just remove the style.
-        node.removeAttribute('style');
-    }
+  } else if (node.hasAttribute('style')) {
+    // For any other element (like <p style="...">), just remove the style.
+    node.removeAttribute('style');
+  }
 }
 
 export function clearFormatting() {
-    if (!editorElement) return;
+  if (!editorElement) return;
 
-    const selection = window.getSelection();
-    if (!selection || !selection.rangeCount) return;
+  const selection = window.getSelection();
+  if (!selection || !selection.rangeCount) return;
 
-    // Save selection for restoration
-    const savedRanges = [];
-    for (let i = 0; i < selection.rangeCount; i++) {
-        savedRanges.push(selection.getRangeAt(i).cloneRange());
-    }
+  // Save selection for restoration
+  const savedRanges = [];
+  for (let i = 0; i < selection.rangeCount; i++) {
+    savedRanges.push(selection.getRangeAt(i).cloneRange());
+  }
 
-    // Case 1: No text is selected (cursor is just blinking).
-    // Apply to the entire editor content.
-    if (selection.isCollapsed) {
-        stripInlineFormatting(editorElement);
-    } else {
-        // Case 2: Text is selected.
-        // Apply to each range in the selection (usually just one).
-        savedRanges.forEach(range => {
-            const fragment = range.extractContents();
-            stripInlineFormatting(fragment);
-            range.insertNode(fragment);
-        });
-    }
-
-    // Clean up the DOM by merging adjacent text nodes.
-    editorElement.normalize();
-
-    // Restore the selection.
-    selection.removeAllRanges();
-    savedRanges.forEach(range => {
-        selection.addRange(range);
+  // Case 1: No text is selected (cursor is just blinking).
+  // Apply to the entire editor content.
+  if (selection.isCollapsed) {
+    stripInlineFormatting(editorElement);
+  } else {
+    // Case 2: Text is selected.
+    // Apply to each range in the selection (usually just one).
+    savedRanges.forEach((range) => {
+      const fragment = range.extractContents();
+      stripInlineFormatting(fragment);
+      range.insertNode(fragment);
     });
+  }
 
-    // Push the new state to the history stack and update counts.
-    pushState(editorElement.innerHTML);
-    updateWordCount();
+  // Clean up the DOM by merging adjacent text nodes.
+  editorElement.normalize();
+
+  // Restore the selection.
+  selection.removeAllRanges();
+  savedRanges.forEach((range) => {
+    selection.addRange(range);
+  });
+
+  // Push the new state to the history stack and update counts.
+  pushState(editorElement.innerHTML);
+  updateWordCount();
 }
 
 export function formatText(command) {
@@ -247,7 +251,7 @@ export async function saveProject() {
   await fetch('/save', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(projectData)
+    body: JSON.stringify(projectData),
   });
   setSaveStatus('Salvo ' + new Date().toLocaleTimeString());
   console.log('Projeto salvo:', projectData);
@@ -278,8 +282,8 @@ function extractBracketRefs(editorElement) {
 }
 
 function mapRefsToEntities(refsWithLines, projectData) {
-  const characterNames = new Set(projectData.characters.map(c => c.name));
-  const locationNames = new Set(projectData.locations.map(l => l.name));
+  const characterNames = new Set(projectData.characters.map((c) => c.name));
+  const locationNames = new Set(projectData.locations.map((l) => l.name));
 
   return refsWithLines.map(({ ref, line }) => {
     if (characterNames.has(ref)) {
@@ -289,11 +293,15 @@ function mapRefsToEntities(refsWithLines, projectData) {
       return { type: 'place', ref, exists: true, line };
     }
     // Heurística
-    const isCharacter = projectData.characters.some(c => ref.toLowerCase().includes(c.name.toLowerCase()));
+    const isCharacter = projectData.characters.some((c) =>
+      ref.toLowerCase().includes(c.name.toLowerCase()),
+    );
     if (isCharacter) {
       return { type: 'character', ref, exists: false, line };
     }
-    const isLocation = projectData.locations.some(l => ref.toLowerCase().includes(l.name.toLowerCase()));
+    const isLocation = projectData.locations.some((l) =>
+      ref.toLowerCase().includes(l.name.toLowerCase()),
+    );
     if (isLocation) {
       return { type: 'place', ref, exists: false, line };
     }
@@ -305,7 +313,7 @@ export function checkConsistency() {
   const editor = document.getElementById('mainText');
   const refs = extractBracketRefs(editor);
   const results = mapRefsToEntities(refs, projectData);
-  const inconsistencies = results.filter(r => !r.exists);
+  const inconsistencies = results.filter((r) => !r.exists);
 
   const resultContainer = document.getElementById('consistencyResult');
   if (resultContainer) {
@@ -313,16 +321,21 @@ export function checkConsistency() {
       resultContainer.innerHTML = '<p>Nenhuma inconsistência encontrada.</p>';
     } else {
       resultContainer.innerHTML = inconsistencies
-        .map(item => `
+        .map(
+          (item) => `
           <div class="inconsistency-item">
             Linha ${item.line}: Referência não encontrada: <strong>${item.ref}</strong> (tipo provável: ${item.type})
           </div>
-        `)
+        `,
+        )
         .join('');
     }
     window.openModal('consistencyModal');
   } else {
-    console.warn('Painel de consistência não encontrado. Resultados:', inconsistencies);
+    console.warn(
+      'Painel de consistência não encontrado. Resultados:',
+      inconsistencies,
+    );
   }
 }
 

@@ -1,32 +1,33 @@
-const express = require('express');
-const { characterSchema } = require('../validation');
-const { getAllCharacters, addCharacter } = require('../services/characters');
+import express from 'express';
+import { characterSchema } from '../validation/character.js';
+import { getAllCharacters, addCharacter } from '../services/characters.js';
+import asyncHandler from '../middlewares/asyncHandler.js';
 
 const router = express.Router();
 
-router.get('/', async (_req, res) => {
-  try {
-    const characters = await getAllCharacters();
-    res.json(characters);
-  } catch (err) {
-    console.error('Error loading characters:', err);
-    res.status(500).json({ error: 'Failed to load characters' });
-  }
-});
+router.get(
+  '/',
+  asyncHandler(async (req, res) => {
+    const limit = parseInt(req.query.limit, 10) || 20;
+    const cursor = req.query.cursor
+      ? parseInt(req.query.cursor, 10)
+      : undefined;
+    const result = await getAllCharacters({ limit, cursor });
+    res.json(result);
+  }),
+);
 
-router.post('/', async (req, res) => {
-  try {
+router.post(
+  '/',
+  asyncHandler(async (req, res) => {
     const { error, value } = characterSchema.validate(req.body);
     if (error) {
       return res.status(400).json(error);
     }
 
     const newCharacter = await addCharacter(value);
-    res.status(201).json(newCharacter); // Retorna 201 Created com o novo recurso
-  } catch (err) {
-    console.error('Error saving character:', err);
-    res.status(500).json({ error: 'Failed to save character' });
-  }
-});
+    res.status(201).json(newCharacter);
+  }),
+);
 
-module.exports = router;
+export default router;

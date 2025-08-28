@@ -1,33 +1,18 @@
-const knex = require('knex');
-const path = require('path');
+import db from './knex.js';
+import cache from './cache.js';
+import * as dataRepository from '../repositories/dataRepository.js';
 
-const config = process.env.DATABASE_URL
-  ? { client: 'pg', connection: process.env.DATABASE_URL }
-  : {
-      client: 'sqlite3',
-      connection: { filename: path.join(__dirname, '..', 'loreloom.db') },
-      useNullAsDefault: true,
-    };
+const CACHE_KEY = 'data';
+let initialized = false;
 
-const db = knex(config);
-
-async function init() {
-  const exists = await db.schema.hasTable('data');
-  if (!exists) {
-    await db.schema.createTable('data', table => {
-      table.integer('id').primary();
-      table.text('json');
-    });
+async function ensureInit() {
+  if (!initialized) {
+    await init();
+    initialized = true;
   }
 }
 
-async function readData() {
-  const row = await db('data').where({ id: 1 }).first();
-  if (row && row.json) {
-    const data = JSON.parse(row.json);
-    if (!data.uiLanguage) data.uiLanguage = 'pt';
-    return data;
-  }
+function getDefaultData() {
   return {
     title: '',
     content: '',
@@ -37,22 +22,56 @@ async function readData() {
     timeline: [],
     notes: [],
     economy: { currencies: [], resources: [], markets: [] },
-    uiLanguage: 'pt'
+    uiLanguage: 'pt',
   };
 }
 
-async function writeData(data) {
-  const json = JSON.stringify(data, null, 2);
-  const exists = await db('data').where({ id: 1 }).first();
-  if (exists) {
-    await db('data').where({ id: 1 }).update({ json });
-  } else {
-    await db('data').insert({ id: 1, json });
+export async function init() {
+  const exists = await db.schema.hasTable('data_entries');
+  if (!exists) {
+    await db.schema.createTable('data_entries', (table) => {
+      table.string('key').primary();
+      table.text('json');
+    });
   }
+  initialized = true;
 }
 
-async function destroy() {
+export async function readData() {
+  await ensureInit();
+  const cached = cache.get(CACHE_KEY);
+  if (cached) return cached;
+
+  const rows = await dataRepository.getAll();
+  if (!rows.length) {
+    const defaults = getDefaultData();
+    cache.set(CACHE_KEY, defaults);
+    return defaults;
+  }
+  const data = {};
+  for (const { key, json } of rows) {
+    try {
+      data[key] = JSON.parse(json);
+    } catch {
+      data[key] = null;
+    }
+  }
+  if (!data.uiLanguage) data.uiLanguage = 'pt';
+  cache.set(CACHE_KEY, data);
+  return data;
+}
+
+export async function writeData(data) {
+  await ensureInit();
+  const entries = Object.entries(data);
+  for (const [key, value] of entries) {
+    await dataRepository.upsert(key, value);
+  }
+  cache.del(CACHE_KEY);
+}
+
+export async function destroy() {
   await db.destroy();
 }
 
-module.exports = { db, readData, writeData, init, destroy };
+export { db };

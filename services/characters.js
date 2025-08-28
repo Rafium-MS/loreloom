@@ -1,37 +1,13 @@
-const { db } = require('./db');
-const { sanitizeCharacter } = require('../validation');
+import * as characterRepository from '../repositories/characterRepository.js';
 
-async function getAllCharacters() {
-  const characters = await db('characters').select('*');
-  // Deserializa as tags JSON para cada personagem
-  return characters.map(c => ({
-    ...c,
-    tags: c.tags ? JSON.parse(c.tags) : []
-  }));
+export async function getAllCharacters({ limit = 20, cursor } = {}) {
+  const rows = await characterRepository.fetch({ limit: limit + 1, cursor });
+  const hasMore = rows.length > limit;
+  const items = hasMore ? rows.slice(0, limit) : rows;
+  const nextCursor = hasMore ? items[items.length - 1].id : null;
+  return { items, nextCursor };
 }
 
-async function addCharacter(character) {
-  const sanitized = sanitizeCharacter(character);
-
-  const newCharacter = {
-    name: sanitized.name,
-    age: sanitized.age,
-    race: sanitized.race,
-    class: sanitized.class,
-    role: sanitized.role,
-    appearance: sanitized.appearance,
-    personality: sanitized.personality,
-    background: sanitized.background,
-    skills: sanitized.skills,
-    relationships: sanitized.relationships,
-    tags: JSON.stringify(sanitized.tags || [])
-  };
-
-  const [inserted] = await db('characters').insert(newCharacter).returning('*');
-  return inserted;
+export async function addCharacter(character) {
+  return characterRepository.create(character);
 }
-
-module.exports = {
-  getAllCharacters,
-  addCharacter,
-};

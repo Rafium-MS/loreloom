@@ -1,8 +1,12 @@
-const { app, BrowserWindow } = require('electron');
-const path = require('path');
-const { fork } = require('child_process');
+import { app, BrowserWindow } from 'electron';
+import path from 'node:path';
+import { fork } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 
 let serverProcess;
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -10,8 +14,8 @@ function createWindow() {
     height: 600,
     webPreferences: {
       nodeIntegration: false,
-      contextIsolation: true
-    }
+      contextIsolation: true,
+    },
   });
 
   win.loadURL('http://localhost:3000');

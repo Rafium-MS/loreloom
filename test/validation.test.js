@@ -1,6 +1,6 @@
-const test = require('node:test');
-const assert = require('node:assert/strict');
-const { characterSchema, dataSchema } = require('../validation');
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { characterSchema, dataSchema } from '../validation/index.js';
 
 test('characterSchema validates and sanitizes correctly on success', () => {
   const input = { name: '  Alice  ', tags: [' hero ', '  avenger'] };
@@ -18,7 +18,7 @@ test('characterSchema validates and sanitizes correctly on success', () => {
     background: '',
     skills: '',
     relationships: '',
-    tags: ['hero', 'avenger']
+    tags: ['hero', 'avenger'],
   });
 });
 
@@ -30,9 +30,13 @@ test('characterSchema returns detailed error on failure', () => {
   assert.deepStrictEqual(error, {
     message: 'Validation failed',
     details: [
-      { path: ['name'], type: 'string.empty', message: 'Character name is required' },
-      { path: ['tags'], type: 'array.base', message: 'Tags must be an array' }
-    ]
+      {
+        path: ['name'],
+        type: 'string.empty',
+        message: 'Character name is required',
+      },
+      { path: ['tags'], type: 'array.base', message: 'Tags must be an array' },
+    ],
   });
 });
 
@@ -46,7 +50,7 @@ test('dataSchema validates and sanitizes correctly on success', () => {
     timeline: [],
     notes: [],
     economy: { currencies: ['Gold'], resources: [], markets: [] },
-    uiLanguage: 'en-US'
+    uiLanguage: 'en-US',
   };
   const { error, value } = dataSchema.validate(input);
 
@@ -60,7 +64,7 @@ test('dataSchema validates and sanitizes correctly on success', () => {
     timeline: [],
     notes: [],
     economy: { currencies: ['Gold'], resources: [], markets: [] },
-    uiLanguage: 'en-US'
+    uiLanguage: 'en-US',
   });
 });
 
@@ -70,6 +74,14 @@ test('dataSchema returns detailed error on failure', () => {
 
   assert.equal(value, undefined);
   assert.ok(error.message.includes('Validation failed'));
-  assert.ok(error.details.some(d => d.path.includes('title') && d.type === 'string.base'));
-  assert.ok(error.details.some(d => d.path.includes('locations') && d.type === 'array.base'));
+  assert.ok(
+    error.details.some(
+      (d) => d.path.includes('title') && d.type === 'string.base',
+    ),
+  );
+  assert.ok(
+    error.details.some(
+      (d) => d.path.includes('locations') && d.type === 'array.base',
+    ),
+  );
 });
