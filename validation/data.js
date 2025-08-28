@@ -1,66 +1,4 @@
-function asTrimmedString(value) {
-  return String(value ?? '').trim();
-}
-
-function capitalize(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-function sanitizeCharacter(data = {}) {
-  const fields = [
-    'name',
-    'age',
-    'race',
-    'class',
-    'role',
-    'appearance',
-    'personality',
-    'background',
-    'skills',
-    'relationships'
-  ];
-
-  const normalized = {};
-  fields.forEach(f => {
-    normalized[f] = asTrimmedString(data[f]);
-  });
-
-  normalized.tags = Array.isArray(data?.tags)
-    ? data.tags.map(t => asTrimmedString(t)).filter(Boolean)
-    : [];
-
-  return normalized;
-}
-
-function validateCharacter(data = {}) {
-  const details = [];
-  const normalized = sanitizeCharacter(data);
-
-  if (!normalized.name) {
-    details.push({
-      path: ['name'],
-      type: 'string.empty',
-      message: 'Character name is required'
-    });
-  }
-
-  if (data.tags && !Array.isArray(data.tags)) {
-    details.push({
-      path: ['tags'],
-      type: 'array.base',
-      message: 'Tags must be an array'
-    });
-  }
-
-  if (details.length) {
-    return {
-      error: { message: 'Validation failed', details },
-      value: undefined
-    };
-  }
-
-  return { error: null, value: normalized };
-}
+const { asTrimmedString, capitalize } = require('./utils');
 
 function sanitizeData(data = {}) {
   const arrayFields = ['locations', 'items', 'languages', 'timeline', 'notes'];
@@ -149,8 +87,6 @@ function validateData(data = {}) {
   return { error: null, value: normalized };
 }
 
-const characterSchema = { validate: validateCharacter };
 const dataSchema = { validate: validateData };
 
-module.exports = { characterSchema, dataSchema, sanitizeCharacter };
-
+module.exports = { dataSchema };

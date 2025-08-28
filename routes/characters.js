@@ -1,5 +1,5 @@
 const express = require('express');
-const { characterSchema } = require('../validation');
+const { characterSchema } = require('../validation/character');
 const { getAllCharacters, addCharacter } = require('../services/characters');
 const asyncHandler = require('../middlewares/asyncHandler');
 
