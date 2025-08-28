@@ -65,6 +65,87 @@ export function bindEditorHistory() {
     });
 }
 
+const STRIP_FORMATTING_TAGS = ['STRONG', 'B', 'EM', 'I', 'U', 'S', 'MARK'];
+
+/**
+ * Recursively traverses a DOM node and removes inline formatting.
+ * - Unwraps formatting tags (strong, em, etc.).
+ * - Unwraps <span> tags that only have styling attributes.
+ * - Removes style attributes from all other elements.
+ * It preserves block-level elements and anchors (<a>).
+ * @param {Node} node The root node to start cleaning from.
+ */
+function stripInlineFormatting(node) {
+    if (node.nodeType !== Node.ELEMENT_NODE) {
+        return;
+    }
+
+    // Recurse on children first
+    // Create a static copy of the children list, as it will be modified
+    const children = Array.from(node.childNodes);
+    children.forEach(stripInlineFormatting);
+
+    // Now process the node itself
+    const isFormattingTag = STRIP_FORMATTING_TAGS.includes(node.tagName);
+    const isStyledSpan = node.tagName === 'SPAN' && node.hasAttribute('style');
+
+    if (isFormattingTag || isStyledSpan) {
+        // Unwrap the element: move its children to its parent and remove it.
+        const parent = node.parentNode;
+        if (parent) {
+            while (node.firstChild) {
+                // Insert child before the node itself
+                parent.insertBefore(node.firstChild, node);
+            }
+            // Remove the now-empty node
+            parent.removeChild(node);
+        }
+    } else if (node.hasAttribute('style')) {
+        // For any other element (like <p style="...">), just remove the style.
+        node.removeAttribute('style');
+    }
+}
+
+export function clearFormatting() {
+    if (!editorElement) return;
+
+    const selection = window.getSelection();
+    if (!selection || !selection.rangeCount) return;
+
+    // Save selection for restoration
+    const savedRanges = [];
+    for (let i = 0; i < selection.rangeCount; i++) {
+        savedRanges.push(selection.getRangeAt(i).cloneRange());
+    }
+
+    // Case 1: No text is selected (cursor is just blinking).
+    // Apply to the entire editor content.
+    if (selection.isCollapsed) {
+        stripInlineFormatting(editorElement);
+    } else {
+        // Case 2: Text is selected.
+        // Apply to each range in the selection (usually just one).
+        savedRanges.forEach(range => {
+            const fragment = range.extractContents();
+            stripInlineFormatting(fragment);
+            range.insertNode(fragment);
+        });
+    }
+
+    // Clean up the DOM by merging adjacent text nodes.
+    editorElement.normalize();
+
+    // Restore the selection.
+    selection.removeAllRanges();
+    savedRanges.forEach(range => {
+        selection.addRange(range);
+    });
+
+    // Push the new state to the history stack and update counts.
+    pushState(editorElement.innerHTML);
+    updateWordCount();
+}
+
 export function formatText(command) {
   const selection = window.getSelection();
   if (!selection.rangeCount) return;
