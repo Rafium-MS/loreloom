@@ -10,7 +10,7 @@ import {
   saveCharacter,
   getLocations,
   saveLocation
-} from './dataStore';
+} from '../dataStore';
 
 const UniverseCreator = () => {
   const [activeTab, setActiveTab] = useState('characters');
