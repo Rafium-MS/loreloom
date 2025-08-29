@@ -1,5 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Bold, Italic, Underline, Quote, List, AlignLeft, AlignCenter, AlignRight, Save, FileText, BookOpen, Users, MapPin, Sparkles, Eye, EyeOff, PlusCircle, X, Edit3, Scroll } from 'lucide-react';
+import AppShell from './ui/AppShell';
+import { ThemeProvider } from './ui/ThemeProvider';
+import './ui/theme.css';
 
 const FictionEditor = () => {
   const [content, setContent] = useState('');
