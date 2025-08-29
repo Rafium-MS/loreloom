@@ -4,56 +4,35 @@ import FictionEditor from './editor';
 import UniverseCreator from './universeCreator';
 import logoUrl from '../assets/logo.png';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
+import './tokens.css';
 
-const App: React.FC = () => {
+const App = () => {
   const location = useLocation();
 
   return (
-    <div style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
-      <header
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '12px 16px',
-          borderBottom: '1px solid var(--border)',
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+    <div className="min-h-screen flex flex-col">
+      <header className="flex items-center justify-between px-4 py-3 border-b border-border">
+        <div className="flex items-center gap-2">
           <img src={logoUrl} alt="LoreLoom" height={24} />
           <strong>LoreLoom</strong>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div className="flex items-center gap-3">
           <Link
             to="/editor"
-            style={{
-              background: 'none',
-              border: 'none',
-              padding: '4px 8px',
-              cursor: 'pointer',
-              textDecoration: 'none',
-              fontWeight: location.pathname === '/editor' ? 'bold' : 'normal',
-            }}
+            className={`px-2 py-1 cursor-pointer no-underline ${location.pathname === '/editor' ? 'font-bold' : ''}`}
           >
             Editor
           </Link>
           <Link
             to="/universo"
-            style={{
-              background: 'none',
-              border: 'none',
-              padding: '4px 8px',
-              cursor: 'pointer',
-              textDecoration: 'none',
-              fontWeight: location.pathname === '/universo' ? 'bold' : 'normal',
-            }}
+            className={`px-2 py-1 cursor-pointer no-underline ${location.pathname === '/universo' ? 'font-bold' : ''}`}
           >
             Universo
           </Link>
           <ThemeToggle />
         </div>
       </header>
-      <main style={{ flex: 1, overflow: 'auto' }}>
+      <main className="flex-1 overflow-auto">
         <Routes>
           <Route path="/editor" element={<FictionEditor />} />
           <Route path="/universo" element={<UniverseCreator />} />
