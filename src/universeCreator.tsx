@@ -5,12 +5,7 @@ import {
   Plus, Edit, Trash2, Eye, ChevronDown, ChevronRight,
   BarChart3, PieChart, TrendingUp, Calendar
 } from 'lucide-react';
-import {
-  getCharacters,
-  saveCharacter,
-  getLocations,
-  saveLocation
-} from '../dataStore';
+import * as dataStore from '../dataStore';
 
 const UniverseCreator = () => {
   const [activeTab, setActiveTab] = useState('characters');
@@ -23,8 +18,8 @@ const UniverseCreator = () => {
   const [expandedSections, setExpandedSections] = useState({});
 
   useEffect(() => {
-    getCharacters().then(setCharacters);
-    getLocations().then(setLocations);
+    dataStore.getCharacters().then(setCharacters);
+    dataStore.getLocations().then(setLocations);
   }, []);
 
   // Dados de exemplo para demonstração
@@ -542,15 +537,15 @@ const UniverseCreator = () => {
 
   // Handlers
   const handleSaveCharacter = async (characterData) => {
-    await saveCharacter(characterData);
-    setCharacters(await getCharacters());
+    await dataStore.saveCharacter(characterData);
+    setCharacters(await dataStore.getCharacters());
     setSelectedCharacter(null);
     setShowCharacterForm(false);
   };
 
   const handleSaveLocation = async (locationData) => {
-    await saveLocation(locationData);
-    setLocations(await getLocations());
+    await dataStore.saveLocation(locationData);
+    setLocations(await dataStore.getLocations());
     setSelectedLocation(null);
     setShowLocationForm(false);
   };
