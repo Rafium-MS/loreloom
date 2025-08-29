@@ -46,9 +46,13 @@ export function useLocations() {
     [load]
   );
 
-  const removeLocation = useCallback((id: number) => {
-    dispatch({ type: 'remove', payload: id });
-  }, []);
+  const removeLocation = useCallback(
+    async (id: number) => {
+      await dataStore.removeLocation(id);
+      await load();
+    },
+    [load]
+  );
 
   return { locations, saveLocation, removeLocation, refresh: load };
 }
