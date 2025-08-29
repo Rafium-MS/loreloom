@@ -51,6 +51,8 @@ Todas as rotas aceitam e retornam JSON (exceto a rota raiz que serve um arquivo 
 | `npm test`          | Executa os testes (atualmente apenas um placeholder).   |
 | `npm run db:init`   | Cria o banco de dados e importa `data.json` se existir. |
 | `npm run build:css` | Gera `public/css/bundle.css` a partir dos imports CSS.  |
+| `npm run lint`      | Analisa o código com ESLint.                             |
+| `npm run format`    | Formata os arquivos com Prettier.                        |
 
 ## Desenvolvimento
 Os arquivos HTML e CSS residem em `public/`. Para empacotar os estilos utilize o comando
