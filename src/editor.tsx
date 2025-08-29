@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Bold, Italic, Underline, Quote, List, AlignLeft, AlignCenter, AlignRight, Save, FileText, BookOpen, Users, MapPin, Sparkles, Eye, EyeOff, PlusCircle, X, Edit3, Scroll } from 'lucide-react';
+import { getCharacters, saveCharacter, getLocations, saveLocation } from '../dataStore';
+import { createProject, exportToMarkdown } from '../project';
 
 const FictionEditor = () => {
   const [content, setContent] = useState('');
