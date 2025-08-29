@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Bold, Italic, Underline, Quote, List, AlignLeft, AlignCenter, AlignRight, Save, FileText, BookOpen, Users, MapPin, Sparkles, Eye, EyeOff, PlusCircle, X, Edit3, Scroll } from 'lucide-react';
+import { Bold, Italic, Underline, Quote, List, AlignLeft, AlignCenter, AlignRight } from 'lucide-react';
+import { Header, Sidebar } from './editor';
 import * as dataStore from '../dataStore';
 import { createProject, exportToMarkdown } from '../project';
 import { useTheme } from './ui/ThemeProvider';
@@ -23,8 +24,8 @@ const FictionEditor = () => {
   const [grammarSuggestions, setGrammarSuggestions] = useState([]);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
-  
-  const editorRef = useRef(null);
+
+  const editorRef = useRef<HTMLDivElement>(null);
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   const isFocus = theme === 'focus';
@@ -39,9 +40,9 @@ const FictionEditor = () => {
     dataStore.getLocations().then(setLocations);
   }, []);
 
-  const formatText = (command, value = null) => {
+  const formatText = (command: string, value: any = null) => {
     document.execCommand(command, false, value);
-    editorRef.current.focus();
+    editorRef.current?.focus();
   };
 
   const addCharacter = async () => {
@@ -72,7 +73,7 @@ const FictionEditor = () => {
     }
   };
 
-  const removeItem = (id, type) => {
+  const removeItem = (id: number, type: string) => {
     if (type === 'character') {
       setCharacters(characters.filter(char => char.id !== id));
     } else if (type === 'location') {
@@ -82,16 +83,18 @@ const FictionEditor = () => {
     }
   };
 
-  const insertTemplate = (template) => {
-    const templates = {
+  const insertTemplate = (template: string) => {
+    const templates: Record<string, string> = {
       dialogue: '\n\n— Texto do diálogo — disse o personagem, com uma expressão pensativa.\n\n',
       scene: '\n\n[NOVA CENA]\n\nDescrição do ambiente e atmosfera...\n\n',
       chapter: '\n\n═══ CAPÍTULO [NÚMERO] ═══\n[TÍTULO DO CAPÍTULO]\n\n',
       action: '\n\n[Descrição da ação intensa e movimento dos personagens]\n\n'
     };
-    
-    const currentContent = editorRef.current.innerHTML;
-    editorRef.current.innerHTML = currentContent + templates[template];
+
+    const currentContent = editorRef.current?.innerHTML || '';
+    if (editorRef.current) {
+      editorRef.current.innerHTML = currentContent + templates[template];
+    }
     setContent(content + templates[template]);
   };
 
@@ -99,11 +102,26 @@ const FictionEditor = () => {
     setHistory([...history, { content, timestamp: Date.now() }]);
   };
 
-  const loadVersion = (v) => {
+  const loadVersion = (v: any) => {
     setContent(v.content);
     if (editorRef.current) {
       editorRef.current.innerHTML = v.content;
     }
+  };
+
+  const exportProject = () => {
+    const project = createProject(title);
+    project.characters = characters;
+    project.locations = locations;
+    project.chapters = [{ id: Date.now(), title: 'Capítulo 1', scenes: [{ id: Date.now(), title: 'Cena 1', text: content }] }];
+    const md = exportToMarkdown(project);
+    const blob = new Blob([md], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${title}.md`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   const checkGrammar = async () => {
@@ -128,343 +146,45 @@ const FictionEditor = () => {
     }
   };
 
-  
-
   return (
     <div className={`min-h-screen transition-colors duration-300 `}>
-      {/* Header */}
-      <div className={`border-b px-6 py-4`} style={{ borderColor: 'var(--border)', background: 'var(--panel)' }}>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <Scroll className="h-8 w-8 text-purple-600" />
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className={`text-2xl font-bold bg-transparent border-none outline-none`}
-              style={{ color: 'var(--text)' }}
-              placeholder="Título da História"
-            />
-          </div>
-          <div className="flex items-center space-x-4">
-            {showWordCount && (
-              <div className={`text-sm`} style={{ color: 'var(--muted)' }}>
-                {wordCount} palavras
-              </div>
-            )}
-            <button
-              onClick={saveVersion}
-              className={`p-2 rounded-lg ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
-            >
-              <Save className="h-4 w-4" />
-            </button>
-            <button
-              onClick={checkGrammar}
-              className={`p-2 rounded-lg ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
-            >
-              <Sparkles className="h-4 w-4" />
-            </button>
-            <button
-              onClick={() => {
-                const project = createProject(title);
-                project.characters = characters;
-                project.locations = locations;
-                project.chapters = [{ id: Date.now(), title: 'Capítulo 1', scenes: [{ id: Date.now(), title: 'Cena 1', text: content }] }];
-                const md = exportToMarkdown(project);
-                const blob = new Blob([md], { type: 'text/markdown' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `${title}.md`;
-                a.click();
-                URL.revokeObjectURL(url);
-              }}
-              className={`p-2 rounded-lg ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
-            >
-              <FileText className="h-4 w-4" />
-            </button>
-            <button
-              onClick={() => setShowWordCount(!showWordCount)}
-              className={`p-2 rounded-lg ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
-            >
-              {showWordCount ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
-            </button>
-          </div>
-        </div>
-      </div>
-
+      <Header
+        title={title}
+        setTitle={setTitle}
+        wordCount={wordCount}
+        showWordCount={showWordCount}
+        setShowWordCount={setShowWordCount}
+        saveVersion={saveVersion}
+        checkGrammar={checkGrammar}
+        onExport={exportProject}
+      />
       <div className="flex h-screen">
-        {/* Sidebar */}
-        <div className={`w-80 border-r flex flex-col`} style={{ borderColor: 'var(--border)', background: 'var(--panel)' }}>
-          {/* Navigation */}
-          <div className="flex border-b" style={{ borderColor: 'var(--border)' }}>
-            {[
-              { id: 'editor', icon: Edit3, label: 'Editor' },
-              { id: 'characters', icon: Users, label: 'Personagens' },
-              { id: 'locations', icon: MapPin, label: 'Locais' },
-              { id: 'plot', icon: BookOpen, label: 'Enredo' }
-            ].map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => setActivePanel(tab.id)}
-                className={`flex-1 flex items-center justify-center p-3 text-sm font-medium border-b-2 transition-colors ${
-                  activePanel === tab.id 
-                    ? 'border-purple-500 text-purple-600' 
-                    : `border-transparent ${isDark ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-700'}`
-                }`}
-              >
-                <tab.icon className="h-4 w-4 mr-1" />
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Panel Content */}
-          <div className="flex-1 overflow-y-auto p-4">
-          {activePanel === 'editor' && (
-            <div className="space-y-4">
-              <div>
-                <h3 className="font-semibold mb-2 flex items-center">
-                  <Sparkles className="h-4 w-4 mr-2 text-purple-500" />
-                  Templates Rápidos
-                </h3>
-                <div className="space-y-2">
-                  {[
-                    { key: 'chapter', label: 'Novo Capítulo' },
-                    { key: 'scene', label: 'Nova Cena' },
-                    { key: 'dialogue', label: 'Diálogo' },
-                    { key: 'action', label: 'Sequência de Ação' }
-                  ].map(template => (
-                    <button
-                      key={template.key}
-                      onClick={() => insertTemplate(template.key)}
-                      className={`w-full text-left p-2 rounded-lg text-sm transition-colors ${
-                        isDark
-                          ? 'hover:bg-gray-700 text-gray-300'
-                          : isFocus
-                          ? 'hover:bg-amber-200 text-gray-700'
-                          : 'hover:bg-gray-100 text-gray-700'
-                      }`}
-                    >
-                      {template.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              {history.length > 0 && (
-                <div>
-                  <h3 className="font-semibold mt-4">Histórico</h3>
-                  <ul className="mt-2 space-y-1 text-sm">
-                    {history.map((h, idx) => (
-                      <li key={h.timestamp}>
-                        <button onClick={() => loadVersion(h)} className="text-purple-600 hover:underline">
-                          Versão {idx + 1}
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          )}
-
-            {activePanel === 'characters' && (
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <h3 className="font-semibold">Personagens</h3>
-                  <button
-                    onClick={() => setShowCharacterForm(!showCharacterForm)}
-                    className="p-1 text-purple-600 hover:bg-purple-100 rounded"
-                  >
-                    <PlusCircle className="h-4 w-4" />
-                  </button>
-                </div>
-
-                {showCharacterForm && (
-                  <div className={`p-3 rounded-lg border ${isDark ? 'border-gray-600 bg-gray-700' : 'border-gray-200 bg-gray-50'}`}>
-                    <input
-                      type="text"
-                      placeholder="Nome do personagem"
-                      value={newCharacter.name}
-                      onChange={(e) => setNewCharacter({...newCharacter, name: e.target.value})}
-                      className={`w-full p-2 mb-2 border rounded ${isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
-                    />
-                    <input
-                      type="text"
-                      placeholder="Papel/Função"
-                      value={newCharacter.role}
-                      onChange={(e) => setNewCharacter({...newCharacter, role: e.target.value})}
-                      className={`w-full p-2 mb-2 border rounded ${isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
-                    />
-                    <textarea
-                      placeholder="Descrição e características"
-                      value={newCharacter.description}
-                      onChange={(e) => setNewCharacter({...newCharacter, description: e.target.value})}
-                      className={`w-full p-2 mb-2 border rounded h-20 ${isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
-                    />
-                    <button
-                      onClick={addCharacter}
-                      className="w-full bg-purple-600 text-white p-2 rounded hover:bg-purple-700"
-                    >
-                      Adicionar
-                    </button>
-                  </div>
-                )}
-
-                <div className="space-y-3">
-                  {characters.map(char => (
-                    <div key={char.id} className={`p-3 rounded-lg border ${isDark ? 'border-gray-600 bg-gray-700' : 'border-gray-200 bg-gray-50'}`}>
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1">
-                          <h4 className="font-medium">{char.name}</h4>
-                          {char.role && <p className="text-sm text-purple-600">{char.role}</p>}
-                          {char.description && <p className={`text-sm mt-1 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>{char.description}</p>}
-                        </div>
-                        <button
-                          onClick={() => removeItem(char.id, 'character')}
-                          className={`p-1 rounded ${isDark ? 'hover:bg-gray-600 text-gray-400' : 'hover:bg-gray-200 text-gray-500'}`}
-                        >
-                          <X className="h-4 w-4" />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {activePanel === 'locations' && (
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <h3 className="font-semibold">Locais</h3>
-                  <button
-                    onClick={() => setShowLocationForm(!showLocationForm)}
-                    className="p-1 text-purple-600 hover:bg-purple-100 rounded"
-                  >
-                    <PlusCircle className="h-4 w-4" />
-                  </button>
-                </div>
-
-                {showLocationForm && (
-                  <div className={`p-3 rounded-lg border ${isDark ? 'border-gray-600 bg-gray-700' : 'border-gray-200 bg-gray-50'}`}>
-                    <input
-                      type="text"
-                      placeholder="Nome do local"
-                      value={newLocation.name}
-                      onChange={(e) => setNewLocation({...newLocation, name: e.target.value})}
-                      className={`w-full p-2 mb-2 border rounded ${isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
-                    />
-                    <input
-                      type="text"
-                      placeholder="Tipo (cidade, floresta, castelo...)"
-                      value={newLocation.type}
-                      onChange={(e) => setNewLocation({...newLocation, type: e.target.value})}
-                      className={`w-full p-2 mb-2 border rounded ${isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
-                    />
-                    <textarea
-                      placeholder="Descrição do local"
-                      value={newLocation.description}
-                      onChange={(e) => setNewLocation({...newLocation, description: e.target.value})}
-                      className={`w-full p-2 mb-2 border rounded h-20 ${isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
-                    />
-                    <button
-                      onClick={addLocation}
-                      className="w-full bg-purple-600 text-white p-2 rounded hover:bg-purple-700"
-                    >
-                      Adicionar
-                    </button>
-                  </div>
-                )}
-
-                <div className="space-y-3">
-                  {locations.map(loc => (
-                    <div key={loc.id} className={`p-3 rounded-lg border ${isDark ? 'border-gray-600 bg-gray-700' : 'border-gray-200 bg-gray-50'}`}>
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1">
-                          <h4 className="font-medium">{loc.name}</h4>
-                          {loc.type && <p className="text-sm text-purple-600">{loc.type}</p>}
-                          {loc.description && <p className={`text-sm mt-1 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>{loc.description}</p>}
-                        </div>
-                        <button
-                          onClick={() => removeItem(loc.id, 'location')}
-                          className={`p-1 rounded ${isDark ? 'hover:bg-gray-600 text-gray-400' : 'hover:bg-gray-200 text-gray-500'}`}
-                        >
-                          <X className="h-4 w-4" />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {activePanel === 'plot' && (
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <h3 className="font-semibold">Pontos do Enredo</h3>
-                  <button
-                    onClick={() => setShowPlotForm(!showPlotForm)}
-                    className="p-1 text-purple-600 hover:bg-purple-100 rounded"
-                  >
-                    <PlusCircle className="h-4 w-4" />
-                  </button>
-                </div>
-
-                {showPlotForm && (
-                  <div className={`p-3 rounded-lg border ${isDark ? 'border-gray-600 bg-gray-700' : 'border-gray-200 bg-gray-50'}`}>
-                    <input
-                      type="text"
-                      placeholder="Título do evento"
-                      value={newPlotPoint.title}
-                      onChange={(e) => setNewPlotPoint({...newPlotPoint, title: e.target.value})}
-                      className={`w-full p-2 mb-2 border rounded ${isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
-                    />
-                    <input
-                      type="text"
-                      placeholder="Capítulo/Seção"
-                      value={newPlotPoint.chapter}
-                      onChange={(e) => setNewPlotPoint({...newPlotPoint, chapter: e.target.value})}
-                      className={`w-full p-2 mb-2 border rounded ${isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
-                    />
-                    <textarea
-                      placeholder="Descrição do evento"
-                      value={newPlotPoint.description}
-                      onChange={(e) => setNewPlotPoint({...newPlotPoint, description: e.target.value})}
-                      className={`w-full p-2 mb-2 border rounded h-20 ${isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
-                    />
-                    <button
-                      onClick={addPlotPoint}
-                      className="w-full bg-purple-600 text-white p-2 rounded hover:bg-purple-700"
-                    >
-                      Adicionar
-                    </button>
-                  </div>
-                )}
-
-                <div className="space-y-3">
-                  {plotPoints.map(plot => (
-                    <div key={plot.id} className={`p-3 rounded-lg border ${isDark ? 'border-gray-600 bg-gray-700' : 'border-gray-200 bg-gray-50'}`}>
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1">
-                          <h4 className="font-medium">{plot.title}</h4>
-                          {plot.chapter && <p className="text-sm text-purple-600">Cap. {plot.chapter}</p>}
-                          {plot.description && <p className={`text-sm mt-1 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>{plot.description}</p>}
-                        </div>
-                        <button
-                          onClick={() => removeItem(plot.id, 'plot')}
-                          className={`p-1 rounded ${isDark ? 'hover:bg-gray-600 text-gray-400' : 'hover:bg-gray-200 text-gray-500'}`}
-                        >
-                          <X className="h-4 w-4" />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
+        <Sidebar
+          activePanel={activePanel}
+          setActivePanel={setActivePanel}
+          characters={characters}
+          locations={locations}
+          plotPoints={plotPoints}
+          showCharacterForm={showCharacterForm}
+          setShowCharacterForm={setShowCharacterForm}
+          showLocationForm={showLocationForm}
+          setShowLocationForm={setShowLocationForm}
+          showPlotForm={showPlotForm}
+          setShowPlotForm={setShowPlotForm}
+          newCharacter={newCharacter}
+          setNewCharacter={setNewCharacter}
+          addCharacter={addCharacter}
+          newLocation={newLocation}
+          setNewLocation={setNewLocation}
+          addLocation={addLocation}
+          newPlotPoint={newPlotPoint}
+          setNewPlotPoint={setNewPlotPoint}
+          addPlotPoint={addPlotPoint}
+          insertTemplate={insertTemplate}
+          history={history}
+          loadVersion={loadVersion}
+          removeItem={removeItem}
+        />
         {/* Main Editor */}
         <div className="flex-1 flex flex-col">
           {/* Toolbar */}
@@ -529,7 +249,7 @@ const FictionEditor = () => {
               <div
                 ref={editorRef}
                 contentEditable
-                onInput={(e) => setContent(e.target.innerHTML)}
+                onInput={(e) => setContent((e.target as HTMLDivElement).innerHTML)}
                 className={`min-h-96 outline-none leading-relaxed text-lg`}
                 style={{
                   color: 'var(--text)',
