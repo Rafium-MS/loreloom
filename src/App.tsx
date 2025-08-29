@@ -1,6 +1,6 @@
 import React from 'react';
 import ThemeToggle from './ui/ThemeToggle';
-import FictionEditor from './editor';
+import FictionEditor from './editor.tsx';
 import UniverseCreator from './universeCreator';
 import logoUrl from '../assets/logo.png';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
