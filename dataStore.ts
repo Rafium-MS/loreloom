@@ -54,6 +54,12 @@ export async function saveCharacter(char: {id: number; name: string; description
   await persist();
 }
 
+export async function removeCharacter(id: number) {
+  const db = await getDB();
+  db.run('DELETE FROM characters WHERE id = ?', [id]);
+  await persist();
+}
+
 export async function getLocations() {
   const db = await getDB();
   const res: any[] = [];
@@ -68,5 +74,11 @@ export async function getLocations() {
 export async function saveLocation(loc: {id: number; name: string; description: string; type: string;}) {
   const db = await getDB();
   db.run('INSERT OR REPLACE INTO locations (id, name, description, type) VALUES (?, ?, ?, ?)', [loc.id, loc.name, loc.description, loc.type]);
+  await persist();
+}
+
+export async function removeLocation(id: number) {
+  const db = await getDB();
+  db.run('DELETE FROM locations WHERE id = ?', [id]);
   await persist();
 }
