@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ThemeToggle from './ui/ThemeToggle';
 import FictionEditor from './editor';
 import UniverseCreator from './universeCreator';
 import logoUrl from '../assets/logo.png';
+import { Routes, Route, Link, useLocation } from 'react-router-dom';
 
 const App: React.FC = () => {
-  const [page, setPage] = useState<'editor' | 'universe'>('editor');
+  const location = useLocation();
 
   return (
     <div style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
@@ -23,35 +24,40 @@ const App: React.FC = () => {
           <strong>LoreLoom</strong>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <button
-            onClick={() => setPage('editor')}
+          <Link
+            to="/editor"
             style={{
               background: 'none',
               border: 'none',
               padding: '4px 8px',
               cursor: 'pointer',
-              fontWeight: page === 'editor' ? 'bold' : 'normal',
+              textDecoration: 'none',
+              fontWeight: location.pathname === '/editor' ? 'bold' : 'normal',
             }}
           >
             Editor
-          </button>
-          <button
-            onClick={() => setPage('universe')}
+          </Link>
+          <Link
+            to="/universo"
             style={{
               background: 'none',
               border: 'none',
               padding: '4px 8px',
               cursor: 'pointer',
-              fontWeight: page === 'universe' ? 'bold' : 'normal',
+              textDecoration: 'none',
+              fontWeight: location.pathname === '/universo' ? 'bold' : 'normal',
             }}
           >
             Universo
-          </button>
+          </Link>
           <ThemeToggle />
         </div>
       </header>
       <main style={{ flex: 1, overflow: 'auto' }}>
-        {page === 'editor' ? <FictionEditor /> : <UniverseCreator />}
+        <Routes>
+          <Route path="/editor" element={<FictionEditor />} />
+          <Route path="/universo" element={<UniverseCreator />} />
+        </Routes>
       </main>
     </div>
   );
