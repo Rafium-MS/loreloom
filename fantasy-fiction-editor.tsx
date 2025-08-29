@@ -1,8 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Bold, Italic, Underline, Quote, List, AlignLeft, AlignCenter, AlignRight, Save, FileText, BookOpen, Users, MapPin, Sparkles, Eye, EyeOff, PlusCircle, X, Edit3, Scroll } from 'lucide-react';
-import AppShell from './ui/AppShell';
-import { ThemeProvider } from './ui/ThemeProvider';
-import './ui/theme.css';
 
 const FictionEditor = () => {
   const [content, setContent] = useState('');
@@ -20,6 +17,10 @@ const FictionEditor = () => {
   const [showCharacterForm, setShowCharacterForm] = useState(false);
   const [showLocationForm, setShowLocationForm] = useState(false);
   const [showPlotForm, setShowPlotForm] = useState(false);
+  const [history, setHistory] = useState([]);
+  const [grammarSuggestions, setGrammarSuggestions] = useState([]);
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState('');
   
   const editorRef = useRef(null);
 
@@ -28,22 +29,31 @@ const FictionEditor = () => {
     setWordCount(words.length);
   }, [content]);
 
+  useEffect(() => {
+    getCharacters().then(setCharacters);
+    getLocations().then(setLocations);
+  }, []);
+
   const formatText = (command, value = null) => {
     document.execCommand(command, false, value);
     editorRef.current.focus();
   };
 
-  const addCharacter = () => {
+  const addCharacter = async () => {
     if (newCharacter.name.trim()) {
-      setCharacters([...characters, { ...newCharacter, id: Date.now() }]);
+      const char = { ...newCharacter, id: Date.now() };
+      await saveCharacter(char);
+      setCharacters(await getCharacters());
       setNewCharacter({ name: '', description: '', role: '' });
       setShowCharacterForm(false);
     }
   };
 
-  const addLocation = () => {
+  const addLocation = async () => {
     if (newLocation.name.trim()) {
-      setLocations([...locations, { ...newLocation, id: Date.now() }]);
+      const loc = { ...newLocation, id: Date.now() };
+      await saveLocation(loc);
+      setLocations(await getLocations());
       setNewLocation({ name: '', description: '', type: '' });
       setShowLocationForm(false);
     }
@@ -80,6 +90,39 @@ const FictionEditor = () => {
     setContent(content + templates[template]);
   };
 
+  const saveVersion = () => {
+    setHistory([...history, { content, timestamp: Date.now() }]);
+  };
+
+  const loadVersion = (v) => {
+    setContent(v.content);
+    if (editorRef.current) {
+      editorRef.current.innerHTML = v.content;
+    }
+  };
+
+  const checkGrammar = async () => {
+    try {
+      const res = await fetch('https://api.languagetool.org/v2/check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ text: content, language: 'pt-BR' }).toString()
+      });
+      const data = await res.json();
+      setGrammarSuggestions(data.matches || []);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const addComment = () => {
+    if (newComment.trim()) {
+      const pos = window.getSelection()?.anchorOffset || 0;
+      setComments([...comments, { id: Date.now(), text: newComment, position: pos }]);
+      setNewComment('');
+    }
+  };
+
   const getThemeClasses = () => {
     switch (writingMode) {
       case 'dark':
@@ -112,6 +155,37 @@ const FictionEditor = () => {
                 {wordCount} palavras
               </div>
             )}
+            <button
+              onClick={saveVersion}
+              className={`p-2 rounded-lg ${writingMode === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
+            >
+              <Save className="h-4 w-4" />
+            </button>
+            <button
+              onClick={checkGrammar}
+              className={`p-2 rounded-lg ${writingMode === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
+            >
+              <Sparkles className="h-4 w-4" />
+            </button>
+            <button
+              onClick={() => {
+                const project = createProject(title);
+                project.characters = characters;
+                project.locations = locations;
+                project.chapters = [{ id: Date.now(), title: 'Capítulo 1', scenes: [{ id: Date.now(), title: 'Cena 1', text: content }] }];
+                const md = exportToMarkdown(project);
+                const blob = new Blob([md], { type: 'text/markdown' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${title}.md`;
+                a.click();
+                URL.revokeObjectURL(url);
+              }}
+              className={`p-2 rounded-lg ${writingMode === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
+            >
+              <FileText className="h-4 w-4" />
+            </button>
             <button
               onClick={() => setShowWordCount(!showWordCount)}
               className={`p-2 rounded-lg ${writingMode === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
@@ -164,38 +238,52 @@ const FictionEditor = () => {
 
           {/* Panel Content */}
           <div className="flex-1 overflow-y-auto p-4">
-            {activePanel === 'editor' && (
-              <div className="space-y-4">
-                <div>
-                  <h3 className="font-semibold mb-2 flex items-center">
-                    <Sparkles className="h-4 w-4 mr-2 text-purple-500" />
-                    Templates Rápidos
-                  </h3>
-                  <div className="space-y-2">
-                    {[
-                      { key: 'chapter', label: 'Novo Capítulo' },
-                      { key: 'scene', label: 'Nova Cena' },
-                      { key: 'dialogue', label: 'Diálogo' },
-                      { key: 'action', label: 'Sequência de Ação' }
-                    ].map(template => (
-                      <button
-                        key={template.key}
-                        onClick={() => insertTemplate(template.key)}
-                        className={`w-full text-left p-2 rounded-lg text-sm transition-colors ${
-                          writingMode === 'dark' 
-                            ? 'hover:bg-gray-700 text-gray-300' 
-                            : writingMode === 'focus'
-                            ? 'hover:bg-amber-200 text-gray-700'
-                            : 'hover:bg-gray-100 text-gray-700'
-                        }`}
-                      >
-                        {template.label}
-                      </button>
-                    ))}
-                  </div>
+          {activePanel === 'editor' && (
+            <div className="space-y-4">
+              <div>
+                <h3 className="font-semibold mb-2 flex items-center">
+                  <Sparkles className="h-4 w-4 mr-2 text-purple-500" />
+                  Templates Rápidos
+                </h3>
+                <div className="space-y-2">
+                  {[
+                    { key: 'chapter', label: 'Novo Capítulo' },
+                    { key: 'scene', label: 'Nova Cena' },
+                    { key: 'dialogue', label: 'Diálogo' },
+                    { key: 'action', label: 'Sequência de Ação' }
+                  ].map(template => (
+                    <button
+                      key={template.key}
+                      onClick={() => insertTemplate(template.key)}
+                      className={`w-full text-left p-2 rounded-lg text-sm transition-colors ${
+                        writingMode === 'dark'
+                          ? 'hover:bg-gray-700 text-gray-300'
+                          : writingMode === 'focus'
+                          ? 'hover:bg-amber-200 text-gray-700'
+                          : 'hover:bg-gray-100 text-gray-700'
+                      }`}
+                    >
+                      {template.label}
+                    </button>
+                  ))}
                 </div>
               </div>
-            )}
+              {history.length > 0 && (
+                <div>
+                  <h3 className="font-semibold mt-4">Histórico</h3>
+                  <ul className="mt-2 space-y-1 text-sm">
+                    {history.map((h, idx) => (
+                      <li key={h.timestamp}>
+                        <button onClick={() => loadVersion(h)} className="text-purple-600 hover:underline">
+                          Versão {idx + 1}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
 
             {activePanel === 'characters' && (
               <div className="space-y-4">
@@ -460,18 +548,50 @@ const FictionEditor = () => {
                 contentEditable
                 onInput={(e) => setContent(e.target.innerHTML)}
                 className={`min-h-96 outline-none leading-relaxed text-lg ${
-                  writingMode === 'dark' 
-                    ? 'text-gray-100' 
+                  writingMode === 'dark'
+                    ? 'text-gray-100'
                     : writingMode === 'focus'
                     ? 'text-gray-800 font-serif'
                     : 'text-gray-900'
                 }`}
-                style={{ 
+                style={{
                   fontFamily: writingMode === 'focus' ? 'Georgia, serif' : 'system-ui, sans-serif',
                   lineHeight: '1.8'
                 }}
                 placeholder="Era uma vez, em uma terra muito distante..."
               />
+            </div>
+            <div className="max-w-4xl mx-auto mt-8">
+              {grammarSuggestions.length > 0 && (
+                <div className="mb-4 p-4 border rounded bg-red-50">
+                  <h3 className="font-semibold mb-2">Sugestões Gramaticais</h3>
+                  <ul className="list-disc ml-5 text-sm space-y-1">
+                    {grammarSuggestions.map((s, idx) => (
+                      <li key={idx}>{s.message}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              <div>
+                <h3 className="font-semibold mb-2">Comentários</h3>
+                <div className="flex space-x-2 mb-2">
+                  <input
+                    type="text"
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                    placeholder="Adicionar comentário"
+                    className="border p-2 flex-1 rounded"
+                  />
+                  <button onClick={addComment} className="bg-blue-500 text-white px-3 rounded">
+                    Adicionar
+                  </button>
+                </div>
+                <ul className="space-y-1 text-sm">
+                  {comments.map(c => (
+                    <li key={c.id}>[pos {c.position}] {c.text}</li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
         </div>
