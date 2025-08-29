@@ -1,0 +1,13 @@
+{
+  "name": "loreloom",
+  "version": "0.1.0",
+  "type": "module",
+  "dependencies": {
+    "sql.js": "^1.10.2",
+    "docx": "^8.0.1",
+    "turndown": "^7.1.2"
+  },
+  "scripts": {
+    "test": "echo \"No tests\""
+  }
+}

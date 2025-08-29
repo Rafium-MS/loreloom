@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  User, MapPin, Crown, Shield, Coins, Users, Home, 
+import {
+  User, MapPin, Crown, Shield, Coins, Users, Home,
   Sword, Church, UtensilsCrossed, Building, Clock,
   Plus, Edit, Trash2, Eye, ChevronDown, ChevronRight,
   BarChart3, PieChart, TrendingUp, Calendar
 } from 'lucide-react';
+import {
+  getCharacters,
+  saveCharacter,
+  getLocations,
+  saveLocation
+} from './dataStore';
 
 const UniverseCreator = () => {
   const [activeTab, setActiveTab] = useState('characters');
@@ -15,6 +21,11 @@ const UniverseCreator = () => {
   const [showCharacterForm, setShowCharacterForm] = useState(false);
   const [showLocationForm, setShowLocationForm] = useState(false);
   const [expandedSections, setExpandedSections] = useState({});
+
+  useEffect(() => {
+    getCharacters().then(setCharacters);
+    getLocations().then(setLocations);
+  }, []);
 
   // Dados de exemplo para demonstração
   const professionsList = [
@@ -530,22 +541,16 @@ const UniverseCreator = () => {
   );
 
   // Handlers
-  const handleSaveCharacter = (characterData) => {
-    if (selectedCharacter) {
-      setCharacters(chars => chars.map(c => c.id === characterData.id ? characterData : c));
-    } else {
-      setCharacters(chars => [...chars, characterData]);
-    }
+  const handleSaveCharacter = async (characterData) => {
+    await saveCharacter(characterData);
+    setCharacters(await getCharacters());
     setSelectedCharacter(null);
     setShowCharacterForm(false);
   };
 
-  const handleSaveLocation = (locationData) => {
-    if (selectedLocation) {
-      setLocations(locs => locs.map(l => l.id === locationData.id ? locationData : l));
-    } else {
-      setLocations(locs => [...locs, locationData]);
-    }
+  const handleSaveLocation = async (locationData) => {
+    await saveLocation(locationData);
+    setLocations(await getLocations());
     setSelectedLocation(null);
     setShowLocationForm(false);
   };
