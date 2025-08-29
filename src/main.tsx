@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { ThemeProvider } from './ui/ThemeProvider';
 import App from './App';
 import './index.css';
-import './ui/theme.css';
+import './tokens.css';
 import { BrowserRouter } from 'react-router-dom';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

@@ -3,6 +3,7 @@
 // Contexto de tema (dark | focus) + persistência
 // =============================
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import '../tokens.css';
 
 
 export type Theme = 'dark' | 'focus';
@@ -12,7 +13,7 @@ interface ThemeCtxShape { theme: Theme; setTheme: (t: Theme) => void; }
 const ThemeCtx = createContext<ThemeCtxShape | null>(null);
 
 
-export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 const [theme, setTheme] = useState<Theme>(() => (localStorage.getItem('theme') as Theme) || 'dark');
 
 

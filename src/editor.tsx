@@ -4,6 +4,7 @@ import { Header, Sidebar } from './editor';
 import * as dataStore from '../dataStore';
 import { createProject, exportToMarkdown } from '../project';
 import { useTheme } from './ui/ThemeProvider';
+import './tokens.css';
 
 const FictionEditor = () => {
   const [content, setContent] = useState('');
@@ -188,7 +189,7 @@ const FictionEditor = () => {
         {/* Main Editor */}
         <div className="flex-1 flex flex-col">
           {/* Toolbar */}
-          <div className={`border-b p-4`} style={{ borderColor: 'var(--border)', background: 'var(--panel)' }}>
+          <div className={`border-b p-4 bg-panel border-border`}>
             <div className="flex items-center space-x-2 flex-wrap">
               <button
                 onClick={() => formatText('bold')}
@@ -245,17 +246,12 @@ const FictionEditor = () => {
 
           {/* Writing Area */}
           <div className="flex-1 p-8">
-            <div className={`max-w-4xl mx-auto`} style={isFocus ? { background: 'var(--panel)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', boxShadow: 'var(--shadow)', padding: '2rem' } : undefined}>
+            <div className={`max-w-4xl mx-auto ${isFocus ? 'theme-surface p-8' : ''}`}>
               <div
                 ref={editorRef}
                 contentEditable
                 onInput={(e) => setContent((e.target as HTMLDivElement).innerHTML)}
-                className={`min-h-96 outline-none leading-relaxed text-lg`}
-                style={{
-                  color: 'var(--text)',
-                  fontFamily: isFocus ? 'Georgia, serif' : 'system-ui, sans-serif',
-                  lineHeight: '1.8'
-                }}
+                className={`min-h-96 outline-none text-lg text-text leading-1-8 ${isFocus ? 'font-serif' : 'font-sans'}`}
                 placeholder="Era uma vez, em uma terra muito distante..."
               />
             </div>

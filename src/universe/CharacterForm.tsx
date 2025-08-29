@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../tokens.css';
 
 interface CharacterFormProps {
   character: any;
@@ -6,7 +7,7 @@ interface CharacterFormProps {
   onCancel: () => void;
 }
 
-const CharacterForm: React.FC<CharacterFormProps> = ({ character, onSave, onCancel }) => {
+const CharacterForm = ({ character, onSave, onCancel }: CharacterFormProps) => {
   const [formData, setFormData] = useState(character || {
     name: '',
     age: '',
@@ -18,7 +19,7 @@ const CharacterForm: React.FC<CharacterFormProps> = ({ character, onSave, onCanc
     role: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onSave({ ...formData, id: character?.id || Date.now() });
   };

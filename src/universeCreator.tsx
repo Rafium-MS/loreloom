@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import * as dataStore from '../dataStore';
 import { CharacterForm, LocationForm } from './universe';
+import './tokens.css';
 
 const UniverseCreator = () => {
   const [activeTab, setActiveTab] = useState('characters');

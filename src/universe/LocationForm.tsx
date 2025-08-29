@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../tokens.css';
 
 interface LocationFormProps {
   location: any;
@@ -8,7 +9,7 @@ interface LocationFormProps {
   generateEconomy: () => string;
 }
 
-const LocationForm: React.FC<LocationFormProps> = ({ location, onSave, onCancel, generatePopulation, generateEconomy }) => {
+const LocationForm = ({ location, onSave, onCancel, generatePopulation, generateEconomy }: LocationFormProps) => {
   const [formData, setFormData] = useState(location || {
     name: '',
     type: 'cidade',
@@ -32,7 +33,7 @@ const LocationForm: React.FC<LocationFormProps> = ({ location, onSave, onCancel,
     events: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onSave({ ...formData, id: location?.id || Date.now() });
   };
