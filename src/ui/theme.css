@@ -1,6 +1,6 @@
-// =============================
-// Global tokens + themes (works alongside Tailwind)
-// =============================
+/* =============================
+   Global tokens + themes (works alongside Tailwind)
+   ============================= */
 :root {
 --bg: #0b0b10;
 --panel: #11121a;
