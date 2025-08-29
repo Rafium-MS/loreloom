@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Bold, Italic, Underline, Quote, List, AlignLeft, AlignCenter, AlignRight } from 'lucide-react';
-import { Header, Sidebar } from './editor';
+// Import from the editor folder's index to avoid self-importing this file
+import { Header, Sidebar } from './editor/index';
 import { createProject, exportToMarkdown } from '../project';
 import { useTheme } from './ui/ThemeProvider';
 import { Slate, Editable, withReact } from 'slate-react';
