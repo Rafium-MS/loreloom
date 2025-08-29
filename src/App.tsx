@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ThemeToggle from './ui/ThemeToggle';
-import FictionEditor from './fantasy-fiction-editor';
-import UniverseCreator from './universe-creator';
+import FictionEditor from './editor';
+import UniverseCreator from './universeCreator';
 import logoUrl from '../assets/logo.png';
 
 const App: React.FC = () => {
