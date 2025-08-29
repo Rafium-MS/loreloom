@@ -1,13 +1,18 @@
 import initSqlJs from 'sql.js';
+// Ensure Vite resolves the WebAssembly file correctly
+// The `?url` makes Vite treat the wasm as an asset and returns its URL
+import sqlWasmUrl from 'sql.js/dist/sql-wasm.wasm?url';
 
 // Initialize database and persist to localStorage
 let dbPromise: Promise<any> | null = null;
 
 async function getDB() {
   if (!dbPromise) {
-    dbPromise = initSqlJs().then(SQL => {
+    dbPromise = initSqlJs({ locateFile: () => sqlWasmUrl }).then((SQL) => {
       const stored = typeof window !== 'undefined' ? window.localStorage.getItem('loreloom_db') : null;
-      const db = stored ? new SQL.Database(Uint8Array.from(atob(stored), c => c.charCodeAt(0))) : new SQL.Database();
+      const db = stored
+        ? new SQL.Database(Uint8Array.from(atob(stored), (c) => c.charCodeAt(0)))
+        : new SQL.Database();
       db.run('CREATE TABLE IF NOT EXISTS characters (id INTEGER PRIMARY KEY, name TEXT, description TEXT, role TEXT);');
       db.run('CREATE TABLE IF NOT EXISTS locations (id INTEGER PRIMARY KEY, name TEXT, description TEXT, type TEXT);');
       return db;
@@ -18,8 +23,15 @@ async function getDB() {
 
 async function persist() {
   const db = await getDB();
-  const data = db.export();
-  const b64 = btoa(String.fromCharCode.apply(null, data));
+  const data: Uint8Array = db.export();
+  // Convert Uint8Array to base64 without exceeding call stack for large arrays
+  let binary = '';
+  const chunkSize = 0x8000; // 32KB chunks
+  for (let i = 0; i < data.length; i += chunkSize) {
+    const chunk = data.subarray(i, i + chunkSize);
+    binary += String.fromCharCode(...chunk);
+  }
+  const b64 = btoa(binary);
   if (typeof window !== 'undefined') {
     window.localStorage.setItem('loreloom_db', b64);
   }
