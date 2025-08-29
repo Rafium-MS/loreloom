@@ -148,7 +148,7 @@ const FictionEditor = () => {
   };
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 `}>
+    <main className={`min-h-screen transition-colors duration-300 `}>
       <Header
         title={title}
         setTitle={setTitle}
@@ -159,7 +159,7 @@ const FictionEditor = () => {
         checkGrammar={checkGrammar}
         onExport={exportProject}
       />
-      <div className="flex h-screen">
+      <section className="flex h-screen">
         <Sidebar
           activePanel={activePanel}
           setActivePanel={setActivePanel}
@@ -187,9 +187,9 @@ const FictionEditor = () => {
           removeItem={removeItem}
         />
         {/* Main Editor */}
-        <div className="flex-1 flex flex-col">
+        <section className="flex-1 flex flex-col">
           {/* Toolbar */}
-          <div className={`border-b p-4 bg-panel border-border`}>
+          <header className={`border-b p-4 bg-panel border-border`}>
             <div className="flex items-center space-x-2 flex-wrap">
               <button
                 onClick={() => formatText('bold')}
@@ -242,11 +242,11 @@ const FictionEditor = () => {
                 <AlignRight className="h-4 w-4" />
               </button>
             </div>
-          </div>
+          </header>
 
           {/* Writing Area */}
-          <div className="flex-1 p-8">
-            <div className={`max-w-4xl mx-auto ${isFocus ? 'theme-surface p-8' : ''}`}>
+          <section className="flex-1 p-8">
+            <section className={`max-w-4xl mx-auto ${isFocus ? 'theme-surface p-8' : ''}`}>
               <div
                 ref={editorRef}
                 contentEditable
@@ -254,43 +254,53 @@ const FictionEditor = () => {
                 className={`min-h-96 outline-none text-lg text-text leading-1-8 ${isFocus ? 'font-serif' : 'font-sans'}`}
                 placeholder="Era uma vez, em uma terra muito distante..."
               />
-            </div>
-            <div className="max-w-4xl mx-auto mt-8">
+            </section>
+            <section className="max-w-4xl mx-auto mt-8">
               {grammarSuggestions.length > 0 && (
-                <div className="mb-4 p-4 border rounded bg-red-50">
+                <section className="mb-4 p-4 border rounded bg-red-50">
                   <h3 className="font-semibold mb-2">Sugestões Gramaticais</h3>
                   <ul className="list-disc ml-5 text-sm space-y-1">
                     {grammarSuggestions.map((s, idx) => (
                       <li key={idx}>{s.message}</li>
                     ))}
                   </ul>
-                </div>
+                </section>
               )}
-              <div>
+              <section>
                 <h3 className="font-semibold mb-2">Comentários</h3>
-                <div className="flex space-x-2 mb-2">
+                <form
+                  className="flex space-x-2 mb-2"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    addComment();
+                  }}
+                >
+                  <label htmlFor="newComment" className="sr-only">
+                    Novo comentário
+                  </label>
                   <input
+                    id="newComment"
                     type="text"
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
                     placeholder="Adicionar comentário"
                     className="border p-2 flex-1 rounded"
                   />
-                  <button onClick={addComment} className="bg-blue-500 text-white px-3 rounded">
+                  <button type="submit" className="bg-blue-500 text-white px-3 rounded">
                     Adicionar
                   </button>
-                </div>
+                </form>
                 <ul className="space-y-1 text-sm">
                   {comments.map(c => (
                     <li key={c.id}>[pos {c.position}] {c.text}</li>
                   ))}
                 </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+              </section>
+            </section>
+          </section>
+        </section>
+      </section>
+    </main>
   );
 };
 

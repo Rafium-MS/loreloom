@@ -60,7 +60,7 @@ const UniverseCreator = () => {
 
   // Componente de Visualização de Personagem
   const CharacterView = ({ character }) => (
-    <div className="bg-white rounded-lg shadow-md p-6">
+    <section className="bg-white rounded-lg shadow-md p-6">
       <div className="flex justify-between items-start mb-4">
         <h3 className="text-xl font-bold">{character.name}</h3>
         <div className="flex gap-2">
@@ -80,7 +80,7 @@ const UniverseCreator = () => {
           </button>
         </div>
       </div>
-      
+
       <div className="space-y-3 text-sm">
         {character.age && <p><span className="font-semibold">Idade:</span> {character.age}</p>}
         {character.appearance && <p><span className="font-semibold">Aparência:</span> {character.appearance}</p>}
@@ -88,12 +88,12 @@ const UniverseCreator = () => {
         {character.abilities && <p><span className="font-semibold">Habilidades:</span> {character.abilities}</p>}
         {character.motivations && <p><span className="font-semibold">Motivações:</span> {character.motivations}</p>}
       </div>
-    </div>
+    </section>
   );
 
   // Componente de Visualização de Localização
   const LocationView = ({ location }) => (
-    <div className="bg-white rounded-lg shadow-md p-6">
+    <section className="bg-white rounded-lg shadow-md p-6">
       <div className="flex justify-between items-start mb-4">
         <div>
           <h3 className="text-xl font-bold">{location.name}</h3>
@@ -161,12 +161,14 @@ const UniverseCreator = () => {
             <button
               onClick={() => toggleSection(`professions-${location.id}`)}
               className="flex items-center gap-2 text-sm font-semibold text-gray-700 hover:text-gray-900"
+              aria-expanded={expandedSections[`professions-${location.id}`] || false}
+              aria-controls={`professions-${location.id}-content`}
             >
               {expandedSections[`professions-${location.id}`] ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
               Profissões Principais
             </button>
             {expandedSections[`professions-${location.id}`] && (
-              <div className="ml-6 mt-1 text-sm text-gray-600">
+              <div id={`professions-${location.id}-content`} className="ml-6 mt-1 text-sm text-gray-600">
                 {location.mainProfessions.join(', ')}
               </div>
             )}
@@ -178,19 +180,21 @@ const UniverseCreator = () => {
             <button
               onClick={() => toggleSection(`strategic-${location.id}`)}
               className="flex items-center gap-2 text-sm font-semibold text-gray-700 hover:text-gray-900"
+              aria-expanded={expandedSections[`strategic-${location.id}`] || false}
+              aria-controls={`strategic-${location.id}-content`}
             >
               {expandedSections[`strategic-${location.id}`] ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
               Pontos Estratégicos
             </button>
             {expandedSections[`strategic-${location.id}`] && (
-              <div className="ml-6 mt-1 text-sm text-gray-600">
+              <div id={`strategic-${location.id}-content`} className="ml-6 mt-1 text-sm text-gray-600">
                 {location.strategicPoints}
               </div>
             )}
           </div>
         )}
       </div>
-    </div>
+    </section>
   );
 
   // Handlers
@@ -209,61 +213,73 @@ const UniverseCreator = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <main className="min-h-screen bg-gray-100">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
+      <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <h1 className="text-2xl font-bold text-gray-900">Criador de Universos</h1>
           <p className="text-gray-600">Crie personagens detalhados e construa cidades, reinos e vilas</p>
         </div>
-      </div>
+      </header>
 
       {/* Navigation */}
-      <div className="bg-white border-b">
+      <nav className="bg-white border-b" aria-label="Seções do universo">
         <div className="max-w-7xl mx-auto px-4">
-          <nav className="flex space-x-8">
+          <div className="flex space-x-8" role="tablist">
             <button
+              id="characters-tab"
               onClick={() => setActiveTab('characters')}
               className={`py-4 px-2 border-b-2 font-medium text-sm ${
                 activeTab === 'characters'
                   ? 'border-blue-500 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700'
               }`}
+              aria-controls="characters-panel"
+              aria-selected={activeTab === 'characters'}
+              role="tab"
             >
               <User className="inline mr-2" size={16} />
               Personagens
             </button>
             <button
+              id="locations-tab"
               onClick={() => setActiveTab('locations')}
               className={`py-4 px-2 border-b-2 font-medium text-sm ${
                 activeTab === 'locations'
                   ? 'border-blue-500 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700'
               }`}
+              aria-controls="locations-panel"
+              aria-selected={activeTab === 'locations'}
+              role="tab"
             >
               <MapPin className="inline mr-2" size={16} />
               Localizações
             </button>
             <button
+              id="analytics-tab"
               onClick={() => setActiveTab('analytics')}
               className={`py-4 px-2 border-b-2 font-medium text-sm ${
                 activeTab === 'analytics'
                   ? 'border-blue-500 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700'
               }`}
+              aria-controls="analytics-panel"
+              aria-selected={activeTab === 'analytics'}
+              role="tab"
             >
               <BarChart3 className="inline mr-2" size={16} />
               Estatísticas
             </button>
-          </nav>
+          </div>
         </div>
-      </div>
+      </nav>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-6">
+      <section className="max-w-7xl mx-auto px-4 py-6">
         {activeTab === 'characters' && (
-          <div>
-            <div className="flex justify-between items-center mb-6">
+          <section id="characters-panel" role="tabpanel" aria-labelledby="characters-tab">
+            <header className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold">Personagens</h2>
               <button
                 onClick={() => setShowCharacterForm(true)}
@@ -272,7 +288,7 @@ const UniverseCreator = () => {
                 <Plus size={16} />
                 Novo Personagem
               </button>
-            </div>
+            </header>
 
             {characters.length === 0 ? (
               <div className="text-center py-12">
@@ -293,12 +309,12 @@ const UniverseCreator = () => {
                 ))}
               </div>
             )}
-          </div>
+          </section>
         )}
 
         {activeTab === 'locations' && (
-          <div>
-            <div className="flex justify-between items-center mb-6">
+          <section id="locations-panel" role="tabpanel" aria-labelledby="locations-tab">
+            <header className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold">Localizações</h2>
               <button
                 onClick={() => setShowLocationForm(true)}
@@ -307,7 +323,7 @@ const UniverseCreator = () => {
                 <Plus size={16} />
                 Nova Localização
               </button>
-            </div>
+            </header>
 
             {locations.length === 0 ? (
               <div className="text-center py-12">
@@ -328,13 +344,13 @@ const UniverseCreator = () => {
                 ))}
               </div>
             )}
-          </div>
+          </section>
         )}
 
         {activeTab === 'analytics' && (
-          <div>
+          <section id="analytics-panel" role="tabpanel" aria-labelledby="analytics-tab">
             <h2 className="text-xl font-semibold mb-6">Estatísticas do Universo</h2>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               <div className="bg-white rounded-lg shadow p-6">
                 <div className="flex items-center">
@@ -505,9 +521,9 @@ const UniverseCreator = () => {
                 <p className="text-gray-600">Crie personagens e localizações para ver estatísticas detalhadas</p>
               </div>
             )}
-          </div>
+          </section>
         )}
-      </div>
+      </section>
 
       {/* Ferramentas Rápidas - Sidebar flutuante */}
       <div className="fixed right-4 top-1/2 transform -translate-y-1/2 space-y-2">
@@ -604,7 +620,7 @@ const UniverseCreator = () => {
           generateEconomy={generateEconomy}
         />
       )}
-    </div>
+    </main>
   );
 };
 
