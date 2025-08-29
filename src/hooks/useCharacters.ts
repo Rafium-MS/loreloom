@@ -46,9 +46,13 @@ export function useCharacters() {
     [load]
   );
 
-  const removeCharacter = useCallback((id: number) => {
-    dispatch({ type: 'remove', payload: id });
-  }, []);
+  const removeCharacter = useCallback(
+    async (id: number) => {
+      await dataStore.removeCharacter(id);
+      await load();
+    },
+    [load]
+  );
 
   return { characters, saveCharacter, removeCharacter, refresh: load };
 }
