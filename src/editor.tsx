@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Bold, Italic, Underline, Quote, List, AlignLeft, AlignCenter, AlignRight, Save, FileText, BookOpen, Users, MapPin, Sparkles, Eye, EyeOff, PlusCircle, X, Edit3, Scroll } from 'lucide-react';
-import { getCharacters, saveCharacter, getLocations, saveLocation } from '../dataStore';
+import * as dataStore from '../dataStore';
 import { createProject, exportToMarkdown } from '../project';
 
 const FictionEditor = () => {
@@ -32,8 +32,8 @@ const FictionEditor = () => {
   }, [content]);
 
   useEffect(() => {
-    getCharacters().then(setCharacters);
-    getLocations().then(setLocations);
+    dataStore.getCharacters().then(setCharacters);
+    dataStore.getLocations().then(setLocations);
   }, []);
 
   const formatText = (command, value = null) => {
@@ -44,8 +44,8 @@ const FictionEditor = () => {
   const addCharacter = async () => {
     if (newCharacter.name.trim()) {
       const char = { ...newCharacter, id: Date.now() };
-      await saveCharacter(char);
-      setCharacters(await getCharacters());
+      await dataStore.saveCharacter(char);
+      setCharacters(await dataStore.getCharacters());
       setNewCharacter({ name: '', description: '', role: '' });
       setShowCharacterForm(false);
     }
@@ -54,8 +54,8 @@ const FictionEditor = () => {
   const addLocation = async () => {
     if (newLocation.name.trim()) {
       const loc = { ...newLocation, id: Date.now() };
-      await saveLocation(loc);
-      setLocations(await getLocations());
+      await dataStore.saveLocation(loc);
+      setLocations(await dataStore.getLocations());
       setNewLocation({ name: '', description: '', type: '' });
       setShowLocationForm(false);
     }
