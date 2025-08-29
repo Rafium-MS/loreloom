@@ -16,21 +16,23 @@ const App = () => {
           <img src={logoUrl} alt="LoreLoom" height={24} />
           <strong>LoreLoom</strong>
         </div>
-        <div className="flex items-center gap-3">
+        <nav className="flex items-center gap-3" aria-label="Navegação principal">
           <Link
             to="/editor"
-            className={`px-2 py-1 cursor-pointer no-underline ${location.pathname === '/editor' ? 'font-bold' : ''}`}
+            className="px-2 py-1 cursor-pointer no-underline"
+            aria-current={location.pathname === '/editor' ? 'page' : undefined}
           >
             Editor
           </Link>
           <Link
             to="/universo"
-            className={`px-2 py-1 cursor-pointer no-underline ${location.pathname === '/universo' ? 'font-bold' : ''}`}
+            className="px-2 py-1 cursor-pointer no-underline"
+            aria-current={location.pathname === '/universo' ? 'page' : undefined}
           >
             Universo
           </Link>
           <ThemeToggle />
-        </div>
+        </nav>
       </header>
       <main className="flex-1 overflow-auto">
         <Routes>
