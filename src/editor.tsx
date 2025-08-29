@@ -1,17 +1,24 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Bold, Italic, Underline, Quote, List, AlignLeft, AlignCenter, AlignRight } from 'lucide-react';
 import { Header, Sidebar } from './editor';
-import * as dataStore from '../dataStore';
 import { createProject, exportToMarkdown } from '../project';
 import { useTheme } from './ui/ThemeProvider';
+import { Slate, Editable, withReact } from 'slate-react';
+import { createEditor, Descendant, Transforms, Editor, Node } from 'slate';
+import { useCharacters } from './hooks/useCharacters';
+import { useLocations } from './hooks/useLocations';
 import './tokens.css';
 
 const FictionEditor = () => {
+  const editor = useMemo(() => withReact(createEditor()), []);
+  const [value, setValue] = useState<Descendant[]>([
+    { type: 'paragraph', children: [{ text: '' }] },
+  ]);
   const [content, setContent] = useState('');
   const [title, setTitle] = useState('Nova História');
   const [wordCount, setWordCount] = useState(0);
-  const [characters, setCharacters] = useState([]);
-  const [locations, setLocations] = useState([]);
+  const { characters, saveCharacter, removeCharacter } = useCharacters();
+  const { locations, saveLocation, removeLocation } = useLocations();
   const [plotPoints, setPlotPoints] = useState([]);
   const [activePanel, setActivePanel] = useState('editor');
   const [showWordCount, setShowWordCount] = useState(true);
@@ -26,31 +33,99 @@ const FictionEditor = () => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
 
-  const editorRef = useRef<HTMLDivElement>(null);
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   const isFocus = theme === 'focus';
+
+  useEffect(() => {
+    const text = value.map((n) => Node.string(n)).join('\n');
+    setContent(text);
+  }, [value]);
 
   useEffect(() => {
     const words = content.trim().split(/\s+/).filter(word => word.length > 0);
     setWordCount(words.length);
   }, [content]);
 
-  useEffect(() => {
-    dataStore.getCharacters().then(setCharacters);
-    dataStore.getLocations().then(setLocations);
-  }, []);
-
-  const formatText = (command: string, value: any = null) => {
-    document.execCommand(command, false, value);
-    editorRef.current?.focus();
+  const toggleMark = (format: string) => {
+    const isActive = isMarkActive(format);
+    if (isActive) {
+      Editor.removeMark(editor, format);
+    } else {
+      Editor.addMark(editor, format, true);
+    }
   };
+
+  const isMarkActive = (format: string) => {
+    const marks: any = Editor.marks(editor);
+    return marks ? marks[format] === true : false;
+  };
+
+  const toggleBlock = (format: string) => {
+    const isActive = isBlockActive(format);
+    Transforms.setNodes(editor, { type: isActive ? 'paragraph' : format } as any, {
+      match: (n) => Editor.isBlock(editor, n),
+    });
+  };
+
+  const isBlockActive = (format: string) => {
+    const [match] = Editor.nodes(editor, {
+      match: (n) => !Editor.isEditor(n) && (n as any).type === format,
+    });
+    return !!match;
+  };
+
+  const setAlign = (align: 'left' | 'center' | 'right') => {
+    Transforms.setNodes(editor, { align }, { match: (n) => Editor.isBlock(editor, n) });
+  };
+
+  const Element = ({ attributes, children, element }: any) => {
+    const style = { textAlign: element.align } as React.CSSProperties;
+    switch (element.type) {
+      case 'quote':
+        return (
+          <blockquote style={style} {...attributes}>
+            {children}
+          </blockquote>
+        );
+      case 'list-item':
+        return (
+          <p
+            style={{ ...style, display: 'list-item', listStyleType: 'disc', marginLeft: '1.5em' }}
+            {...attributes}
+          >
+            {children}
+          </p>
+        );
+      default:
+        return (
+          <p style={style} {...attributes}>
+            {children}
+          </p>
+        );
+    }
+  };
+
+  const Leaf = ({ attributes, children, leaf }: any) => {
+    if (leaf.bold) {
+      children = <strong>{children}</strong>;
+    }
+    if (leaf.italic) {
+      children = <em>{children}</em>;
+    }
+    if (leaf.underline) {
+      children = <u>{children}</u>;
+    }
+    return <span {...attributes}>{children}</span>;
+  };
+
+  const renderElement = useCallback((props: any) => <Element {...props} />, []);
+  const renderLeaf = useCallback((props: any) => <Leaf {...props} />, []);
 
   const addCharacter = async () => {
     if (newCharacter.name.trim()) {
       const char = { ...newCharacter, id: Date.now() };
-      await dataStore.saveCharacter(char);
-      setCharacters(await dataStore.getCharacters());
+      await saveCharacter(char);
       setNewCharacter({ name: '', description: '', role: '' });
       setShowCharacterForm(false);
     }
@@ -59,8 +134,7 @@ const FictionEditor = () => {
   const addLocation = async () => {
     if (newLocation.name.trim()) {
       const loc = { ...newLocation, id: Date.now() };
-      await dataStore.saveLocation(loc);
-      setLocations(await dataStore.getLocations());
+      await saveLocation(loc);
       setNewLocation({ name: '', description: '', type: '' });
       setShowLocationForm(false);
     }
@@ -76,9 +150,9 @@ const FictionEditor = () => {
 
   const removeItem = (id: number, type: string) => {
     if (type === 'character') {
-      setCharacters(characters.filter(char => char.id !== id));
+      removeCharacter(id);
     } else if (type === 'location') {
-      setLocations(locations.filter(loc => loc.id !== id));
+      removeLocation(id);
     } else if (type === 'plot') {
       setPlotPoints(plotPoints.filter(plot => plot.id !== id));
     }
@@ -92,11 +166,7 @@ const FictionEditor = () => {
       action: '\n\n[Descrição da ação intensa e movimento dos personagens]\n\n'
     };
 
-    const currentContent = editorRef.current?.innerHTML || '';
-    if (editorRef.current) {
-      editorRef.current.innerHTML = currentContent + templates[template];
-    }
-    setContent(content + templates[template]);
+    Transforms.insertText(editor, templates[template]);
   };
 
   const saveVersion = () => {
@@ -104,10 +174,8 @@ const FictionEditor = () => {
   };
 
   const loadVersion = (v: any) => {
-    setContent(v.content);
-    if (editorRef.current) {
-      editorRef.current.innerHTML = v.content;
-    }
+    const nodes: Descendant[] = [{ type: 'paragraph', children: [{ text: v.content }] }];
+    setValue(nodes);
   };
 
   const exportProject = () => {
@@ -192,51 +260,51 @@ const FictionEditor = () => {
           <header className={`border-b p-4 bg-panel border-border`}>
             <div className="flex items-center space-x-2 flex-wrap">
               <button
-                onClick={() => formatText('bold')}
+                onClick={() => toggleMark('bold')}
                 className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
               >
                 <Bold className="h-4 w-4" />
               </button>
               <button
-                onClick={() => formatText('italic')}
+                onClick={() => toggleMark('italic')}
                 className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
               >
                 <Italic className="h-4 w-4" />
               </button>
               <button
-                onClick={() => formatText('underline')}
+                onClick={() => toggleMark('underline')}
                 className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
               >
                 <Underline className="h-4 w-4" />
               </button>
               <div className="w-px h-6 bg-gray-300 mx-2"></div>
               <button
-                onClick={() => formatText('formatBlock', 'blockquote')}
+                onClick={() => toggleBlock('quote')}
                 className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
               >
                 <Quote className="h-4 w-4" />
               </button>
               <button
-                onClick={() => formatText('insertUnorderedList')}
+                onClick={() => toggleBlock('list-item')}
                 className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
               >
                 <List className="h-4 w-4" />
               </button>
               <div className="w-px h-6 bg-gray-300 mx-2"></div>
               <button
-                onClick={() => formatText('justifyLeft')}
+                onClick={() => setAlign('left')}
                 className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
               >
                 <AlignLeft className="h-4 w-4" />
               </button>
               <button
-                onClick={() => formatText('justifyCenter')}
+                onClick={() => setAlign('center')}
                 className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
               >
                 <AlignCenter className="h-4 w-4" />
               </button>
               <button
-                onClick={() => formatText('justifyRight')}
+                onClick={() => setAlign('right')}
                 className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
               >
                 <AlignRight className="h-4 w-4" />
@@ -247,13 +315,14 @@ const FictionEditor = () => {
           {/* Writing Area */}
           <section className="flex-1 p-8">
             <section className={`max-w-4xl mx-auto ${isFocus ? 'theme-surface p-8' : ''}`}>
-              <div
-                ref={editorRef}
-                contentEditable
-                onInput={(e) => setContent((e.target as HTMLDivElement).innerHTML)}
-                className={`min-h-96 outline-none text-lg text-text leading-1-8 ${isFocus ? 'font-serif' : 'font-sans'}`}
-                placeholder="Era uma vez, em uma terra muito distante..."
-              />
+              <Slate editor={editor} value={value} onChange={setValue}>
+                <Editable
+                  className={`min-h-96 outline-none text-lg text-text leading-1-8 ${isFocus ? 'font-serif' : 'font-sans'}`}
+                  placeholder="Era uma vez, em uma terra muito distante..."
+                  renderElement={renderElement}
+                  renderLeaf={renderLeaf}
+                />
+              </Slate>
             </section>
             <section className="max-w-4xl mx-auto mt-8">
               {grammarSuggestions.length > 0 && (

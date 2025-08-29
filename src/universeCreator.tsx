@@ -1,29 +1,27 @@
 // @ts-nocheck
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   User, MapPin, Crown, Shield, Coins, Users, Home,
   Sword, Church, UtensilsCrossed, Building, Clock,
   Plus, Edit, Trash2, Eye, ChevronDown, ChevronRight,
   BarChart3, PieChart, TrendingUp, Calendar
 } from 'lucide-react';
-import * as dataStore from '../dataStore';
 import { CharacterForm, LocationForm } from './universe';
+import { useCharacters } from './hooks/useCharacters';
+import { useLocations } from './hooks/useLocations';
 import './tokens.css';
 
 const UniverseCreator = () => {
   const [activeTab, setActiveTab] = useState('characters');
-  const [characters, setCharacters] = useState([]);
-  const [locations, setLocations] = useState([]);
+  const { characters, saveCharacter, removeCharacter } = useCharacters();
+  const { locations, saveLocation, removeLocation } = useLocations();
   const [selectedCharacter, setSelectedCharacter] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [showCharacterForm, setShowCharacterForm] = useState(false);
   const [showLocationForm, setShowLocationForm] = useState(false);
   const [expandedSections, setExpandedSections] = useState({});
 
-  useEffect(() => {
-    dataStore.getCharacters().then(setCharacters);
-    dataStore.getLocations().then(setLocations);
-  }, []);
+  
 
   // Dados de exemplo para demonstração
   const professionsList = [
@@ -72,7 +70,7 @@ const UniverseCreator = () => {
           </button>
           <button
             onClick={() => {
-              setCharacters(chars => chars.filter(c => c.id !== character.id));
+              removeCharacter(character.id);
             }}
             className="text-red-500 hover:text-red-700"
           >
@@ -108,7 +106,7 @@ const UniverseCreator = () => {
           </button>
           <button
             onClick={() => {
-              setLocations(locs => locs.filter(l => l.id !== location.id));
+              removeLocation(location.id);
             }}
             className="text-red-500 hover:text-red-700"
           >
@@ -199,15 +197,13 @@ const UniverseCreator = () => {
 
   // Handlers
   const handleSaveCharacter = async (characterData) => {
-    await dataStore.saveCharacter(characterData);
-    setCharacters(await dataStore.getCharacters());
+    await saveCharacter(characterData);
     setSelectedCharacter(null);
     setShowCharacterForm(false);
   };
 
   const handleSaveLocation = async (locationData) => {
-    await dataStore.saveLocation(locationData);
-    setLocations(await dataStore.getLocations());
+    await saveLocation(locationData);
     setSelectedLocation(null);
     setShowLocationForm(false);
   };
@@ -540,7 +536,7 @@ const UniverseCreator = () => {
               relationships: 'Relacionamentos diversos',
               role: 'Papel importante na narrativa'
             };
-            setCharacters(prev => [...prev, randomCharacter]);
+            saveCharacter(randomCharacter);
           }}
           className="bg-blue-500 text-white p-3 rounded-full shadow-lg hover:bg-blue-600 transition-colors"
           title="Gerar Personagem Aleatório"
@@ -575,7 +571,7 @@ const UniverseCreator = () => {
               battles: 'Algumas escaramuças menores',
               events: 'Festivais anuais e celebrações'
             };
-            setLocations(prev => [...prev, randomLocation]);
+            saveLocation(randomLocation);
           }}
           className="bg-green-500 text-white p-3 rounded-full shadow-lg hover:bg-green-600 transition-colors"
           title="Gerar Localização Aleatória"
