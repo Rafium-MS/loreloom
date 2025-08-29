@@ -316,7 +316,7 @@ const FictionEditor = () => {
           {/* Writing Area */}
           <section className="flex-1 p-8">
             <section className={`max-w-4xl mx-auto ${isFocus ? 'theme-surface p-8' : ''}`}>
-              <Slate editor={editor} value={value} onChange={setValue}>
+              <Slate editor={editor} initialValue={value} onChange={setValue}>
                 <Editable
                   className={`min-h-96 outline-none text-lg text-text leading-1-8 ${isFocus ? 'font-serif' : 'font-sans'}`}
                   placeholder="Era uma vez, em uma terra muito distante..."
