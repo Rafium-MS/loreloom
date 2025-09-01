@@ -3,16 +3,37 @@ import initSqlJs from 'sql.js';
 // The `?url` makes Vite treat the wasm as an asset and returns its URL
 import sqlWasmUrl from 'sql.js/dist/sql-wasm.wasm?url';
 
-// Initialize database and persist to localStorage
+const DB_NAME = 'loreloom_db';
+const DB_STORE_NAME = 'loreloom_store';
+
 let dbPromise: Promise<any> | null = null;
 
-async function getDB() {
-  if (!dbPromise) {
-    dbPromise = initSqlJs({ locateFile: () => sqlWasmUrl }).then((SQL) => {
-      const stored = typeof window !== 'undefined' ? window.localStorage.getItem('loreloom_db') : null;
-      const db = stored
-        ? new SQL.Database(Uint8Array.from(atob(stored), (c) => c.charCodeAt(0)))
-        : new SQL.Database();
+// Opens the IndexedDB and returns a promise that resolves with the IDBDatabase instance
+function openDB() {
+  return new Promise<IDBDatabase>((resolve, reject) => {
+    if (typeof window === 'undefined') {
+      return reject(new Error('IndexedDB is not supported in this environment.'));
+    }
+    const request = window.indexedDB.open(DB_NAME, 1);
+    request.onupgradeneeded = () => {
+      request.result.createObjectStore(DB_STORE_NAME);
+    };
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+// Loads the database from IndexedDB
+async function loadDB(SQL: any) {
+  const idb = await openDB();
+  return new Promise<any>((resolve, reject) => {
+    const transaction = idb.transaction(DB_STORE_NAME, 'readonly');
+    const store = transaction.objectStore(DB_STORE_NAME);
+    const getRequest = store.get(DB_NAME);
+    getRequest.onsuccess = () => {
+      const data = getRequest.result;
+      const db = data ? new SQL.Database(data) : new SQL.Database();
+      // Ensure all tables exist. The conflicted code was missing some.
       db.run('CREATE TABLE IF NOT EXISTS characters (id INTEGER PRIMARY KEY, name TEXT, description TEXT, role TEXT);');
       db.run('CREATE TABLE IF NOT EXISTS locations (id INTEGER PRIMARY KEY, name TEXT, description TEXT, type TEXT);');
       db.run('CREATE TABLE IF NOT EXISTS economies (id INTEGER PRIMARY KEY, name TEXT, currency TEXT, markets TEXT, mainExports TEXT);');
@@ -21,26 +42,26 @@ async function getDB() {
       db.run('CREATE TABLE IF NOT EXISTS languages (id INTEGER PRIMARY KEY, name TEXT, vocabulary TEXT, grammar TEXT, syllables TEXT);');
       db.run('CREATE TABLE IF NOT EXISTS character_location (character_id INTEGER, location_id INTEGER);');
       db.run('CREATE TABLE IF NOT EXISTS character_religion (character_id INTEGER, religion_id INTEGER);');
-      return db;
-    });
-  }
-  return dbPromise;
+      resolve(db);
+    };
+    getRequest.onerror = () => reject(getRequest.error);
+  });
 }
 
-async function persist() {
-  const db = await getDB();
-  const data: Uint8Array = db.export();
-  // Convert Uint8Array to base64 without exceeding call stack for large arrays
-  let binary = '';
-  const chunkSize = 0x8000; // 32KB chunks
-  for (let i = 0; i < data.length; i += chunkSize) {
-    const chunk = data.subarray(i, i + chunkSize);
-    binary += String.fromCharCode(...chunk);
+// Saves the database to IndexedDB
+async function saveDB(db: any) {
+  const idb = await openDB();
+  const data = db.export();
+  const transaction = idb.transaction(DB_STORE_NAME, 'readwrite');
+  const store = transaction.objectStore(DB_STORE_NAME);
+  store.put(data, DB_NAME);
+}
+
+async function getDB() {
+  if (!dbPromise) {
+    dbPromise = initSqlJs({ locateFile: () => sqlWasmUrl }).then(loadDB);
   }
-  const b64 = btoa(binary);
-  if (typeof window !== 'undefined') {
-    window.localStorage.setItem('loreloom_db', b64);
-  }
+  return dbPromise;
 }
 
 export async function getCharacters() {
@@ -57,15 +78,16 @@ export async function getCharacters() {
 export async function saveCharacter(char: {id: number; name: string; description: string; role: string;}) {
   const db = await getDB();
   db.run('INSERT OR REPLACE INTO characters (id, name, description, role) VALUES (?, ?, ?, ?)', [char.id, char.name, char.description, char.role]);
-  await persist();
+  await saveDB(db);
 }
 
 export async function removeCharacter(id: number) {
   const db = await getDB();
   db.run('DELETE FROM characters WHERE id = ?', [id]);
+  // The conflicted code had a bug, it should clean up all related tables.
   db.run('DELETE FROM character_location WHERE character_id = ?', [id]);
   db.run('DELETE FROM character_religion WHERE character_id = ?', [id]);
-  await persist();
+  await saveDB(db);
 }
 
 export async function getCharacterLocations(characterId: number) {
@@ -95,13 +117,13 @@ export async function getLocationCharacters(locationId: number) {
 export async function linkCharacterToLocation(characterId: number, locationId: number) {
   const db = await getDB();
   db.run('INSERT OR IGNORE INTO character_location (character_id, location_id) VALUES (?, ?)', [characterId, locationId]);
-  await persist();
+  await saveDB(db);
 }
 
 export async function unlinkCharacterFromLocation(characterId: number, locationId: number) {
   const db = await getDB();
   db.run('DELETE FROM character_location WHERE character_id = ? AND location_id = ?', [characterId, locationId]);
-  await persist();
+  await saveDB(db);
 }
 
 export async function getLocations() {
@@ -118,14 +140,15 @@ export async function getLocations() {
 export async function saveLocation(loc: {id: number; name: string; description: string; type: string;}) {
   const db = await getDB();
   db.run('INSERT OR REPLACE INTO locations (id, name, description, type) VALUES (?, ?, ?, ?)', [loc.id, loc.name, loc.description, loc.type]);
-  await persist();
+  await saveDB(db);
 }
 
 export async function removeLocation(id: number) {
   const db = await getDB();
   db.run('DELETE FROM locations WHERE id = ?', [id]);
+  // Clean up related data
   db.run('DELETE FROM character_location WHERE location_id = ?', [id]);
-  await persist();
+  await saveDB(db);
 }
 
 export async function getEconomies() {
@@ -142,13 +165,13 @@ export async function getEconomies() {
 export async function saveEconomy(econ: {id: number; name: string; currency: string; markets: string; mainExports: string;}) {
   const db = await getDB();
   db.run('INSERT OR REPLACE INTO economies (id, name, currency, markets, mainExports) VALUES (?, ?, ?, ?, ?)', [econ.id, econ.name, econ.currency, econ.markets, econ.mainExports]);
-  await persist();
+  await saveDB(db);
 }
 
 export async function removeEconomy(id: number) {
   const db = await getDB();
   db.run('DELETE FROM economies WHERE id = ?', [id]);
-  await persist();
+  await saveDB(db);
 }
 
 export async function getReligions() {
@@ -165,14 +188,15 @@ export async function getReligions() {
 export async function saveReligion(rel: {id: number; name: string; doctrine: string; factions: string;}) {
   const db = await getDB();
   db.run('INSERT OR REPLACE INTO religions (id, name, doctrine, factions) VALUES (?, ?, ?, ?)', [rel.id, rel.name, rel.doctrine, rel.factions]);
-  await persist();
+  await saveDB(db);
 }
 
 export async function removeReligion(id: number) {
   const db = await getDB();
   db.run('DELETE FROM religions WHERE id = ?', [id]);
+  // Clean up related data
   db.run('DELETE FROM character_religion WHERE religion_id = ?', [id]);
-  await persist();
+  await saveDB(db);
 }
 
 export async function getCharacterReligions(characterId: number) {
@@ -202,13 +226,13 @@ export async function getReligionCharacters(religionId: number) {
 export async function linkCharacterToReligion(characterId: number, religionId: number) {
   const db = await getDB();
   db.run('INSERT OR IGNORE INTO character_religion (character_id, religion_id) VALUES (?, ?)', [characterId, religionId]);
-  await persist();
+  await saveDB(db);
 }
 
 export async function unlinkCharacterFromReligion(characterId: number, religionId: number) {
   const db = await getDB();
   db.run('DELETE FROM character_religion WHERE character_id = ? AND religion_id = ?', [characterId, religionId]);
-  await persist();
+  await saveDB(db);
 }
 
 export async function getTimelines() {
@@ -225,13 +249,13 @@ export async function getTimelines() {
 export async function saveTimeline(tl: {id: number; title: string; date: string; description: string; relations: string;}) {
   const db = await getDB();
   db.run('INSERT OR REPLACE INTO timelines (id, title, date, description, relations) VALUES (?, ?, ?, ?, ?)', [tl.id, tl.title, tl.date, tl.description, tl.relations]);
-  await persist();
+  await saveDB(db);
 }
 
 export async function removeTimeline(id: number) {
   const db = await getDB();
   db.run('DELETE FROM timelines WHERE id = ?', [id]);
-  await persist();
+  await saveDB(db);
 }
 
 export async function getLanguages() {
@@ -248,11 +272,11 @@ export async function getLanguages() {
 export async function saveLanguage(lang: {id: number; name: string; vocabulary: string; grammar: string; syllables: string;}) {
   const db = await getDB();
   db.run('INSERT OR REPLACE INTO languages (id, name, vocabulary, grammar, syllables) VALUES (?, ?, ?, ?, ?)', [lang.id, lang.name, lang.vocabulary, lang.grammar, lang.syllables]);
-  await persist();
+  await saveDB(db);
 }
 
 export async function removeLanguage(id: number) {
   const db = await getDB();
   db.run('DELETE FROM languages WHERE id = ?', [id]);
-  await persist();
+  await saveDB(db);
 }
