@@ -3,12 +3,13 @@ import ThemeToggle from './ui/ThemeToggle';
 import FictionEditor from './editor.tsx';
 import UniverseCreator from './universeCreator';
 import logoUrl from '../assets/logo.png';
-import { Routes, Route, Link, useLocation } from 'react-router-dom';
+import { Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
 import './tokens.css';
 import { Button } from '@/components/ui/button';
 
 const App = () => {
   const location = useLocation();
+  const currentPath = location.pathname === '/' ? '/editor' : location.pathname;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -23,13 +24,13 @@ const App = () => {
         >
           <Button
             asChild
-            variant={location.pathname === '/editor' ? 'secondary' : 'ghost'}
+            variant={currentPath === '/editor' ? 'secondary' : 'ghost'}
           >
             <Link to="/editor">Editor</Link>
           </Button>
           <Button
             asChild
-            variant={location.pathname === '/universo' ? 'secondary' : 'ghost'}
+            variant={currentPath === '/universo' ? 'secondary' : 'ghost'}
           >
             <Link to="/universo">Universo</Link>
           </Button>
@@ -38,6 +39,7 @@ const App = () => {
       </header>
       <main className="flex-1 overflow-auto">
         <Routes>
+          <Route path="/" element={<Navigate to="/editor" replace />} />
           <Route path="/editor" element={<FictionEditor />} />
           <Route path="/universo" element={<UniverseCreator />} />
         </Routes>
