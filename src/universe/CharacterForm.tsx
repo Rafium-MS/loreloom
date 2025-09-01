@@ -7,6 +7,7 @@ export interface CharacterFormData {
   id?: number;
   name: string;
   age: string | number;
+  race: string;
   appearance: string;
   background: string;
   abilities: string;
@@ -28,6 +29,7 @@ const CharacterForm = ({ character, onSave, onCancel }: CharacterFormProps) => {
     (character || {
       name: '',
       age: '',
+      race: '',
       appearance: '',
       background: '',
       abilities: '',
@@ -65,13 +67,13 @@ const CharacterForm = ({ character, onSave, onCancel }: CharacterFormProps) => {
         <h3 className="text-xl font-bold mb-4">
           {character ? 'Editar Personagem' : 'Novo Personagem'}
         </h3>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="flex flex-col">
-              <label htmlFor="char-name" className="mb-1 text-sm">Nome</label>
-              <input
-                id="char-name"
-                type="text"
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="flex flex-col">
+              <label htmlFor="char-name" className="mb-1 text-sm">Nome</label>
+              <input
+                id="char-name"
+                type="text"
                 value={formData.name}
                 onChange={(e) => {
                   setFormData({ ...formData, name: e.target.value });
@@ -80,18 +82,28 @@ const CharacterForm = ({ character, onSave, onCancel }: CharacterFormProps) => {
                 className={`border rounded px-3 py-2 ${errors.name ? 'border-red-500' : ''}`}
               />
               {errors.name && <span className="text-red-500 text-sm mt-1">{errors.name}</span>}
-            </div>
-            <div className="flex flex-col">
-              <label htmlFor="char-age" className="mb-1 text-sm">Idade</label>
-              <input
-                id="char-age"
-                type="number"
-                value={formData.age}
-                onChange={(e) => setFormData({ ...formData, age: e.target.value })}
-                className="border rounded px-3 py-2"
-              />
-            </div>
-          </div>
+            </div>
+            <div className="flex flex-col">
+              <label htmlFor="char-age" className="mb-1 text-sm">Idade</label>
+              <input
+                id="char-age"
+                type="number"
+                value={formData.age}
+                onChange={(e) => setFormData({ ...formData, age: e.target.value })}
+                className="border rounded px-3 py-2"
+              />
+            </div>
+            <div className="flex flex-col">
+              <label htmlFor="char-race" className="mb-1 text-sm">Raça</label>
+              <input
+                id="char-race"
+                type="text"
+                value={formData.race}
+                onChange={(e) => setFormData({ ...formData, race: e.target.value })}
+                className="border rounded px-3 py-2"
+              />
+            </div>
+          </div>
           <div className="flex flex-col">
             <label htmlFor="char-appearance" className="mb-1 text-sm">Aparência</label>
             <textarea

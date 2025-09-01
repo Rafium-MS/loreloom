@@ -6,6 +6,8 @@ interface Religion {
   name: string;
   doctrine: string;
   factions: string;
+  pantheon?: string;
+  magicConnection?: string;
   characterIds?: number[];
 }
 

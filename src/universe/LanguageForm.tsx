@@ -7,6 +7,7 @@ export interface LanguageFormData {
   vocabulary: string;
   grammar: string;
   syllables: string;
+  race: string;
 }
 
 interface LanguageFormProps {
@@ -17,7 +18,7 @@ interface LanguageFormProps {
 
 const LanguageForm = ({ language, onSave, onCancel }: LanguageFormProps) => {
   const [formData, setFormData] = useState(
-    (language || { name: '', vocabulary: '', grammar: '', syllables: '' }) as LanguageFormData,
+    (language || { name: '', vocabulary: '', grammar: '', syllables: '', race: '' }) as LanguageFormData,
   );
   const [generatedName, setGeneratedName] = useState('');
   const [errors, setErrors] = useState({ name: '' });
@@ -64,6 +65,16 @@ const LanguageForm = ({ language, onSave, onCancel }: LanguageFormProps) => {
               className={`border rounded px-3 py-2 w-full ${errors.name ? 'border-red-500' : ''}`}
             />
             {errors.name && <span className="text-red-500 text-sm mt-1">{errors.name}</span>}
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="language-race" className="mb-1 text-sm">Raça ou povo</label>
+            <input
+              id="language-race"
+              type="text"
+              value={formData.race}
+              onChange={(e) => setFormData({ ...formData, race: e.target.value })}
+              className="border rounded px-3 py-2 w-full"
+            />
           </div>
           <div className="flex flex-col">
             <label htmlFor="language-vocab" className="mb-1 text-sm">Vocabulário (palavra:tradução por linha)</label>

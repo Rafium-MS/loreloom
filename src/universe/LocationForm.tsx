@@ -12,6 +12,8 @@ export interface LocationFormData {
   mainProfessions: string[];
   economy: string;
   resources: string;
+  geography: string;
+  culture: string;
   army: {
     size: number;
     weapons: string;
@@ -46,6 +48,8 @@ const LocationForm = ({ location, onSave, onCancel, generatePopulation, generate
       mainProfessions: [],
       economy: generateEconomy(),
       resources: '',
+      geography: '',
+      culture: '',
       army: {
         size: 0,
         weapons: '',
@@ -198,6 +202,31 @@ const LocationForm = ({ location, onSave, onCancel, generatePopulation, generate
                 onChange={(e) => setFormData({ ...formData, resources: e.target.value })}
                 className="border rounded px-3 py-2 w-full h-20"
               />
+            </div>
+          </div>
+
+          {/* Geografia e Cultura */}
+          <div className="border-b pb-4">
+            <h4 className="font-semibold mb-3">Geografia e Cultura</h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex flex-col">
+                <label htmlFor="loc-geography" className="mb-1 text-sm">Geografia</label>
+                <textarea
+                  id="loc-geography"
+                  value={formData.geography}
+                  onChange={(e) => setFormData({ ...formData, geography: e.target.value })}
+                  className="border rounded px-3 py-2 w-full h-20"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label htmlFor="loc-culture-details" className="mb-1 text-sm">Cultura</label>
+                <textarea
+                  id="loc-culture-details"
+                  value={formData.culture}
+                  onChange={(e) => setFormData({ ...formData, culture: e.target.value })}
+                  className="border rounded px-3 py-2 w-full h-20"
+                />
+              </div>
             </div>
           </div>
 

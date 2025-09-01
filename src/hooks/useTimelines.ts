@@ -7,6 +7,9 @@ interface Timeline {
   date: string;
   description: string;
   relations: string;
+  era?: string;
+  importance?: string;
+  historicMark?: string;
 }
 
 type Action =

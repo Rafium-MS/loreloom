@@ -8,6 +8,7 @@ export interface Character {
   motivations?: string;
   relationships?: string;
   role?: string;
+  race?: string;
   locationIds?: number[];
   religionIds?: number[];
 }
@@ -28,6 +29,8 @@ export interface Location {
   mainProfessions?: string[];
   economy?: string;
   resources?: string;
+  geography?: string;
+  culture?: string;
   army?: Army;
   religions?: string[];
   commonFoods?: string[];
@@ -45,6 +48,8 @@ export interface Economy {
   currency?: string;
   markets?: string;
   mainExports?: string;
+  basicItems?: string;
+  goods?: string;
 }
 
 export interface Religion {
@@ -52,6 +57,8 @@ export interface Religion {
   name: string;
   doctrine?: string;
   factions?: string;
+  pantheon?: string;
+  magicConnection?: string;
   characterIds?: number[];
 }
 
@@ -61,6 +68,9 @@ export interface TimelineEvent {
   date?: string;
   description?: string;
   relations?: string;
+  era?: string;
+  importance?: string;
+  historicMark?: string;
 }
 
 export interface Language {
@@ -69,4 +79,12 @@ export interface Language {
   grammar?: string;
   vocabulary?: string;
   syllables?: string;
+  race?: string;
+}
+
+export interface Faction {
+  id: number;
+  name: string;
+  intentions?: string;
+  hierarchy?: string;
 }
