@@ -7,6 +7,7 @@ import {
   Church,
   UtensilsCrossed,
   MapPin,
+  PieChart,
   ChevronDown,
   ChevronRight,
 } from 'lucide-react';
@@ -129,6 +130,15 @@ export const LocationView = ({
           <Users size={16} className="text-blue-500" />
           <span className="font-semibold">População:</span>
           <span>{location.population?.toLocaleString()}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <PieChart size={16} className="text-indigo-500" />
+          <span className="font-semibold">Demografia:</span>
+          <span>
+            Crianças: {location.demographics?.children ?? 0}, Adultos:{' '}
+            {location.demographics?.adults ?? 0}, Idosos:{' '}
+            {location.demographics?.elders ?? 0}
+          </span>
         </div>
         <div className="flex items-center gap-2">
           <Coins size={16} className="text-green-500" />

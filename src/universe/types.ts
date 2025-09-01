@@ -19,12 +19,19 @@ export interface Army {
   training?: string;
 }
 
+export interface Demographics {
+  children: number;
+  adults: number;
+  elders: number;
+}
+
 export interface Location {
   id: number;
   name: string;
   type: string;
   climate?: string;
   population?: number;
+  demographics?: Demographics;
   culturalComposition?: string;
   mainProfessions?: string[];
   economy?: string;

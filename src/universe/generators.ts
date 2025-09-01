@@ -5,6 +5,7 @@ import {
   foodsList,
   generatePopulation,
   generateEconomy,
+  generateDemography,
 } from './utils';
 
 export const generateRandomCharacter = (count: number): Character => ({
@@ -22,12 +23,14 @@ export const generateRandomCharacter = (count: number): Character => ({
 export const generateRandomLocation = (count: number): Location => {
   const types = ['cidade', 'vila', 'reino', 'fortaleza'];
   const climates = ['Temperado', 'Tropical', 'Árido', 'Frio', 'Montanhoso'];
+  const population = generatePopulation();
   return {
     id: Date.now(),
     name: `Local ${count + 1}`,
     type: types[Math.floor(Math.random() * types.length)],
     climate: climates[Math.floor(Math.random() * climates.length)],
-    population: generatePopulation(),
+    population,
+    demographics: generateDemography(population),
     culturalComposition: 'Diversa',
     mainProfessions: professionsList.slice(0, Math.floor(Math.random() * 5) + 3),
     economy: generateEconomy(),
