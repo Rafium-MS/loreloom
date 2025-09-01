@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* Reset leve + tipografia base */
 * { box-sizing: border-box; }
 html, body, #root { height: 100%; }
