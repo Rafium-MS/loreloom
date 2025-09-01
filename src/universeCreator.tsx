@@ -13,6 +13,7 @@ import { useEconomies } from './hooks/useEconomies';
 import { useReligions } from './hooks/useReligions';
 import { useTimelines } from './hooks/useTimelines';
 import { useLanguages } from './hooks/useLanguages';
+import { useTheme } from './ui/ThemeProvider';
 import './tokens.css';
 
 const UniverseCreator = () => {
@@ -23,6 +24,8 @@ const UniverseCreator = () => {
   const { religions, saveReligion, removeReligion } = useReligions();
   const { timelines, saveTimeline, removeTimeline } = useTimelines();
   const { languages, saveLanguage, removeLanguage } = useLanguages();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const [selectedCharacter, setSelectedCharacter] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedEconomy, setSelectedEconomy] = useState(null);
@@ -85,7 +88,7 @@ const UniverseCreator = () => {
 
   // Componente de Visualização de Personagem
   const CharacterView = ({ character }) => (
-    <section className="bg-white rounded-lg shadow-md p-6">
+    <section className="rounded-lg p-6 bg-panel shadow-token">
       <div className="flex justify-between items-start mb-4">
         <h3 className="text-xl font-bold">{character.name}</h3>
         <div className="flex gap-2">
@@ -118,11 +121,11 @@ const UniverseCreator = () => {
 
   // Componente de Visualização de Localização
   const LocationView = ({ location }) => (
-    <section className="bg-white rounded-lg shadow-md p-6">
+    <section className="rounded-lg p-6 bg-panel shadow-token">
       <div className="flex justify-between items-start mb-4">
         <div>
           <h3 className="text-xl font-bold">{location.name}</h3>
-          <p className="text-gray-600 capitalize">{location.type}</p>
+          <p style={{ color: 'var(--muted)' }} className="capitalize">{location.type}</p>
         </div>
         <div className="flex gap-2">
           <button
@@ -172,7 +175,7 @@ const UniverseCreator = () => {
             <span>{location.commonFoods?.length || 0}</span>
           </div>
           <div className="flex items-center gap-2">
-            <MapPin size={16} className="text-gray-500" />
+            <MapPin size={16} style={{ color: 'var(--muted)' }} />
             <span className="font-semibold">Clima:</span> 
             <span>{location.climate || 'Não definido'}</span>
           </div>
@@ -185,7 +188,7 @@ const UniverseCreator = () => {
           <div>
             <button
               onClick={() => toggleSection(`professions-${location.id}`)}
-              className="flex items-center gap-2 text-sm font-semibold text-gray-700 hover:text-gray-900"
+              className="flex items-center gap-2 text-sm font-semibold"
               aria-expanded={expandedSections[`professions-${location.id}`] || false}
               aria-controls={`professions-${location.id}-content`}
             >
@@ -193,7 +196,7 @@ const UniverseCreator = () => {
               Profissões Principais
             </button>
             {expandedSections[`professions-${location.id}`] && (
-              <div id={`professions-${location.id}-content`} className="ml-6 mt-1 text-sm text-gray-600">
+              <div id={`professions-${location.id}-content`} className="ml-6 mt-1 text-sm" style={{ color: 'var(--muted)' }}>
                 {location.mainProfessions.join(', ')}
               </div>
             )}
@@ -204,7 +207,7 @@ const UniverseCreator = () => {
           <div>
             <button
               onClick={() => toggleSection(`strategic-${location.id}`)}
-              className="flex items-center gap-2 text-sm font-semibold text-gray-700 hover:text-gray-900"
+              className="flex items-center gap-2 text-sm font-semibold"
               aria-expanded={expandedSections[`strategic-${location.id}`] || false}
               aria-controls={`strategic-${location.id}-content`}
             >
@@ -212,7 +215,7 @@ const UniverseCreator = () => {
               Pontos Estratégicos
             </button>
             {expandedSections[`strategic-${location.id}`] && (
-              <div id={`strategic-${location.id}-content`} className="ml-6 mt-1 text-sm text-gray-600">
+              <div id={`strategic-${location.id}-content`} className="ml-6 mt-1 text-sm" style={{ color: 'var(--muted)' }}>
                 {location.strategicPoints}
               </div>
             )}
@@ -223,7 +226,7 @@ const UniverseCreator = () => {
   );
 
   const EconomyView = ({ economy }) => (
-    <section className="bg-white rounded-lg shadow-md p-6">
+    <section className="rounded-lg p-6 bg-panel shadow-token">
       <div className="flex justify-between items-start mb-4">
         <h3 className="text-xl font-bold">{economy.name}</h3>
         <div className="flex gap-2">
@@ -244,7 +247,7 @@ const UniverseCreator = () => {
   );
 
   const ReligionView = ({ religion }) => (
-    <section className="bg-white rounded-lg shadow-md p-6">
+    <section className="rounded-lg p-6 bg-panel shadow-token">
       <div className="flex justify-between items-start mb-4">
         <h3 className="text-xl font-bold">{religion.name}</h3>
         <div className="flex gap-2">
@@ -264,7 +267,7 @@ const UniverseCreator = () => {
   );
 
   const TimelineView = ({ event }) => (
-    <section className="bg-white rounded-lg shadow-md p-6">
+    <section className="rounded-lg p-6 bg-panel shadow-token">
       <div className="flex justify-between items-start mb-4">
         <h3 className="text-xl font-bold">{event.title}</h3>
         <div className="flex gap-2">
@@ -285,7 +288,7 @@ const UniverseCreator = () => {
   );
 
   const LanguageView = ({ language }) => (
-    <section className="bg-white rounded-lg shadow-md p-6">
+    <section className="rounded-lg p-6 bg-panel shadow-token">
       <div className="flex justify-between items-start mb-4">
         <h3 className="text-xl font-bold">{language.name}</h3>
         <div className="flex gap-2">
@@ -349,27 +352,26 @@ const UniverseCreator = () => {
   };
 
   return (
-    <main className="min-h-screen bg-gray-100">
+    <main className="min-h-screen" style={{ background: 'var(--bg)', color: 'var(--text)' }}>
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="border-b border-border shadow-token" style={{ background: 'var(--panel)' }}>
         <div className="max-w-7xl mx-auto px-4 py-4">
-          <h1 className="text-2xl font-bold text-gray-900">Criador de Universos</h1>
-          <p className="text-gray-600">Crie personagens detalhados e construa cidades, reinos e vilas</p>
+          <h1 className="text-2xl font-bold" style={{ color: 'var(--text)' }}>Criador de Universos</h1>
+          <p style={{ color: 'var(--muted)' }}>Crie personagens detalhados e construa cidades, reinos e vilas</p>
         </div>
       </header>
 
       {/* Navigation */}
-      <nav className="bg-white border-b" aria-label="Seções do universo">
+      <nav className="border-b border-border" aria-label="Seções do universo" style={{ background: 'var(--panel)' }}>
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex space-x-8" role="tablist">
             <button
               id="characters-tab"
               onClick={() => setActiveTab('characters')}
-              className={`py-4 px-2 border-b-2 font-medium text-sm ${
-                activeTab === 'characters'
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              className={`py-4 px-2 border-b-2 font-medium text-sm border-transparent ${
+                activeTab === 'characters' ? 'border-blue-500 text-blue-600' : ''
               }`}
+              style={activeTab === 'characters' ? undefined : { color: 'var(--muted)' }}
               aria-controls="characters-panel"
               aria-selected={activeTab === 'characters'}
               role="tab"
@@ -380,11 +382,10 @@ const UniverseCreator = () => {
             <button
               id="locations-tab"
               onClick={() => setActiveTab('locations')}
-              className={`py-4 px-2 border-b-2 font-medium text-sm ${
-                activeTab === 'locations'
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              className={`py-4 px-2 border-b-2 font-medium text-sm border-transparent ${
+                activeTab === 'locations' ? 'border-blue-500 text-blue-600' : ''
               }`}
+              style={activeTab === 'locations' ? undefined : { color: 'var(--muted)' }}
               aria-controls="locations-panel"
               aria-selected={activeTab === 'locations'}
               role="tab"
@@ -395,11 +396,10 @@ const UniverseCreator = () => {
             <button
               id="economies-tab"
               onClick={() => setActiveTab('economies')}
-              className={`py-4 px-2 border-b-2 font-medium text-sm ${
-                activeTab === 'economies'
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              className={`py-4 px-2 border-b-2 font-medium text-sm border-transparent ${
+                activeTab === 'economies' ? 'border-blue-500 text-blue-600' : ''
               }`}
+              style={activeTab === 'economies' ? undefined : { color: 'var(--muted)' }}
               aria-controls="economies-panel"
               aria-selected={activeTab === 'economies'}
               role="tab"
@@ -410,11 +410,10 @@ const UniverseCreator = () => {
             <button
               id="religions-tab"
               onClick={() => setActiveTab('religions')}
-              className={`py-4 px-2 border-b-2 font-medium text-sm ${
-                activeTab === 'religions'
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              className={`py-4 px-2 border-b-2 font-medium text-sm border-transparent ${
+                activeTab === 'religions' ? 'border-blue-500 text-blue-600' : ''
               }`}
+              style={activeTab === 'religions' ? undefined : { color: 'var(--muted)' }}
               aria-controls="religions-panel"
               aria-selected={activeTab === 'religions'}
               role="tab"
@@ -425,11 +424,10 @@ const UniverseCreator = () => {
             <button
               id="timelines-tab"
               onClick={() => setActiveTab('timelines')}
-              className={`py-4 px-2 border-b-2 font-medium text-sm ${
-                activeTab === 'timelines'
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              className={`py-4 px-2 border-b-2 font-medium text-sm border-transparent ${
+                activeTab === 'timelines' ? 'border-blue-500 text-blue-600' : ''
               }`}
+              style={activeTab === 'timelines' ? undefined : { color: 'var(--muted)' }}
               aria-controls="timelines-panel"
               aria-selected={activeTab === 'timelines'}
               role="tab"
@@ -440,11 +438,10 @@ const UniverseCreator = () => {
             <button
               id="languages-tab"
               onClick={() => setActiveTab('languages')}
-              className={`py-4 px-2 border-b-2 font-medium text-sm ${
-                activeTab === 'languages'
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              className={`py-4 px-2 border-b-2 font-medium text-sm border-transparent ${
+                activeTab === 'languages' ? 'border-blue-500 text-blue-600' : ''
               }`}
+              style={activeTab === 'languages' ? undefined : { color: 'var(--muted)' }}
               aria-controls="languages-panel"
               aria-selected={activeTab === 'languages'}
               role="tab"
@@ -455,11 +452,10 @@ const UniverseCreator = () => {
             <button
               id="analytics-tab"
               onClick={() => setActiveTab('analytics')}
-              className={`py-4 px-2 border-b-2 font-medium text-sm ${
-                activeTab === 'analytics'
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              className={`py-4 px-2 border-b-2 font-medium text-sm border-transparent ${
+                activeTab === 'analytics' ? 'border-blue-500 text-blue-600' : ''
               }`}
+              style={activeTab === 'analytics' ? undefined : { color: 'var(--muted)' }}
               aria-controls="analytics-panel"
               aria-selected={activeTab === 'analytics'}
               role="tab"
@@ -488,9 +484,9 @@ const UniverseCreator = () => {
 
             {characters.length === 0 ? (
               <div className="text-center py-12">
-                <User size={48} className="mx-auto text-gray-400 mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhum personagem criado</h3>
-                <p className="text-gray-600 mb-4">Comece criando seu primeiro personagem</p>
+                <User size={48} className="mx-auto mb-4" style={{ color: 'var(--muted)' }} />
+                <h3 className="text-lg font-medium mb-2" style={{ color: 'var(--text)' }}>Nenhum personagem criado</h3>
+                <p className="mb-4" style={{ color: 'var(--muted)' }}>Comece criando seu primeiro personagem</p>
                 <button
                   onClick={() => setShowCharacterForm(true)}
                   className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
@@ -523,9 +519,9 @@ const UniverseCreator = () => {
 
             {locations.length === 0 ? (
               <div className="text-center py-12">
-                <MapPin size={48} className="mx-auto text-gray-400 mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhuma localização criada</h3>
-                <p className="text-gray-600 mb-4">Comece construindo sua primeira cidade ou reino</p>
+                <MapPin size={48} className="mx-auto mb-4" style={{ color: 'var(--muted)' }} />
+                <h3 className="text-lg font-medium mb-2" style={{ color: 'var(--text)' }}>Nenhuma localização criada</h3>
+                <p className="mb-4" style={{ color: 'var(--muted)' }}>Comece construindo sua primeira cidade ou reino</p>
                 <button
                   onClick={() => setShowLocationForm(true)}
                   className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
@@ -557,9 +553,9 @@ const UniverseCreator = () => {
             </header>
             {economies.length === 0 ? (
               <div className="text-center py-12">
-                <Coins size={48} className="mx-auto text-gray-400 mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhuma economia cadastrada</h3>
-                <p className="text-gray-600 mb-4">Adicione mercados e sistemas econômicos</p>
+                <Coins size={48} className="mx-auto mb-4" style={{ color: 'var(--muted)' }} />
+                <h3 className="text-lg font-medium mb-2" style={{ color: 'var(--text)' }}>Nenhuma economia cadastrada</h3>
+                <p className="mb-4" style={{ color: 'var(--muted)' }}>Adicione mercados e sistemas econômicos</p>
                 <button
                   onClick={() => setShowEconomyForm(true)}
                   className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600"
@@ -591,9 +587,9 @@ const UniverseCreator = () => {
             </header>
             {religions.length === 0 ? (
               <div className="text-center py-12">
-                <Church size={48} className="mx-auto text-gray-400 mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhuma religião cadastrada</h3>
-                <p className="text-gray-600 mb-4">Crie crenças e facções para seu mundo</p>
+                <Church size={48} className="mx-auto mb-4" style={{ color: 'var(--muted)' }} />
+                <h3 className="text-lg font-medium mb-2" style={{ color: 'var(--text)' }}>Nenhuma religião cadastrada</h3>
+                <p className="mb-4" style={{ color: 'var(--muted)' }}>Crie crenças e facções para seu mundo</p>
                 <button
                   onClick={() => setShowReligionForm(true)}
                   className="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600"
@@ -625,9 +621,9 @@ const UniverseCreator = () => {
             </header>
             {timelines.length === 0 ? (
               <div className="text-center py-12">
-                <Clock size={48} className="mx-auto text-gray-400 mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhum evento registrado</h3>
-                <p className="text-gray-600 mb-4">Construa a história do seu universo</p>
+                <Clock size={48} className="mx-auto mb-4" style={{ color: 'var(--muted)' }} />
+                <h3 className="text-lg font-medium mb-2" style={{ color: 'var(--text)' }}>Nenhum evento registrado</h3>
+                <p className="mb-4" style={{ color: 'var(--muted)' }}>Construa a história do seu universo</p>
                 <button
                   onClick={() => setShowTimelineForm(true)}
                   className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600"
@@ -659,9 +655,9 @@ const UniverseCreator = () => {
             </header>
             {languages.length === 0 ? (
               <div className="text-center py-12">
-                <BookOpen size={48} className="mx-auto text-gray-400 mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhuma língua criada</h3>
-                <p className="text-gray-600 mb-4">Crie vocabulários e regras gramaticais</p>
+                <BookOpen size={48} className="mx-auto mb-4" style={{ color: 'var(--muted)' }} />
+                <h3 className="text-lg font-medium mb-2" style={{ color: 'var(--text)' }}>Nenhuma língua criada</h3>
+                <p className="mb-4" style={{ color: 'var(--muted)' }}>Crie vocabulários e regras gramaticais</p>
                 <button
                   onClick={() => setShowLanguageForm(true)}
                   className="bg-pink-500 text-white px-4 py-2 rounded-lg hover:bg-pink-600"
@@ -684,44 +680,41 @@ const UniverseCreator = () => {
             <h2 className="text-xl font-semibold mb-6">Estatísticas do Universo</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              <div className="bg-white rounded-lg shadow p-6">
+              <div className="rounded-lg p-6 bg-panel shadow-token">
                 <div className="flex items-center">
                   <User className="h-8 w-8 text-blue-500" />
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Personagens</p>
-                    <p className="text-2xl font-semibold text-gray-900">{characters.length}</p>
+                    <p className="text-sm font-medium" style={{ color: 'var(--muted)' }}>Personagens</p>
+                    <p className="text-2xl font-semibold" style={{ color: 'var(--text)' }}>{characters.length}</p>
                   </div>
                 </div>
               </div>
-
-              <div className="bg-white rounded-lg shadow p-6">
+              <div className="rounded-lg p-6 bg-panel shadow-token">
                 <div className="flex items-center">
                   <MapPin className="h-8 w-8 text-green-500" />
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Localizações</p>
-                    <p className="text-2xl font-semibold text-gray-900">{locations.length}</p>
+                    <p className="text-sm font-medium" style={{ color: 'var(--muted)' }}>Localizações</p>
+                    <p className="text-2xl font-semibold" style={{ color: 'var(--text)' }}>{locations.length}</p>
                   </div>
                 </div>
               </div>
-
-              <div className="bg-white rounded-lg shadow p-6">
+              <div className="rounded-lg p-6 bg-panel shadow-token">
                 <div className="flex items-center">
                   <Users className="h-8 w-8 text-purple-500" />
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">População Total</p>
-                    <p className="text-2xl font-semibold text-gray-900">
+                    <p className="text-sm font-medium" style={{ color: 'var(--muted)' }}>População Total</p>
+                    <p className="text-2xl font-semibold" style={{ color: 'var(--text)' }}>
                       {locations.reduce((total, loc) => total + (loc.population || 0), 0).toLocaleString()}
                     </p>
                   </div>
                 </div>
               </div>
-
-              <div className="bg-white rounded-lg shadow p-6">
+              <div className="rounded-lg p-6 bg-panel shadow-token">
                 <div className="flex items-center">
                   <Shield className="h-8 w-8 text-red-500" />
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Força Militar</p>
-                    <p className="text-2xl font-semibold text-gray-900">
+                    <p className="text-sm font-medium" style={{ color: 'var(--muted)' }}>Força Militar</p>
+                    <p className="text-2xl font-semibold" style={{ color: 'var(--text)' }}>
                       {locations.reduce((total, loc) => total + (loc.army?.size || 0), 0).toLocaleString()}
                     </p>
                   </div>
@@ -732,7 +725,7 @@ const UniverseCreator = () => {
             {/* Gráficos e Análises */}
             {locations.length > 0 && (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-white rounded-lg shadow p-6">
+                <div className="rounded-lg p-6 bg-panel shadow-token">
                   <h3 className="text-lg font-medium mb-4">Distribuição por Tipo de Localização</h3>
                   <div className="space-y-3">
                     {['cidade', 'vila', 'reino', 'fortaleza'].map(type => {
@@ -742,13 +735,13 @@ const UniverseCreator = () => {
                         <div key={type} className="flex justify-between items-center">
                           <span className="capitalize text-sm font-medium">{type}</span>
                           <div className="flex items-center gap-2">
-                            <div className="w-24 bg-gray-200 rounded-full h-2">
-                              <div 
-                                className="bg-blue-500 h-2 rounded-full" 
+                            <div className={`w-24 rounded-full h-2 ${isDark ? 'bg-gray-700' : 'bg-gray-200'}`}> 
+                              <div
+                                className="bg-blue-500 h-2 rounded-full"
                                 style={{width: `${percentage}%`}}
                               ></div>
                             </div>
-                            <span className="text-sm text-gray-600 w-12">{count}</span>
+                            <span className="text-sm w-12" style={{ color: 'var(--muted)' }}>{count}</span>
                           </div>
                         </div>
                       );
@@ -756,7 +749,7 @@ const UniverseCreator = () => {
                   </div>
                 </div>
 
-                <div className="bg-white rounded-lg shadow p-6">
+                <div className="rounded-lg p-6 bg-panel shadow-token">
                   <h3 className="text-lg font-medium mb-4">Maiores Populações</h3>
                   <div className="space-y-3">
                     {locations
@@ -766,7 +759,7 @@ const UniverseCreator = () => {
                         <div key={location.id} className="flex justify-between items-center">
                           <div>
                             <span className="font-medium">{location.name}</span>
-                            <span className="text-sm text-gray-500 ml-2 capitalize">({location.type})</span>
+                            <span className="text-sm ml-2 capitalize" style={{ color: 'var(--muted)' }}>({location.type})</span>
                           </div>
                           <span className="text-sm font-medium">
                             {(location.population || 0).toLocaleString()}
@@ -777,7 +770,7 @@ const UniverseCreator = () => {
                   </div>
                 </div>
 
-                <div className="bg-white rounded-lg shadow p-6">
+                <div className="rounded-lg p-6 bg-panel shadow-token">
                   <h3 className="text-lg font-medium mb-4">Setores Econômicos</h3>
                   <div className="space-y-3">
                     {Object.entries(
@@ -791,20 +784,20 @@ const UniverseCreator = () => {
                       <div key={sector} className="flex justify-between items-center">
                         <span className="text-sm font-medium">{sector}</span>
                         <div className="flex items-center gap-2">
-                          <div className="w-24 bg-gray-200 rounded-full h-2">
-                            <div 
-                              className="bg-green-500 h-2 rounded-full" 
+                          <div className={`w-24 rounded-full h-2 ${isDark ? 'bg-gray-700' : 'bg-gray-200'}`}> 
+                            <div
+                              className="bg-green-500 h-2 rounded-full"
                               style={{width: `${locations.length > 0 ? (count / locations.length * 100) : 0}%`}}
                             ></div>
                           </div>
-                          <span className="text-sm text-gray-600 w-12">{count}</span>
+                          <span className="text-sm w-12" style={{ color: 'var(--muted)' }}>{count}</span>
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="bg-white rounded-lg shadow p-6">
+                <div className="rounded-lg p-6 bg-panel shadow-token">
                   <h3 className="text-lg font-medium mb-4">Diversidade Religiosa</h3>
                   <div className="space-y-3">
                     {Object.entries(
@@ -821,9 +814,9 @@ const UniverseCreator = () => {
                       <div key={religion} className="flex justify-between items-center">
                         <span className="text-sm font-medium">{religion}</span>
                         <div className="flex items-center gap-2">
-                          <div className="w-24 bg-gray-200 rounded-full h-2">
-                            <div 
-                              className="bg-purple-500 h-2 rounded-full" 
+                          <div className={`w-24 rounded-full h-2 ${isDark ? 'bg-gray-700' : 'bg-gray-200'}`}> 
+                            <div
+                              className="bg-purple-500 h-2 rounded-full"
                               style={{width: `${Math.max(...Object.values(locations.reduce((acc, loc) => {
                                 (loc.religions || []).forEach(r => {
                                   acc[r] = (acc[r] || 0) + 1;
@@ -837,7 +830,7 @@ const UniverseCreator = () => {
                               }, {}))) * 100) : 0}%`}}
                             ></div>
                           </div>
-                          <span className="text-sm text-gray-600 w-12">{count}</span>
+                          <span className="text-sm w-12" style={{ color: 'var(--muted)' }}>{count}</span>
                         </div>
                       </div>
                     ))}
@@ -848,9 +841,9 @@ const UniverseCreator = () => {
 
             {locations.length === 0 && characters.length === 0 && (
               <div className="text-center py-12">
-                <BarChart3 size={48} className="mx-auto text-gray-400 mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhum dado para análise</h3>
-                <p className="text-gray-600">Crie personagens e localizações para ver estatísticas detalhadas</p>
+                <BarChart3 size={48} className="mx-auto mb-4" style={{ color: 'var(--muted)' }} />
+                <h3 className="text-lg font-medium mb-2" style={{ color: 'var(--text)' }}>Nenhum dado para análise</h3>
+                <p style={{ color: 'var(--muted)' }}>Crie personagens e localizações para ver estatísticas detalhadas</p>
               </div>
             )}
           </section>
@@ -874,7 +867,7 @@ const UniverseCreator = () => {
             };
             saveCharacter(randomCharacter);
           }}
-          className="bg-blue-500 text-white p-3 rounded-full shadow-lg hover:bg-blue-600 transition-colors"
+          className="bg-blue-500 text-white p-3 rounded-full shadow-token hover:bg-blue-600 transition-colors"
           title="Gerar Personagem Aleatório"
         >
           <User size={20} />
@@ -909,7 +902,7 @@ const UniverseCreator = () => {
             };
             saveLocation(randomLocation);
           }}
-          className="bg-green-500 text-white p-3 rounded-full shadow-lg hover:bg-green-600 transition-colors"
+          className="bg-green-500 text-white p-3 rounded-full shadow-token hover:bg-green-600 transition-colors"
           title="Gerar Localização Aleatória"
         >
           <MapPin size={20} />
@@ -921,7 +914,7 @@ const UniverseCreator = () => {
             const totalArmy = locations.reduce((total, loc) => total + (loc.army?.size || 0), 0);
             alert(`Resumo do Universo:\n\n• Personagens: ${characters.length}\n• Localizações: ${locations.length}\n• População Total: ${totalPop.toLocaleString()}\n• Força Militar: ${totalArmy.toLocaleString()}`);
           }}
-          className="bg-purple-500 text-white p-3 rounded-full shadow-lg hover:bg-purple-600 transition-colors"
+          className="bg-purple-500 text-white p-3 rounded-full shadow-token hover:bg-purple-600 transition-colors"
           title="Resumo Rápido"
         >
           <BarChart3 size={20} />
