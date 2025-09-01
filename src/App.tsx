@@ -12,12 +12,15 @@ const App = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="flex items-center justify-between px-4 py-3 border-b border-border">
+      <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-4 py-3 border-b border-border">
         <div className="flex items-center gap-2">
           <img src={logoUrl} alt="LoreLoom" className="h-5 w-auto" />
           <strong>LoreLoom</strong>
         </div>
-        <nav className="flex items-center gap-3" aria-label="Navegação principal">
+        <nav
+          className="flex flex-col sm:flex-row items-start sm:items-center gap-3"
+          aria-label="Navegação principal"
+        >
           <Link
             to="/editor"
             className="px-2 py-1 cursor-pointer no-underline"

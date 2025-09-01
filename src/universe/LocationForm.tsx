@@ -58,7 +58,7 @@ const LocationForm = ({ location, onSave, onCancel, generatePopulation, generate
           {/* Informações Básicas */}
           <div className="border-b pb-4">
             <h4 className="font-semibold mb-3">Informações Básicas</h4>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="flex flex-col">
               <label htmlFor="loc-name" className="mb-1 text-sm">Nome</label>
               <input
@@ -103,7 +103,7 @@ const LocationForm = ({ location, onSave, onCancel, generatePopulation, generate
           {/* População */}
           <div className="border-b pb-4">
             <h4 className="font-semibold mb-3">População</h4>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="flex flex-col">
               <label htmlFor="loc-population" className="mb-1 text-sm">Número de habitantes</label>
               <input
@@ -130,7 +130,7 @@ const LocationForm = ({ location, onSave, onCancel, generatePopulation, generate
           {/* Economia e Profissões */}
           <div className="border-b pb-4">
             <h4 className="font-semibold mb-3">Economia</h4>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex flex-col">
                 <label htmlFor="loc-economy" className="mb-1 text-sm">Setor econômico principal</label>
                 <input
@@ -166,7 +166,7 @@ const LocationForm = ({ location, onSave, onCancel, generatePopulation, generate
           {/* Exército */}
           <div className="border-b pb-4">
             <h4 className="font-semibold mb-3">Exército Local</h4>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="flex flex-col">
                 <label htmlFor="loc-army-size" className="mb-1 text-sm">Tamanho do exército</label>
                 <input
@@ -212,7 +212,7 @@ const LocationForm = ({ location, onSave, onCancel, generatePopulation, generate
           {/* Religião e Cultura */}
           <div className="border-b pb-4">
             <h4 className="font-semibold mb-3">Religião e Cultura</h4>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex flex-col">
                 <label htmlFor="loc-religions" className="mb-1 text-sm">Religiões aceitas (separadas por vírgula)</label>
                 <input
@@ -239,7 +239,7 @@ const LocationForm = ({ location, onSave, onCancel, generatePopulation, generate
           {/* Infraestrutura */}
           <div className="border-b pb-4">
             <h4 className="font-semibold mb-3">Infraestrutura</h4>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex flex-col">
                 <label htmlFor="loc-establishments" className="mb-1 text-sm">Estabelecimentos comerciais</label>
                 <textarea
@@ -266,7 +266,7 @@ const LocationForm = ({ location, onSave, onCancel, generatePopulation, generate
           {/* História */}
           <div className="pb-4">
             <h4 className="font-semibold mb-3">História</h4>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex flex-col">
                 <label htmlFor="loc-government" className="mb-1 text-sm">Histórico de governos</label>
                 <textarea
