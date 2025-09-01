@@ -1,27 +1,32 @@
-// @ts-nocheck
-import React, { useState } from 'react';
+import { useState } from 'react';
 import '../tokens.css';
 import { useCharacters } from '../hooks/useCharacters';
 
+export interface ReligionFormData {
+  id?: number;
+  name: string;
+  doctrine: string;
+  factions: string;
+  characterIds?: number[];
+}
+
 interface ReligionFormProps {
-  religion: any;
-  onSave: (rel: any) => void;
+  religion: ReligionFormData | null;
+  onSave: (rel: ReligionFormData) => void;
   onCancel: () => void;
 }
 
 const ReligionForm = ({ religion, onSave, onCancel }: ReligionFormProps) => {
   const [formData, setFormData] = useState(
-    religion || {
-      name: '',
-      doctrine: '',
-      factions: ''
-    }
+    (religion || { name: '', doctrine: '', factions: '' }) as ReligionFormData,
   );
   const [errors, setErrors] = useState({ name: '' });
   const { characters } = useCharacters();
-  const [selectedCharacters, setSelectedCharacters] = useState<number[]>(religion?.characterIds || []);
+  const [selectedCharacters, setSelectedCharacters] = useState(
+    (religion?.characterIds || []) as number[],
+  );
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e: any) => {
     e.preventDefault();
     const newErrors = { name: formData.name.trim() ? '' : 'Nome é obrigatório' };
     setErrors(newErrors);
@@ -88,7 +93,7 @@ const ReligionForm = ({ religion, onSave, onCancel }: ReligionFormProps) => {
               className="border rounded px-3 py-2 w-full"
 
             >
-              {characters.map((char) => (
+              {characters.map((char: { id: number; name: string }) => (
                 <option key={char.id} value={char.id}>
                   {char.name}
                 </option>

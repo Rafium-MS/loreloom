@@ -1,25 +1,27 @@
-// @ts-nocheck
-import React, { useState } from 'react';
+import { useState } from 'react';
 import '../tokens.css';
 
+export interface TimelineFormData {
+  id?: number;
+  title: string;
+  date: string;
+  description: string;
+  relations: string;
+}
+
 interface TimelineFormProps {
-  event: any;
-  onSave: (ev: any) => void;
+  event: TimelineFormData | null;
+  onSave: (ev: TimelineFormData) => void;
   onCancel: () => void;
 }
 
 const TimelineForm = ({ event, onSave, onCancel }: TimelineFormProps) => {
   const [formData, setFormData] = useState(
-    event || {
-      title: '',
-      date: '',
-      description: '',
-      relations: ''
-    }
+    (event || { title: '', date: '', description: '', relations: '' }) as TimelineFormData,
   );
   const [errors, setErrors] = useState({ title: '' });
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
     const newErrors = { title: formData.title.trim() ? '' : 'Título é obrigatório' };
     setErrors(newErrors);

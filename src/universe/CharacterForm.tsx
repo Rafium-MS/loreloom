@@ -1,33 +1,52 @@
-// @ts-nocheck
-import React, { useState } from 'react';
+import { useState } from 'react';
 import '../tokens.css';
 import { useLocations } from '../hooks/useLocations';
 import { useReligions } from '../hooks/useReligions';
 
+export interface CharacterFormData {
+  id?: number;
+  name: string;
+  age: string | number;
+  appearance: string;
+  background: string;
+  abilities: string;
+  motivations: string;
+  relationships: string;
+  role: string;
+  locationIds?: number[];
+  religionIds?: number[];
+}
+
 interface CharacterFormProps {
-  character: any;
-  onSave: (char: any) => void;
-  onCancel: () => void;
+  character: CharacterFormData | null;
+  onSave: (char: CharacterFormData) => void;
+  onCancel: () => void;
 }
 
 const CharacterForm = ({ character, onSave, onCancel }: CharacterFormProps) => {
-  const [formData, setFormData] = useState(character || {
-    name: '',
-    age: '',
-    appearance: '',
-    background: '',
-    abilities: '',
-    motivations: '',
-    relationships: '',
-    role: ''
-  });
-  const [errors, setErrors] = useState({ name: '' });
-  const { locations } = useLocations();
-  const { religions } = useReligions();
-  const [selectedLocations, setSelectedLocations] = useState<number[]>(character?.locationIds || []);
-  const [selectedReligions, setSelectedReligions] = useState<number[]>(character?.religionIds || []);
+  const [formData, setFormData] = useState(
+    (character || {
+      name: '',
+      age: '',
+      appearance: '',
+      background: '',
+      abilities: '',
+      motivations: '',
+      relationships: '',
+      role: '',
+    }) as CharacterFormData,
+  );
+  const [errors, setErrors] = useState({ name: '' });
+  const { locations } = useLocations();
+  const { religions } = useReligions();
+  const [selectedLocations, setSelectedLocations] = useState(
+    (character?.locationIds || []) as number[],
+  );
+  const [selectedReligions, setSelectedReligions] = useState(
+    (character?.religionIds || []) as number[],
+  );
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
     const newErrors = { name: formData.name.trim() ? '' : 'Nome é obrigatório' };
     setErrors(newErrors);
@@ -141,11 +160,11 @@ const CharacterForm = ({ character, onSave, onCancel }: CharacterFormProps) => {
               }
               className="border rounded px-3 py-2 w-full h-32"
             >
-              {locations.map((loc) => (
-                <option key={loc.id} value={loc.id}>
-                  {loc.name}
-                </option>
-              ))}
+              {locations.map((loc: { id: number; name: string }) => (
+                  <option key={loc.id} value={loc.id}>
+                    {loc.name}
+                  </option>
+              ))}
             </select>
           </div>
           <div className="flex flex-col">
@@ -161,11 +180,11 @@ const CharacterForm = ({ character, onSave, onCancel }: CharacterFormProps) => {
               }
               className="border rounded px-3 py-2 w-full h-32"
             >
-              {religions.map((rel) => (
-                <option key={rel.id} value={rel.id}>
-                  {rel.name}
-                </option>
-              ))}
+              {religions.map((rel: { id: number; name: string }) => (
+                  <option key={rel.id} value={rel.id}>
+                    {rel.name}
+                  </option>
+              ))}
             </select>
           </div>
           <div className="flex gap-2 pt-4">

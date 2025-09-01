@@ -1,30 +1,32 @@
-// @ts-nocheck
-import React, { useState } from 'react';
+import { useState } from 'react';
 import '../tokens.css';
 
+export interface LanguageFormData {
+  id?: number;
+  name: string;
+  vocabulary: string;
+  grammar: string;
+  syllables: string;
+}
+
 interface LanguageFormProps {
-  language: any;
-  onSave: (lang: any) => void;
+  language: LanguageFormData | null;
+  onSave: (lang: LanguageFormData) => void;
   onCancel: () => void;
 }
 
 const LanguageForm = ({ language, onSave, onCancel }: LanguageFormProps) => {
   const [formData, setFormData] = useState(
-    language || {
-      name: '',
-      vocabulary: '',
-      grammar: '',
-      syllables: ''
-    }
+    (language || { name: '', vocabulary: '', grammar: '', syllables: '' }) as LanguageFormData,
   );
   const [generatedName, setGeneratedName] = useState('');
   const [errors, setErrors] = useState({ name: '' });
 
   const generateName = () => {
-    const syllables = formData.syllables
-      .split(',')
-      .map((s) => s.trim())
-      .filter(Boolean);
+      const syllables = formData.syllables
+        .split(',')
+        .map((s: string) => s.trim())
+        .filter(Boolean);
     if (syllables.length === 0) return;
     const count = Math.floor(Math.random() * 2) + 2;
     let name = '';
@@ -34,7 +36,7 @@ const LanguageForm = ({ language, onSave, onCancel }: LanguageFormProps) => {
     setGeneratedName(name.charAt(0).toUpperCase() + name.slice(1));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
     const newErrors = { name: formData.name.trim() ? '' : 'Nome é obrigatório' };
     setErrors(newErrors);

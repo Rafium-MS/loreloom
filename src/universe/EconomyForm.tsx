@@ -1,25 +1,27 @@
-// @ts-nocheck
-import React, { useState } from 'react';
+import { useState } from 'react';
 import '../tokens.css';
 
+export interface EconomyFormData {
+  id?: number;
+  name: string;
+  currency: string;
+  markets: string;
+  mainExports: string;
+}
+
 interface EconomyFormProps {
-  economy: any;
-  onSave: (econ: any) => void;
+  economy: EconomyFormData | null;
+  onSave: (econ: EconomyFormData) => void;
   onCancel: () => void;
 }
 
 const EconomyForm = ({ economy, onSave, onCancel }: EconomyFormProps) => {
   const [formData, setFormData] = useState(
-    economy || {
-      name: '',
-      currency: '',
-      markets: '',
-      mainExports: ''
-    }
+    (economy || { name: '', currency: '', markets: '', mainExports: '' }) as EconomyFormData,
   );
   const [errors, setErrors] = useState({ name: '' });
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
     const newErrors = { name: formData.name.trim() ? '' : 'Nome é obrigatório' };
     setErrors(newErrors);

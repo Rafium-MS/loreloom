@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Users, MapPin, BookOpen, Edit3, PlusCircle, X, Sparkles, Link2 } from 'lucide-react';
 import { useTheme } from '../ui/ThemeProvider';
 import CharacterForm from './CharacterForm';
@@ -43,7 +43,7 @@ interface SidebarProps {
   className?: string;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({
+const Sidebar = ({
   activePanel,
   setActivePanel,
   characters,
@@ -80,8 +80,8 @@ const Sidebar: React.FC<SidebarProps> = ({
   history,
   loadVersion,
   removeItem,
-  className = ''
-}) => {
+  className = '',
+}: SidebarProps) => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   const isFocus = theme === 'focus';

@@ -1,44 +1,72 @@
-// @ts-nocheck
-import React, { useState } from 'react';
+import { useState } from 'react';
 import '../tokens.css';
 import { useCharacters } from '../hooks/useCharacters';
 
+export interface LocationFormData {
+  id?: number;
+  name: string;
+  type: string;
+  climate: string;
+  population: number;
+  culturalComposition: string;
+  mainProfessions: string[];
+  economy: string;
+  resources: string;
+  army: {
+    size: number;
+    weapons: string;
+    training: string;
+  };
+  religions: string[];
+  commonFoods: string[];
+  establishments: string;
+  strategicPoints: string;
+  government: string;
+  battles: string;
+  events: string;
+  characterIds?: number[];
+}
+
 interface LocationFormProps {
-  location: any;
-  onSave: (loc: any) => void;
+  location: LocationFormData | null;
+  onSave: (loc: LocationFormData) => void;
   onCancel: () => void;
   generatePopulation: () => number;
   generateEconomy: () => string;
 }
 
 const LocationForm = ({ location, onSave, onCancel, generatePopulation, generateEconomy }: LocationFormProps) => {
-  const [formData, setFormData] = useState(location || {
-    name: '',
-    type: 'cidade',
-    climate: '',
-    population: generatePopulation(),
-    culturalComposition: '',
-    mainProfessions: [],
-    economy: generateEconomy(),
-    resources: '',
-    army: {
-      size: 0,
-      weapons: '',
-      training: ''
-    },
-    religions: [],
-    commonFoods: [],
-    establishments: '',
-    strategicPoints: '',
-    government: '',
-    battles: '',
-    events: ''
-  });
+  const [formData, setFormData] = useState(
+    (location || {
+      name: '',
+      type: 'cidade',
+      climate: '',
+      population: generatePopulation(),
+      culturalComposition: '',
+      mainProfessions: [],
+      economy: generateEconomy(),
+      resources: '',
+      army: {
+        size: 0,
+        weapons: '',
+        training: '',
+      },
+      religions: [],
+      commonFoods: [],
+      establishments: '',
+      strategicPoints: '',
+      government: '',
+      battles: '',
+      events: '',
+    }) as LocationFormData,
+  );
   const [errors, setErrors] = useState({ name: '' });
   const { characters } = useCharacters();
-  const [selectedCharacters, setSelectedCharacters] = useState<number[]>(location?.characterIds || []);
+  const [selectedCharacters, setSelectedCharacters] = useState(
+    (location?.characterIds || []) as number[],
+  );
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
     const newErrors = { name: formData.name.trim() ? '' : 'Nome é obrigatório' };
     setErrors(newErrors);
@@ -50,7 +78,10 @@ const LocationForm = ({ location, onSave, onCancel, generatePopulation, generate
     });
   };
 
-  const handleArrayChange = (field: string, value: string) => {
+  const handleArrayChange = (
+    field: 'mainProfessions' | 'religions' | 'commonFoods',
+    value: string,
+  ) => {
     const array = value.split(',').map(item => item.trim()).filter(item => item);
     setFormData({ ...formData, [field]: array });
   };
@@ -257,7 +288,7 @@ const LocationForm = ({ location, onSave, onCancel, generatePopulation, generate
             }
             className="border rounded px-3 py-2 w-full h-32"
           >
-            {characters.map((char) => (
+            {characters.map((char: { id: number; name: string }) => (
               <option key={char.id} value={char.id}>
                 {char.name}
               </option>
@@ -345,7 +376,7 @@ const LocationForm = ({ location, onSave, onCancel, generatePopulation, generate
               }
               className="border rounded px-3 py-2 w-full"
             >
-              {characters.map((char) => (
+              {characters.map((char: { id: number; name: string }) => (
                 <option key={char.id} value={char.id}>
                   {char.name}
                 </option>
