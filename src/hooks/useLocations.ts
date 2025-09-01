@@ -6,6 +6,7 @@ interface Location {
   name: string;
   description: string;
   type: string;
+  characterIds?: number[];
 }
 
 type Action =
@@ -31,7 +32,13 @@ export function useLocations() {
 
   const load = useCallback(async () => {
     const locs = await dataStore.getLocations();
-    dispatch({ type: 'set', payload: locs });
+    const enriched = await Promise.all(
+      locs.map(async (l) => {
+        const characterIds = await dataStore.getLocationCharacters(l.id);
+        return { ...l, characterIds } as Location;
+      })
+    );
+    dispatch({ type: 'set', payload: enriched });
   }, []);
 
   useEffect(() => {
@@ -54,7 +61,30 @@ export function useLocations() {
     [load]
   );
 
-  return { locations, saveLocation, removeLocation, refresh: load };
+  const linkLocationToCharacter = useCallback(
+    async (locationId: number, characterId: number) => {
+      await dataStore.linkCharacterToLocation(characterId, locationId);
+      await load();
+    },
+    [load]
+  );
+
+  const unlinkLocationFromCharacter = useCallback(
+    async (locationId: number, characterId: number) => {
+      await dataStore.unlinkCharacterFromLocation(characterId, locationId);
+      await load();
+    },
+    [load]
+  );
+
+  return {
+    locations,
+    saveLocation,
+    removeLocation,
+    linkLocationToCharacter,
+    unlinkLocationFromCharacter,
+    refresh: load,
+  };
 }
 
 export default useLocations;

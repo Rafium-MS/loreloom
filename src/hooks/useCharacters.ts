@@ -6,6 +6,8 @@ interface Character {
   name: string;
   description: string;
   role: string;
+  locationIds?: number[];
+  religionIds?: number[];
 }
 
 type Action =
@@ -31,7 +33,16 @@ export function useCharacters() {
 
   const load = useCallback(async () => {
     const chars = await dataStore.getCharacters();
-    dispatch({ type: 'set', payload: chars });
+    const enriched = await Promise.all(
+      chars.map(async (c) => {
+        const [locationIds, religionIds] = await Promise.all([
+          dataStore.getCharacterLocations(c.id),
+          dataStore.getCharacterReligions(c.id),
+        ]);
+        return { ...c, locationIds, religionIds } as Character;
+      })
+    );
+    dispatch({ type: 'set', payload: enriched });
   }, []);
 
   useEffect(() => {
@@ -54,7 +65,48 @@ export function useCharacters() {
     [load]
   );
 
-  return { characters, saveCharacter, removeCharacter, refresh: load };
+  const linkCharacterToLocation = useCallback(
+    async (characterId: number, locationId: number) => {
+      await dataStore.linkCharacterToLocation(characterId, locationId);
+      await load();
+    },
+    [load]
+  );
+
+  const unlinkCharacterFromLocation = useCallback(
+    async (characterId: number, locationId: number) => {
+      await dataStore.unlinkCharacterFromLocation(characterId, locationId);
+      await load();
+    },
+    [load]
+  );
+
+  const linkCharacterToReligion = useCallback(
+    async (characterId: number, religionId: number) => {
+      await dataStore.linkCharacterToReligion(characterId, religionId);
+      await load();
+    },
+    [load]
+  );
+
+  const unlinkCharacterFromReligion = useCallback(
+    async (characterId: number, religionId: number) => {
+      await dataStore.unlinkCharacterFromReligion(characterId, religionId);
+      await load();
+    },
+    [load]
+  );
+
+  return {
+    characters,
+    saveCharacter,
+    removeCharacter,
+    linkCharacterToLocation,
+    unlinkCharacterFromLocation,
+    linkCharacterToReligion,
+    unlinkCharacterFromReligion,
+    refresh: load,
+  };
 }
 
 export default useCharacters;
