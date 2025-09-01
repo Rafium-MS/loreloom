@@ -36,7 +36,7 @@ const CharacterForm = ({ character, onSave, onCancel }: CharacterFormProps) => {
           {character ? 'Editar Personagem' : 'Novo Personagem'}
         </h3>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="flex flex-col">
               <label htmlFor="char-name" className="mb-1 text-sm">Nome</label>
               <input
