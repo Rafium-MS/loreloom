@@ -18,10 +18,30 @@ import './tokens.css';
 
 const UniverseCreator = () => {
   const [activeTab, setActiveTab] = useState('characters');
-  const { characters, saveCharacter, removeCharacter } = useCharacters();
-  const { locations, saveLocation, removeLocation } = useLocations();
+  const {
+    characters,
+    saveCharacter,
+    removeCharacter,
+    linkCharacterToLocation,
+    unlinkCharacterFromLocation,
+    linkCharacterToReligion,
+    unlinkCharacterFromReligion,
+  } = useCharacters();
+  const {
+    locations,
+    saveLocation,
+    removeLocation,
+    linkLocationToCharacter,
+    unlinkLocationFromCharacter,
+  } = useLocations();
   const { economies, saveEconomy, removeEconomy } = useEconomies();
-  const { religions, saveReligion, removeReligion } = useReligions();
+  const {
+    religions,
+    saveReligion,
+    removeReligion,
+    linkReligionToCharacter,
+    unlinkReligionFromCharacter,
+  } = useReligions();
   const { timelines, saveTimeline, removeTimeline } = useTimelines();
   const { languages, saveLanguage, removeLanguage } = useLanguages();
   const { theme } = useTheme();
@@ -365,12 +385,38 @@ const UniverseCreator = () => {
   // Handlers
   const handleSaveCharacter = async (characterData) => {
     await saveCharacter(characterData);
+    const charId = characterData.id;
+    const prevLocs = selectedCharacter?.locationIds || [];
+    const newLocs = characterData.locationIds || [];
+    for (const id of newLocs.filter((id) => !prevLocs.includes(id))) {
+      await linkCharacterToLocation(charId, id);
+    }
+    for (const id of prevLocs.filter((id) => !newLocs.includes(id))) {
+      await unlinkCharacterFromLocation(charId, id);
+    }
+    const prevRels = selectedCharacter?.religionIds || [];
+    const newRels = characterData.religionIds || [];
+    for (const id of newRels.filter((id) => !prevRels.includes(id))) {
+      await linkCharacterToReligion(charId, id);
+    }
+    for (const id of prevRels.filter((id) => !newRels.includes(id))) {
+      await unlinkCharacterFromReligion(charId, id);
+    }
     setSelectedCharacter(null);
     setShowCharacterForm(false);
   };
 
   const handleSaveLocation = async (locationData) => {
     await saveLocation(locationData);
+    const locId = locationData.id;
+    const prevChars = selectedLocation?.characterIds || [];
+    const newChars = locationData.characterIds || [];
+    for (const id of newChars.filter((id) => !prevChars.includes(id))) {
+      await linkLocationToCharacter(locId, id);
+    }
+    for (const id of prevChars.filter((id) => !newChars.includes(id))) {
+      await unlinkLocationFromCharacter(locId, id);
+    }
     setSelectedLocation(null);
     setShowLocationForm(false);
   };
@@ -383,6 +429,15 @@ const UniverseCreator = () => {
 
   const handleSaveReligion = async (religionData) => {
     await saveReligion(religionData);
+    const relId = religionData.id;
+    const prevChars = selectedReligion?.characterIds || [];
+    const newChars = religionData.characterIds || [];
+    for (const id of newChars.filter((id) => !prevChars.includes(id))) {
+      await linkReligionToCharacter(relId, id);
+    }
+    for (const id of prevChars.filter((id) => !newChars.includes(id))) {
+      await unlinkReligionFromCharacter(relId, id);
+    }
     setSelectedReligion(null);
     setShowReligionForm(false);
   };
