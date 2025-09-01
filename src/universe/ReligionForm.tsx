@@ -16,9 +16,13 @@ const ReligionForm = ({ religion, onSave, onCancel }: ReligionFormProps) => {
       factions: ''
     }
   );
+  const [errors, setErrors] = useState({ name: '' });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const newErrors = { name: formData.name.trim() ? '' : 'Nome é obrigatório' };
+    setErrors(newErrors);
+    if (Object.values(newErrors).some(Boolean)) return;
     onSave({ ...formData, id: religion?.id || Date.now() });
   };
 
@@ -29,27 +33,39 @@ const ReligionForm = ({ religion, onSave, onCancel }: ReligionFormProps) => {
           {religion ? 'Editar Religião' : 'Nova Religião'}
         </h3>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="text"
-            placeholder="Nome"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="border rounded px-3 py-2 w-full"
-            required
-          />
-          <textarea
-            placeholder="Doutrina"
-            value={formData.doctrine}
-            onChange={(e) => setFormData({ ...formData, doctrine: e.target.value })}
-            className="border rounded px-3 py-2 w-full h-24"
-          />
-          <input
-            type="text"
-            placeholder="Facções (separadas por vírgula)"
-            value={formData.factions}
-            onChange={(e) => setFormData({ ...formData, factions: e.target.value })}
-            className="border rounded px-3 py-2 w-full"
-          />
+          <div className="flex flex-col">
+            <label htmlFor="religion-name" className="mb-1 text-sm">Nome</label>
+            <input
+              id="religion-name"
+              type="text"
+              value={formData.name}
+              onChange={(e) => {
+                setFormData({ ...formData, name: e.target.value });
+                if (errors.name) setErrors({ name: '' });
+              }}
+              className={`border rounded px-3 py-2 w-full ${errors.name ? 'border-red-500' : ''}`}
+            />
+            {errors.name && <span className="text-red-500 text-sm mt-1">{errors.name}</span>}
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="religion-doctrine" className="mb-1 text-sm">Doutrina</label>
+            <textarea
+              id="religion-doctrine"
+              value={formData.doctrine}
+              onChange={(e) => setFormData({ ...formData, doctrine: e.target.value })}
+              className="border rounded px-3 py-2 w-full h-24"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="religion-factions" className="mb-1 text-sm">Facções (separadas por vírgula)</label>
+            <input
+              id="religion-factions"
+              type="text"
+              value={formData.factions}
+              onChange={(e) => setFormData({ ...formData, factions: e.target.value })}
+              className="border rounded px-3 py-2 w-full"
+            />
+          </div>
           <div className="flex gap-2 pt-4">
             <button
               type="submit"

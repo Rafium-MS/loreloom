@@ -19,9 +19,13 @@ const CharacterForm = ({ character, onSave, onCancel }: CharacterFormProps) => {
     relationships: '',
     role: ''
   });
+  const [errors, setErrors] = useState({ name: '' });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const newErrors = { name: formData.name.trim() ? '' : 'Nome é obrigatório' };
+    setErrors(newErrors);
+    if (Object.values(newErrors).some(Boolean)) return;
     onSave({ ...formData, id: character?.id || Date.now() });
   };
 
@@ -33,59 +37,86 @@ const CharacterForm = ({ character, onSave, onCancel }: CharacterFormProps) => {
         </h3>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
-            <input
-              type="text"
-              placeholder="Nome"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="border rounded px-3 py-2"
-              required
-            />
-            <input
-              type="number"
-              placeholder="Idade"
-              value={formData.age}
-              onChange={(e) => setFormData({ ...formData, age: e.target.value })}
-              className="border rounded px-3 py-2"
+            <div className="flex flex-col">
+              <label htmlFor="char-name" className="mb-1 text-sm">Nome</label>
+              <input
+                id="char-name"
+                type="text"
+                value={formData.name}
+                onChange={(e) => {
+                  setFormData({ ...formData, name: e.target.value });
+                  if (errors.name) setErrors({ name: '' });
+                }}
+                className={`border rounded px-3 py-2 ${errors.name ? 'border-red-500' : ''}`}
+              />
+              {errors.name && <span className="text-red-500 text-sm mt-1">{errors.name}</span>}
+            </div>
+            <div className="flex flex-col">
+              <label htmlFor="char-age" className="mb-1 text-sm">Idade</label>
+              <input
+                id="char-age"
+                type="number"
+                value={formData.age}
+                onChange={(e) => setFormData({ ...formData, age: e.target.value })}
+                className="border rounded px-3 py-2"
+              />
+            </div>
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="char-appearance" className="mb-1 text-sm">Aparência</label>
+            <textarea
+              id="char-appearance"
+              value={formData.appearance}
+              onChange={(e) => setFormData({ ...formData, appearance: e.target.value })}
+              className="border rounded px-3 py-2 w-full h-20"
             />
           </div>
-          <textarea
-            placeholder="Aparência"
-            value={formData.appearance}
-            onChange={(e) => setFormData({ ...formData, appearance: e.target.value })}
-            className="border rounded px-3 py-2 w-full h-20"
-          />
-          <textarea
-            placeholder="Histórico"
-            value={formData.background}
-            onChange={(e) => setFormData({ ...formData, background: e.target.value })}
-            className="border rounded px-3 py-2 w-full h-24"
-          />
-          <textarea
-            placeholder="Habilidades"
-            value={formData.abilities}
-            onChange={(e) => setFormData({ ...formData, abilities: e.target.value })}
-            className="border rounded px-3 py-2 w-full h-20"
-          />
-          <textarea
-            placeholder="Motivações"
-            value={formData.motivations}
-            onChange={(e) => setFormData({ ...formData, motivations: e.target.value })}
-            className="border rounded px-3 py-2 w-full h-20"
-          />
-          <textarea
-            placeholder="Relacionamentos"
-            value={formData.relationships}
-            onChange={(e) => setFormData({ ...formData, relationships: e.target.value })}
-            className="border rounded px-3 py-2 w-full h-20"
-          />
-          <input
-            type="text"
-            placeholder="Papel Narrativo"
-            value={formData.role}
-            onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-            className="border rounded px-3 py-2 w-full"
-          />
+          <div className="flex flex-col">
+            <label htmlFor="char-background" className="mb-1 text-sm">Histórico</label>
+            <textarea
+              id="char-background"
+              value={formData.background}
+              onChange={(e) => setFormData({ ...formData, background: e.target.value })}
+              className="border rounded px-3 py-2 w-full h-24"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="char-abilities" className="mb-1 text-sm">Habilidades</label>
+            <textarea
+              id="char-abilities"
+              value={formData.abilities}
+              onChange={(e) => setFormData({ ...formData, abilities: e.target.value })}
+              className="border rounded px-3 py-2 w-full h-20"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="char-motivations" className="mb-1 text-sm">Motivações</label>
+            <textarea
+              id="char-motivations"
+              value={formData.motivations}
+              onChange={(e) => setFormData({ ...formData, motivations: e.target.value })}
+              className="border rounded px-3 py-2 w-full h-20"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="char-relationships" className="mb-1 text-sm">Relacionamentos</label>
+            <textarea
+              id="char-relationships"
+              value={formData.relationships}
+              onChange={(e) => setFormData({ ...formData, relationships: e.target.value })}
+              className="border rounded px-3 py-2 w-full h-20"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="char-role" className="mb-1 text-sm">Papel Narrativo</label>
+            <input
+              id="char-role"
+              type="text"
+              value={formData.role}
+              onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+              className="border rounded px-3 py-2 w-full"
+            />
+          </div>
           <div className="flex gap-2 pt-4">
             <button
               type="submit"
