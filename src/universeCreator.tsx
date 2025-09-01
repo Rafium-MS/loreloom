@@ -14,6 +14,7 @@ import { useReligions } from './hooks/useReligions';
 import { useTimelines } from './hooks/useTimelines';
 import { useLanguages } from './hooks/useLanguages';
 import { useTheme } from './ui/ThemeProvider';
+import EntityRelationsGraph from './components/EntityRelationsGraph';
 import './tokens.css';
 
 const UniverseCreator = () => {
@@ -968,6 +969,16 @@ const UniverseCreator = () => {
           <BarChart3 size={20} />
         </button>
       </div>
+
+      {(selectedCharacter || selectedLocation) && (
+        <EntityRelationsGraph
+          characters={characters}
+          locations={locations}
+          religions={religions}
+          character={selectedCharacter}
+          location={selectedLocation}
+        />
+      )}
 
       {/* Modais */}
       {(showCharacterForm || selectedCharacter) && (
