@@ -20,7 +20,6 @@ import { useLanguages } from './hooks/useLanguages';
 import { useTheme } from './ui/ThemeProvider';
 import EntityRelationsGraph from './components/EntityRelationsGraph';
 import './tokens.css';
-import EntityRelationsGraph from './components/EntityRelationsGraph';
 
 /** Painel rápido de estatísticas (evita reference error) */
 const StatsPanel = ({ characters, locations, onClose }) => {
