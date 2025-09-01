@@ -94,6 +94,8 @@ const UniverseCreator = () => {
         <div className="flex gap-2">
           <button
             onClick={() => setSelectedCharacter(character)}
+            title="Editar personagem"
+            aria-label="Editar personagem"
             className="text-blue-500 hover:text-blue-700"
           >
             <Edit size={16} />
@@ -102,6 +104,8 @@ const UniverseCreator = () => {
             onClick={() => {
               removeCharacter(character.id);
             }}
+            title="Remover personagem"
+            aria-label="Remover personagem"
             className="text-red-500 hover:text-red-700"
           >
             <Trash2 size={16} />
@@ -130,6 +134,8 @@ const UniverseCreator = () => {
         <div className="flex gap-2">
           <button
             onClick={() => setSelectedLocation(location)}
+            title="Editar local"
+            aria-label="Editar local"
             className="text-blue-500 hover:text-blue-700"
           >
             <Edit size={16} />
@@ -138,6 +144,8 @@ const UniverseCreator = () => {
             onClick={() => {
               removeLocation(location.id);
             }}
+            title="Remover local"
+            aria-label="Remover local"
             className="text-red-500 hover:text-red-700"
           >
             <Trash2 size={16} />
@@ -230,10 +238,20 @@ const UniverseCreator = () => {
       <div className="flex justify-between items-start mb-4">
         <h3 className="text-xl font-bold">{economy.name}</h3>
         <div className="flex gap-2">
-          <button onClick={() => setSelectedEconomy(economy)} className="text-blue-500 hover:text-blue-700">
+          <button
+            onClick={() => setSelectedEconomy(economy)}
+            title="Editar economia"
+            aria-label="Editar economia"
+            className="text-blue-500 hover:text-blue-700"
+          >
             <Edit size={16} />
           </button>
-          <button onClick={() => removeEconomy(economy.id)} className="text-red-500 hover:text-red-700">
+          <button
+            onClick={() => removeEconomy(economy.id)}
+            title="Remover economia"
+            aria-label="Remover economia"
+            className="text-red-500 hover:text-red-700"
+          >
             <Trash2 size={16} />
           </button>
         </div>
@@ -251,10 +269,20 @@ const UniverseCreator = () => {
       <div className="flex justify-between items-start mb-4">
         <h3 className="text-xl font-bold">{religion.name}</h3>
         <div className="flex gap-2">
-          <button onClick={() => setSelectedReligion(religion)} className="text-blue-500 hover:text-blue-700">
+          <button
+            onClick={() => setSelectedReligion(religion)}
+            title="Editar religião"
+            aria-label="Editar religião"
+            className="text-blue-500 hover:text-blue-700"
+          >
             <Edit size={16} />
           </button>
-          <button onClick={() => removeReligion(religion.id)} className="text-red-500 hover:text-red-700">
+          <button
+            onClick={() => removeReligion(religion.id)}
+            title="Remover religião"
+            aria-label="Remover religião"
+            className="text-red-500 hover:text-red-700"
+          >
             <Trash2 size={16} />
           </button>
         </div>
@@ -271,10 +299,20 @@ const UniverseCreator = () => {
       <div className="flex justify-between items-start mb-4">
         <h3 className="text-xl font-bold">{event.title}</h3>
         <div className="flex gap-2">
-          <button onClick={() => setSelectedTimeline(event)} className="text-blue-500 hover:text-blue-700">
+          <button
+            onClick={() => setSelectedTimeline(event)}
+            title="Editar evento"
+            aria-label="Editar evento"
+            className="text-blue-500 hover:text-blue-700"
+          >
             <Edit size={16} />
           </button>
-          <button onClick={() => removeTimeline(event.id)} className="text-red-500 hover:text-red-700">
+          <button
+            onClick={() => removeTimeline(event.id)}
+            title="Remover evento"
+            aria-label="Remover evento"
+            className="text-red-500 hover:text-red-700"
+          >
             <Trash2 size={16} />
           </button>
         </div>
@@ -292,10 +330,20 @@ const UniverseCreator = () => {
       <div className="flex justify-between items-start mb-4">
         <h3 className="text-xl font-bold">{language.name}</h3>
         <div className="flex gap-2">
-          <button onClick={() => setSelectedLanguage(language)} className="text-blue-500 hover:text-blue-700">
+          <button
+            onClick={() => setSelectedLanguage(language)}
+            title="Editar língua"
+            aria-label="Editar língua"
+            className="text-blue-500 hover:text-blue-700"
+          >
             <Edit size={16} />
           </button>
-          <button onClick={() => removeLanguage(language.id)} className="text-red-500 hover:text-red-700">
+          <button
+            onClick={() => removeLanguage(language.id)}
+            title="Remover língua"
+            aria-label="Remover língua"
+            className="text-red-500 hover:text-red-700"
+          >
             <Trash2 size={16} />
           </button>
         </div>

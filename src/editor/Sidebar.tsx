@@ -149,6 +149,8 @@ const Sidebar: React.FC<SidebarProps> = ({
           <button
             key={tab.id}
             onClick={() => setActivePanel(tab.id)}
+            title={tab.label}
+            aria-label={tab.label}
             className={`flex-1 flex items-center justify-center p-3 text-sm font-medium border-b-2 transition-colors ${
               activePanel === tab.id
                 ? 'border-purple-500 text-purple-600'

@@ -62,6 +62,8 @@ const AppShell: React.FC<AppShellProps> = ({
               <button
                 key={t.id}
                 onClick={() => onTabChange(t.id)}
+                title={t.label}
+                aria-label={t.label}
                 className={`w-full flex items-center gap-2 px-3 py-2 rounded-md text-left transition ${
                   activeTab === t.id
                     ? 'bg-[var(--primary)]/15 text-[var(--primary)]'
