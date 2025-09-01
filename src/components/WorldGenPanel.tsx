@@ -1,13 +1,15 @@
-import React, { useMemo, useState } from 'react'
-max={1}
-step={0.01}
-value={cfg.tempBias}
-onChange={(e) => setCfg({ ...cfg, tempBias: +e.target.value })}
-/>
-
-
-<label className="text-xs opacity-70">Umidade</label>
-<input
+// === components/WorldGenPanel.tsx ==========================================
+// === components/WorldGenPanel.tsx (UI EXTRA) ================================
+// Adicione um <select> para perfis e um checkbox para rotas aquáticas
+// <label className="text-xs opacity-70">Perfil</label>
+// <select value={cfg.profile||''} onChange={(e)=> setCfg({ ...cfg, profile: e.target.value||undefined })}>
+// <option value="">Personalizado</option>
+// <option value="imperio-continental">Império Continental</option>
+// <option value="arquipelago-mercantil">Arquipélago Mercantil</option>
+// <option value="cidades-estado-rivais">Cidades‑Estado Rivais</option>
+// <option value="fronteira-selvagem">Fronteira Selvagem</option>
+// </select>
+// E, no estado "show", adicione toggles para rotas fluviais/marítimas se desejar distingui-las (ou mantenha em Rotas).
 type="range"
 min={-1}
 max={1}

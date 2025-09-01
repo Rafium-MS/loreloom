@@ -39,3 +39,4 @@ return h >>> 0
 
 export function rand2D01(x: number, y: number, base: number) {
 return hash2D(x, y, base) / 4294967295
+}

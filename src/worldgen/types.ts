@@ -1,4 +1,31 @@
 // === worldgen/types.ts =====================================================
+
+// === worldgen/types.ts (PEQUENAS EXTENSÕES) ================================
+// Acrescente ao arquivo original, próximo às declarações de tipos:
+// export type RouteKind = 'estrada' | 'trilha' | 'fluvial' | 'maritima' (já existe)
+// Novo catálogo opcional de recursos para futuras visualizações
+export interface ResourceCatalogEntry { id: string; kind: string; pos: {x:number;y:number}; richness: number }
+river: number // quantidade de fluxo acumulado
+regionId?: string
+}
+
+
+export interface Point { x: number; y: number }
+
+
+export interface Region {
+id: string
+kind: 'Regiao' | 'Reino' | 'Imperio'
+name: string
+color: string
+tiles: number // contagem (para métricas rápidas)
+centroid: Point
+civLevel: CivLevel
+parentId?: string
+}
+
+
+export interface Settlement {
 id: string
 name: string
 kind: 'CidadeEstado' | 'Cidade' | 'Vila' | 'Aldeia' | 'Vilarejo'

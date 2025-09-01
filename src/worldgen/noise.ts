@@ -1,15 +1,4 @@
 // === worldgen/noise.ts =====================================================
-import { hash2D } from './rng'
-
-
-function smoothstep(t: number) {
-return t * t * (3 - 2 * t)
-}
-
-
-function lerp(a: number, b: number, t: number) {
-return a + (b - a) * t
-}
 
 
 export function valueNoise2D(x: number, y: number, freq: number, seed: number) {

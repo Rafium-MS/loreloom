@@ -1,4 +1,17 @@
 // === worldgen/settlements.ts ===============================================
+
+
+const sorted = [...field].sort((a, b) => b.score - a.score)
+for (const s of sorted) {
+if (picked.length >= maxCount) break
+// rejeitar se houver um selecionado muito perto
+if (picked.some((p) => (p.pos.x - s.pos.x) ** 2 + (p.pos.y - s.pos.y) ** 2 < minDistanceTiles ** 2)) continue
+picked.push(s)
+}
+return picked
+}
+
+
 export function spawnSettlements(
 tiles: Tile[],
 cfg: WorldConfig,

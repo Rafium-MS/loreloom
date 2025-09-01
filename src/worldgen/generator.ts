@@ -1,4 +1,37 @@
 // === worldgen/generator.ts ==================================================
+// === worldgen/generator.ts (INTEGRAÇÃO) ====================================
+import { generateResources, attachResourcesToSettlements } from './resources'
+import { WORLD_PROFILES } from './profiles'
+import { connectFluvial, connectMaritime } from './routes'
+
+
+// Dentro da função generateWorld(cfg: WorldConfig):
+// 1) Aplicar perfil se fornecido
+// const profile = cfg.profile ? WORLD_PROFILES.find(p=>p.id===cfg.profile) : undefined
+// if (profile) { /* aqui você pode ajustar cfg.tempBias, moistureBias, etc. ou guardar p/ decisões */ }
+// ... (após gerar tiles e settlements)
+// 2) Recursos
+// const resourceNodes = generateResources(tiles, cfg)
+// attachResourcesToSettlements(resourceNodes, settlements)
+// 3) Rotas existentes + aquáticas
+// const roadRoutes = connectSettlements(tiles, cfg, settlements)
+// const riverRoutes = connectFluvial(tiles, cfg, settlements)
+// const seaRoutes = connectMaritime(tiles, cfg, settlements)
+// const routes = [...roadRoutes, ...riverRoutes, ...seaRoutes]
+// 4) Retorne resourceNodes opcionalmente em catalog
+// return { ... , catalog: { regions, settlements, routes, resources: resourceNodes as any } }
+for (let x = 0; x < W; x++) {
+const i = idx(x, y)
+const e = elev[i]
+const isWater = e < sea
+const t = temperature[i]
+const m = moisture[i]
+const b = classifyBiome(e, t, m)
+tiles.push({
+x,
+y,
+elevation: e,
+slope: slope[i],
 temperature: t,
 moisture: m,
 isWater,

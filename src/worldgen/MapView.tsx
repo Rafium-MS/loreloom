@@ -1,16 +1,4 @@
 // === components/MapView.tsx ================================================
-if (t.river > 180 && !t.isWater) {
-ctx.rect(t.x * tileSize, t.y * tileSize, tileSize, tileSize)
-}
-}
-ctx.stroke()
-}
-
-
-if (show.regions) {
-ctx.globalAlpha = 0.18
-for (const r of regions) {
-ctx.fillStyle = r.color
 for (const t of tiles) if (t.regionId === r.id) ctx.fillRect(t.x * tileSize, t.y * tileSize, tileSize, tileSize)
 }
 ctx.globalAlpha = 1
