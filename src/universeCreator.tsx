@@ -1,15 +1,47 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import {
-  User, MapPin, Shield, Coins, Users,
-  Church, UtensilsCrossed, Clock, Plus,
-  Edit, Trash2, ChevronDown, ChevronRight,
-  BarChart3, BookOpen
+  User,
+  MapPin,
+  Users,
+  Coins,
+  Church,
+  Clock,
+  Plus,
+  BarChart3,
+  BookOpen,
+  Shield,
 } from 'lucide-react';
-
 import {
-  CharacterForm, LocationForm, EconomyForm, ReligionForm, TimelineForm, LanguageForm
+  CharacterForm,
+  LocationForm,
+  EconomyForm,
+  ReligionForm,
+  TimelineForm,
+  LanguageForm,
+  Character,
+  Location,
+  Economy,
+  Religion,
+  TimelineEvent,
+  Language,
+  professionsList,
+  religionsList,
+  foodsList,
+  generatePopulation,
+  generateEconomy,
+  CharacterView,
+  LocationView,
+  EconomyView,
+  ReligionView,
+  TimelineView,
+  LanguageView,
+  createCharacterSaver,
+  createLocationSaver,
+  createEconomySaver,
+  createReligionSaver,
+  createTimelineSaver,
+  createLanguageSaver,
 } from './universe';
-
 import { useCharacters } from './hooks/useCharacters';
 import { useLocations } from './hooks/useLocations';
 import { useEconomies } from './hooks/useEconomies';
@@ -18,155 +50,8 @@ import { useTimelines } from './hooks/useTimelines';
 import { useLanguages } from './hooks/useLanguages';
 import { useTheme } from './ui/ThemeProvider';
 import EntityRelationsGraph from './components/EntityRelationsGraph';
+import QuickStatsPanel from './components/QuickStatsPanel';
 import './tokens.css';
-
-interface Character {
-  id: number;
-  name: string;
-  age?: string | number;
-  appearance?: string;
-  background?: string;
-  abilities?: string;
-  motivations?: string;
-  relationships?: string;
-  role?: string;
-  locationIds?: number[];
-  religionIds?: number[];
-}
-
-interface Army {
-  size: number;
-  weapons?: string;
-  training?: string;
-}
-
-interface Location {
-  id: number;
-  name: string;
-  type: string;
-  climate?: string;
-  population?: number;
-  culturalComposition?: string;
-  mainProfessions?: string[];
-  economy?: string;
-  resources?: string;
-  army?: Army;
-  religions?: string[];
-  commonFoods?: string[];
-  establishments?: string;
-  strategicPoints?: string;
-  government?: string;
-  battles?: string;
-  events?: string;
-  characterIds?: number[];
-}
-
-interface Economy {
-  id: number;
-  name: string;
-  currency?: string;
-  markets?: string;
-  mainExports?: string;
-}
-
-interface Religion {
-  id: number;
-  name: string;
-  doctrine?: string;
-  factions?: string;
-  characterIds?: number[];
-}
-
-interface TimelineEvent {
-  id: number;
-  title: string;
-  date?: string;
-  description?: string;
-  relations?: string;
-}
-
-interface Language {
-  id: number;
-  name: string;
-  grammar?: string;
-  vocabulary?: string;
-  syllables?: string;
-}
-
-interface QuickStatsPanelProps {
-  characters: Character[];
-  locations: Location[];
-  onClose: () => void;
-}
-
-/** Painel rápido de estatísticas (evita reference error) */
-const StatsPanel = ({ characters, locations, onClose }: QuickStatsPanelProps) => {
-  const totalPop = useMemo(
-    () => locations.reduce((t: number, l: Location) => t + (l.population || 0), 0),
-    [locations]
-  );
-  const totalArmy = useMemo(
-    () => locations.reduce((t: number, l: Location) => t + (l.army?.size || 0), 0),
-    [locations]
-  );
-  return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50"
-    >
-      <div className="w-full max-w-xl rounded-lg p-6 bg-panel shadow-token">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold">Resumo do Universo</h3>
-          <button
-            onClick={onClose}
-            className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 text-sm"
-          >
-            Fechar
-          </button>
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="rounded-lg p-4 bg-panel shadow-token">
-            <div className="flex items-center">
-              <User className="h-6 w-6 text-blue-500" />
-              <div className="ml-3">
-                <p className="text-xs" style={{ color: 'var(--muted)' }}>Personagens</p>
-                <p className="text-xl font-semibold">{characters.length}</p>
-              </div>
-            </div>
-          </div>
-          <div className="rounded-lg p-4 bg-panel shadow-token">
-            <div className="flex items-center">
-              <MapPin className="h-6 w-6 text-green-500" />
-              <div className="ml-3">
-                <p className="text-xs" style={{ color: 'var(--muted)' }}>Localizações</p>
-                <p className="text-xl font-semibold">{locations.length}</p>
-              </div>
-            </div>
-          </div>
-          <div className="rounded-lg p-4 bg-panel shadow-token">
-            <div className="flex items-center">
-              <Users className="h-6 w-6 text-purple-500" />
-              <div className="ml-3">
-                <p className="text-xs" style={{ color: 'var(--muted)' }}>População Total</p>
-                <p className="text-xl font-semibold">{totalPop.toLocaleString()}</p>
-              </div>
-            </div>
-          </div>
-          <div className="rounded-lg p-4 bg-panel shadow-token">
-            <div className="flex items-center">
-              <Shield className="h-6 w-6 text-red-500" />
-              <div className="ml-3">
-                <p className="text-xs" style={{ color: 'var(--muted)' }}>Força Militar</p>
-                <p className="text-xl font-semibold">{totalArmy.toLocaleString()}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 const UniverseCreator = () => {
   const [activeTab, setActiveTab] = useState(
@@ -244,22 +129,6 @@ const UniverseCreator = () => {
     {} as Record<string, boolean>,
   );
 
-  // Dados de exemplo
-  const professionsList = [
-    'Mercador', 'Ferreiro', 'Agricultor', 'Soldado', 'Pescador', 'Carpinteiro',
-    'Alquimista', 'Escriba', 'Tavarneiro', 'Guarda', 'Artesão', 'Curandeiro'
-  ];
-
-  const religionsList = [
-    'Culto do Sol', 'Adoradores da Lua', 'Seguidores da Terra',
-    'Místicos do Vento', 'Devotos da Água', 'Guardiões da Floresta'
-  ];
-
-  const foodsList = [
-    'Pão de centeio', 'Ensopado de carne', 'Peixe grelhado', 'Frutas silvestres',
-    'Queijo de cabra', 'Cerveja de cevada', 'Vinho tinto', 'Mel silvestre'
-  ];
-
   // Auxiliares
   const toggleSection = (section: string) => {
     setExpandedSections((prev: Record<string, boolean>) => ({
@@ -268,382 +137,52 @@ const UniverseCreator = () => {
     }));
   };
 
-  const generatePopulation = (): number => Math.floor(Math.random() * 50000) + 1000;
+  const handleSaveCharacter = createCharacterSaver({
+    selectedCharacter,
+    saveCharacter,
+    linkCharacterToLocation,
+    unlinkCharacterFromLocation,
+    linkCharacterToReligion,
+    unlinkCharacterFromReligion,
+    setSelectedCharacter,
+    setShowCharacterForm,
+  });
 
-  const generateEconomy = (): string => {
-    const resources = ['Agricultura', 'Mineração', 'Comércio', 'Pesca', 'Artesanato'];
-    return resources[Math.floor(Math.random() * resources.length)];
-  };
+  const handleSaveLocation = createLocationSaver({
+    selectedLocation,
+    saveLocation,
+    linkLocationToCharacter,
+    unlinkLocationFromCharacter,
+    setSelectedLocation,
+    setShowLocationForm,
+  });
 
-  const generateNameFromSyllables = (syllablesString: string): string => {
-    const syllables = syllablesString.split(',').map(s => s.trim()).filter(Boolean);
-    if (syllables.length === 0) return '';
-    const count = Math.floor(Math.random() * 2) + 2;
-    let name = '';
-    for (let i = 0; i < count; i++) {
-      name += syllables[Math.floor(Math.random() * syllables.length)];
-    }
-    return name.charAt(0).toUpperCase() + name.slice(1);
-  };
+  const handleSaveEconomy = createEconomySaver({
+    saveEconomy,
+    setSelectedEconomy,
+    setShowEconomyForm,
+  });
 
-  // ==== Views
-  const CharacterView = ({ character }: { character: Character }) => (
-    <section className="rounded-lg p-6 bg-panel shadow-token">
-      <div className="flex justify-between items-start mb-4">
-        <h3 className="text-xl font-bold">{character.name}</h3>
-        <div className="flex gap-2">
-          <button
-            onClick={() => setSelectedCharacter(character)}
-            title="Editar personagem"
-            aria-label="Editar personagem"
-            className="text-blue-500 hover:text-blue-700"
-          >
-            <Edit size={16} />
-          </button>
-          <button
-            onClick={() => { removeCharacter(character.id); }}
-            title="Remover personagem"
-            aria-label="Remover personagem"
-            className="text-red-500 hover:text-red-700"
-          >
-            <Trash2 size={16} />
-          </button>
-        </div>
-      </div>
+  const handleSaveReligion = createReligionSaver({
+    selectedReligion,
+    saveReligion,
+    linkReligionToCharacter,
+    unlinkReligionFromCharacter,
+    setSelectedReligion,
+    setShowReligionForm,
+  });
 
-      <div className="space-y-3 text-sm">
-        {character.age && <p><span className="font-semibold">Idade:</span> {character.age}</p>}
-        {character.appearance && <p><span className="font-semibold">Aparência:</span> {character.appearance}</p>}
-        {character.role && <p><span className="font-semibold">Papel:</span> {character.role}</p>}
-        {character.abilities && <p><span className="font-semibold">Habilidades:</span> {character.abilities}</p>}
-        {character.motivations && <p><span className="font-semibold">Motivações:</span> {character.motivations}</p>}
-      </div>
-    </section>
-  );
+  const handleSaveTimeline = createTimelineSaver({
+    saveTimeline,
+    setSelectedTimeline,
+    setShowTimelineForm,
+  });
 
-  const LocationView = ({ location }: { location: Location }) => (
-    <section className="rounded-lg p-6 bg-panel shadow-token">
-      <div className="flex justify-between items-start mb-4">
-        <div>
-          <h3 className="text-xl font-bold">{location.name}</h3>
-          <p style={{ color: 'var(--muted)' }} className="capitalize">{location.type}</p>
-        </div>
-        <div className="flex gap-2">
-          <button
-            onClick={() => setSelectedLocation(location)}
-            title="Editar local"
-            aria-label="Editar local"
-            className="text-blue-500 hover:text-blue-700"
-          >
-            <Edit size={16} />
-          </button>
-          <button
-            onClick={() => { removeLocation(location.id); }}
-            title="Remover local"
-            aria-label="Remover local"
-            className="text-red-500 hover:text-red-700"
-          >
-            <Trash2 size={16} />
-          </button>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4 text-sm">
-        <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <Users size={16} className="text-blue-500" />
-            <span className="font-semibold">População:</span>
-            <span>{location.population?.toLocaleString()}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Coins size={16} className="text-green-500" />
-            <span className="font-semibold">Economia:</span>
-            <span>{location.economy}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Shield size={16} className="text-red-500" />
-            <span className="font-semibold">Exército:</span>
-            <span>{location.army?.size || 0} soldados</span>
-          </div>
-        </div>
-        <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <Church size={16} className="text-purple-500" />
-            <span className="font-semibold">Religiões:</span>
-            <span>{location.religions?.length || 0}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <UtensilsCrossed size={16} className="text-orange-500" />
-            <span className="font-semibold">Pratos típicos:</span>
-            <span>{location.commonFoods?.length || 0}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <MapPin size={16} style={{ color: 'var(--muted)' }} />
-            <span className="font-semibold">Clima:</span>
-            <span>{location.climate || 'Não definido'}</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-4 space-y-2">
-        {(location.mainProfessions?.length ?? 0) > 0 && (
-          <div>
-            <button
-              onClick={() => toggleSection(`professions-${location.id}`)}
-              className="flex items-center gap-2 text-sm font-semibold"
-              aria-expanded={expandedSections[`professions-${location.id}`] || false}
-              aria-controls={`professions-${location.id}-content`}
-            >
-              {(expandedSections[`professions-${location.id}`]) ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-              Profissões Principais
-            </button>
-              {expandedSections[`professions-${location.id}`] && (
-                <div
-                  id={`professions-${location.id}-content`}
-                  className="ml-6 mt-1 text-sm"
-                  style={{ color: 'var(--muted)' }}
-                >
-                  {location.mainProfessions?.join(', ')}
-                </div>
-              )}
-          </div>
-        )}
-
-        {location.strategicPoints && (
-          <div>
-            <button
-              onClick={() => toggleSection(`strategic-${location.id}`)}
-              className="flex items-center gap-2 text-sm font-semibold"
-              aria-expanded={expandedSections[`strategic-${location.id}`] || false}
-              aria-controls={`strategic-${location.id}-content`}
-            >
-              {(expandedSections[`strategic-${location.id}`]) ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-              Pontos Estratégicos
-            </button>
-            {expandedSections[`strategic-${location.id}`] && (
-              <div id={`strategic-${location.id}-content`} className="ml-6 mt-1 text-sm" style={{ color: 'var(--muted)' }}>
-                {location.strategicPoints}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    </section>
-  );
-
-  const EconomyView = ({ economy }: { economy: Economy }) => (
-    <section className="rounded-lg p-6 bg-panel shadow-token">
-      <div className="flex justify-between items-start mb-4">
-        <h3 className="text-xl font-bold">{economy.name}</h3>
-        <div className="flex gap-2">
-          <button
-            onClick={() => setSelectedEconomy(economy)}
-            title="Editar economia"
-            aria-label="Editar economia"
-            className="text-blue-500 hover:text-blue-700"
-          >
-            <Edit size={16} />
-          </button>
-          <button
-            onClick={() => removeEconomy(economy.id)}
-            title="Remover economia"
-            aria-label="Remover economia"
-            className="text-red-500 hover:text-red-700"
-          >
-            <Trash2 size={16} />
-          </button>
-        </div>
-      </div>
-      <div className="space-y-2 text-sm">
-        {economy.currency && <p><span className="font-semibold">Moeda:</span> {economy.currency}</p>}
-        {economy.markets && <p><span className="font-semibold">Mercados:</span> {economy.markets}</p>}
-        {economy.mainExports && <p><span className="font-semibold">Exportações:</span> {economy.mainExports}</p>}
-      </div>
-    </section>
-  );
-
-  const ReligionView = ({ religion }: { religion: Religion }) => (
-    <section className="rounded-lg p-6 bg-panel shadow-token">
-      <div className="flex justify-between items-start mb-4">
-        <h3 className="text-xl font-bold">{religion.name}</h3>
-        <div className="flex gap-2">
-          <button
-            onClick={() => setSelectedReligion(religion)}
-            title="Editar religião"
-            aria-label="Editar religião"
-            className="text-blue-500 hover:text-blue-700"
-          >
-            <Edit size={16} />
-          </button>
-          <button
-            onClick={() => removeReligion(religion.id)}
-            title="Remover religião"
-            aria-label="Remover religião"
-            className="text-red-500 hover:text-red-700"
-          >
-            <Trash2 size={16} />
-          </button>
-        </div>
-      </div>
-      <div className="space-y-2 text-sm">
-        {religion.doctrine && <p><span className="font-semibold">Doutrina:</span> {religion.doctrine}</p>}
-        {religion.factions && <p><span className="font-semibold">Facções:</span> {religion.factions}</p>}
-      </div>
-    </section>
-  );
-
-  const TimelineView = ({ event }: { event: TimelineEvent }) => (
-    <section className="rounded-lg p-6 bg-panel shadow-token">
-      <div className="flex justify-between items-start mb-4">
-        <h3 className="text-xl font-bold">{event.title}</h3>
-        <div className="flex gap-2">
-          <button
-            onClick={() => setSelectedTimeline(event)}
-            title="Editar evento"
-            aria-label="Editar evento"
-            className="text-blue-500 hover:text-blue-700"
-          >
-            <Edit size={16} />
-          </button>
-          <button
-            onClick={() => removeTimeline(event.id)}
-            title="Remover evento"
-            aria-label="Remover evento"
-            className="text-red-500 hover:text-red-700"
-          >
-            <Trash2 size={16} />
-          </button>
-        </div>
-      </div>
-      <div className="space-y-2 text-sm">
-        {event.date && <p><span className="font-semibold">Data:</span> {event.date}</p>}
-        {event.description && <p><span className="font-semibold">Descrição:</span> {event.description}</p>}
-        {event.relations && <p><span className="font-semibold">Relacionamentos:</span> {event.relations}</p>}
-      </div>
-    </section>
-  );
-
-  const LanguageView = ({ language }: { language: Language }) => (
-    <section className="rounded-lg p-6 bg-panel shadow-token">
-      <div className="flex justify-between items-start mb-4">
-        <h3 className="text-xl font-bold">{language.name}</h3>
-        <div className="flex gap-2">
-          <button
-            onClick={() => setSelectedLanguage(language)}
-            title="Editar língua"
-            aria-label="Editar língua"
-            className="text-blue-500 hover:text-blue-700"
-          >
-            <Edit size={16} />
-          </button>
-          <button
-            onClick={() => removeLanguage(language.id)}
-            title="Remover língua"
-            aria-label="Remover língua"
-            className="text-red-500 hover:text-red-700"
-          >
-            <Trash2 size={16} />
-          </button>
-        </div>
-      </div>
-      <div className="space-y-2 text-sm">
-        {language.grammar && <p><span className="font-semibold">Gramática:</span> {language.grammar}</p>}
-      </div>
-        {language.syllables && (
-          <button
-            onClick={() => alert(generateNameFromSyllables(language.syllables ?? ''))}
-            className="mt-2 bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 text-sm"
-          >
-            Gerar Nome
-          </button>
-        )}
-    </section>
-  );
-
-  // ===== Handlers
-  const handleSaveCharacter = async (characterData: Character) => {
-    await saveCharacter(characterData);
-
-    const charId = characterData.id;
-    const prevLocs = selectedCharacter?.locationIds || [];
-    const newLocs = characterData.locationIds || [];
-
-    // vincula/desvincula locais
-    for (const id of newLocs.filter((id: number) => !prevLocs.includes(id))) {
-      await linkCharacterToLocation(charId, id);
-    }
-    for (const id of prevLocs.filter((id: number) => !newLocs.includes(id))) {
-      await unlinkCharacterFromLocation(charId, id);
-    }
-
-    const prevRels = selectedCharacter?.religionIds || [];
-    const newRels = characterData.religionIds || [];
-
-    // vincula/desvincula religiões
-    for (const id of newRels.filter((id: number) => !prevRels.includes(id))) {
-      await linkCharacterToReligion(charId, id);
-    }
-    for (const id of prevRels.filter((id: number) => !newRels.includes(id))) {
-      await unlinkCharacterFromReligion(charId, id);
-    }
-
-    setSelectedCharacter(null);
-    setShowCharacterForm(false);
-  };
-
-  const handleSaveLocation = async (locationData: Location) => {
-    await saveLocation(locationData);
-
-    const locId = locationData.id;
-    const prevChars = selectedLocation?.characterIds || [];
-    const newChars = locationData.characterIds || [];
-
-    for (const id of newChars.filter((id: number) => !prevChars.includes(id))) {
-      await linkLocationToCharacter(locId, id);
-    }
-    for (const id of prevChars.filter((id: number) => !newChars.includes(id))) {
-      await unlinkLocationFromCharacter(locId, id);
-    }
-
-    setSelectedLocation(null);
-    setShowLocationForm(false);
-  };
-
-  const handleSaveEconomy = async (economyData: Economy) => {
-    await saveEconomy(economyData);
-    setSelectedEconomy(null);
-    setShowEconomyForm(false);
-  };
-
-  const handleSaveReligion = async (religionData: Religion) => {
-    await saveReligion(religionData);
-
-    const relId = religionData.id;
-    const prevChars = selectedReligion?.characterIds || [];
-    const newChars = religionData.characterIds || [];
-
-    for (const id of newChars.filter((id: number) => !prevChars.includes(id))) {
-      await linkReligionToCharacter(relId, id);
-    }
-    for (const id of prevChars.filter((id: number) => !newChars.includes(id))) {
-      await unlinkReligionFromCharacter(relId, id);
-    }
-
-    setSelectedReligion(null);
-    setShowReligionForm(false);
-  };
-
-  const handleSaveTimeline = async (timelineData: TimelineEvent) => {
-    await saveTimeline(timelineData);
-    setSelectedTimeline(null);
-    setShowTimelineForm(false);
-  };
-
-  const handleSaveLanguage = async (languageData: Language) => {
-    await saveLanguage(languageData);
-    setSelectedLanguage(null);
-    setShowLanguageForm(false);
-  };
+  const handleSaveLanguage = createLanguageSaver({
+    saveLanguage,
+    setSelectedLanguage,
+    setShowLanguageForm,
+  });
 
   return (
     <main className="min-h-screen" style={{ background: 'var(--bg)', color: 'var(--text)' }}>
@@ -777,7 +316,12 @@ const UniverseCreator = () => {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {characters.map((character: Character) => (
-                  <CharacterView key={character.id} character={character} />
+                  <CharacterView
+                    key={character.id}
+                    character={character}
+                    onEdit={() => setSelectedCharacter(character)}
+                    onRemove={() => removeCharacter(character.id)}
+                  />
                 ))}
               </div>
             )}
@@ -812,7 +356,14 @@ const UniverseCreator = () => {
             ) : (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {locations.map((location: Location) => (
-                  <LocationView key={location.id} location={location} />
+                  <LocationView
+                    key={location.id}
+                    location={location}
+                    onEdit={() => setSelectedLocation(location)}
+                    onRemove={() => removeLocation(location.id)}
+                    expandedSections={expandedSections}
+                    toggleSection={toggleSection}
+                  />
                 ))}
               </div>
             )}
@@ -846,7 +397,12 @@ const UniverseCreator = () => {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {economies.map((econ: Economy) => (
-                  <EconomyView key={econ.id} economy={econ} />
+                  <EconomyView
+                    key={econ.id}
+                    economy={econ}
+                    onEdit={() => setSelectedEconomy(econ)}
+                    onRemove={() => removeEconomy(econ.id)}
+                  />
                 ))}
               </div>
             )}
@@ -880,7 +436,12 @@ const UniverseCreator = () => {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {religions.map((rel: Religion) => (
-                  <ReligionView key={rel.id} religion={rel} />
+                  <ReligionView
+                    key={rel.id}
+                    religion={rel}
+                    onEdit={() => setSelectedReligion(rel)}
+                    onRemove={() => removeReligion(rel.id)}
+                  />
                 ))}
               </div>
             )}
@@ -914,7 +475,12 @@ const UniverseCreator = () => {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {timelines.map((ev: TimelineEvent) => (
-                  <TimelineView key={ev.id} event={ev} />
+                  <TimelineView
+                    key={ev.id}
+                    event={ev}
+                    onEdit={() => setSelectedTimeline(ev)}
+                    onRemove={() => removeTimeline(ev.id)}
+                  />
                 ))}
               </div>
             )}
@@ -948,7 +514,12 @@ const UniverseCreator = () => {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {languages.map((lang: Language) => (
-                  <LanguageView key={lang.id} language={lang} />
+                  <LanguageView
+                    key={lang.id}
+                    language={lang}
+                    onEdit={() => setSelectedLanguage(lang)}
+                    onRemove={() => removeLanguage(lang.id)}
+                  />
                 ))}
               </div>
             )}
@@ -1292,7 +863,7 @@ const UniverseCreator = () => {
       )}
 
       {showStatsPanel && (
-        <StatsPanel
+        <QuickStatsPanel
           characters={characters}
           locations={locations}
           onClose={() => setShowStatsPanel(false)}
