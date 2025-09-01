@@ -15,7 +15,7 @@ import { useTimelines } from './hooks/useTimelines';
 import { useLanguages } from './hooks/useLanguages';
 import { useTheme } from './ui/ThemeProvider';
 import './tokens.css';
-import StatsPanel from './components/StatsPanel';
+import EntityRelationsGraph from './components/EntityRelationsGraph';
 
 const UniverseCreator = () => {
   const [activeTab, setActiveTab] = useState('characters');
@@ -966,6 +966,16 @@ const UniverseCreator = () => {
           <BarChart3 size={20} />
         </button>
       </div>
+
+      {(selectedCharacter || selectedLocation) && (
+        <EntityRelationsGraph
+          characters={characters}
+          locations={locations}
+          religions={religions}
+          selectedCharacter={selectedCharacter}
+          selectedLocation={selectedLocation}
+        />
+      )}
 
       {/* Modais */}
       {(showCharacterForm || selectedCharacter) && (
