@@ -7,6 +7,18 @@ import type {
   Language,
 } from './types';
 
+export const createSectionToggler = (
+  setExpandedSections: (
+    fn: (prev: Record<string, boolean>) => Record<string, boolean>,
+  ) => void,
+) =>
+  (section: string) => {
+    setExpandedSections((prev: Record<string, boolean>) => ({
+      ...prev,
+      [section]: !prev[section],
+    }));
+  };
+
 export const createCharacterSaver = ({
   selectedCharacter,
   saveCharacter,

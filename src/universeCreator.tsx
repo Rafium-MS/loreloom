@@ -24,9 +24,6 @@ import {
   Religion,
   TimelineEvent,
   Language,
-  professionsList,
-  religionsList,
-  foodsList,
   generatePopulation,
   generateEconomy,
   CharacterView,
@@ -41,6 +38,7 @@ import {
   createReligionSaver,
   createTimelineSaver,
   createLanguageSaver,
+  createSectionToggler,
 } from './universe';
 import { useCharacters } from './hooks/useCharacters';
 import { useLocations } from './hooks/useLocations';
@@ -51,6 +49,7 @@ import { useLanguages } from './hooks/useLanguages';
 import { useTheme } from './ui/ThemeProvider';
 import EntityRelationsGraph from './components/EntityRelationsGraph';
 import QuickStatsPanel from './components/QuickStatsPanel';
+import QuickTools from './components/QuickTools';
 import './tokens.css';
 
 const UniverseCreator = () => {
@@ -124,18 +123,11 @@ const UniverseCreator = () => {
   const [showReligionForm, setShowReligionForm] = useState(false);
   const [showTimelineForm, setShowTimelineForm] = useState(false);
   const [showLanguageForm, setShowLanguageForm] = useState(false);
-  const [showStatsPanel, setShowStatsPanel] = useState(false);
-  const [expandedSections, setExpandedSections] = useState(
-    {} as Record<string, boolean>,
-  );
-
-  // Auxiliares
-  const toggleSection = (section: string) => {
-    setExpandedSections((prev: Record<string, boolean>) => ({
-      ...prev,
-      [section]: !prev[section],
-    }));
-  };
+const [showStatsPanel, setShowStatsPanel] = useState(false);
+const [expandedSections, setExpandedSections] = useState(
+  {} as Record<string, boolean>,
+);
+const toggleSection = createSectionToggler(setExpandedSections);
 
   const handleSaveCharacter = createCharacterSaver({
     selectedCharacter,
@@ -714,72 +706,13 @@ const UniverseCreator = () => {
         )}
       </section>
 
-      {/* Ferramentas Rápidas - Sidebar flutuante */}
-      <div className="fixed right-4 top-1/2 transform -translate-y-1/2 space-y-2">
-        <button
-          onClick={() => {
-            const randomCharacter: Character = {
-              id: Date.now(),
-              name: `Personagem ${characters.length + 1}`,
-              age: Math.floor(Math.random() * 50) + 18,
-              appearance: 'Aparência gerada automaticamente',
-              background: 'História gerada automaticamente',
-              abilities: 'Habilidades variadas',
-              motivations: 'Motivações complexas',
-              relationships: 'Relacionamentos diversos',
-              role: 'Papel importante na narrativa',
-            };
-            saveCharacter(randomCharacter);
-          }}
-          className="bg-blue-500 text-white p-3 rounded-full shadow-token hover:bg-blue-600 transition-colors"
-          title="Gerar Personagem Aleatório"
-        >
-          <User size={20} />
-        </button>
-
-        <button
-          onClick={() => {
-            const types = ['cidade', 'vila', 'reino', 'fortaleza'];
-            const climates = ['Temperado', 'Tropical', 'Árido', 'Frio', 'Montanhoso'];
-            const randomLocation: Location = {
-              id: Date.now(),
-              name: `Local ${locations.length + 1}`,
-              type: types[Math.floor(Math.random() * types.length)],
-              climate: climates[Math.floor(Math.random() * climates.length)],
-              population: generatePopulation(),
-              culturalComposition: 'Diversa',
-              mainProfessions: professionsList.slice(0, Math.floor(Math.random() * 5) + 3),
-              economy: generateEconomy(),
-              resources: 'Recursos variados disponíveis',
-              army: {
-                size: Math.floor(Math.random() * 5000) + 100,
-                weapons: 'Espadas e arcos',
-                training: 'Treinamento regular',
-              },
-              religions: religionsList.slice(0, Math.floor(Math.random() * 3) + 1),
-              commonFoods: foodsList.slice(0, Math.floor(Math.random() * 4) + 2),
-              establishments: 'Tavernas, mercados e oficinas',
-              strategicPoints: 'Muralhas e torres de vigia',
-              government: 'História de liderança estável',
-              battles: 'Algumas escaramuças menores',
-              events: 'Festivais anuais e celebrações',
-            };
-            saveLocation(randomLocation);
-          }}
-          className="bg-green-500 text-white p-3 rounded-full shadow-token hover:bg-green-600 transition-colors"
-          title="Gerar Localização Aleatória"
-        >
-          <MapPin size={20} />
-        </button>
-
-        <button
-          onClick={() => setShowStatsPanel(true)}
-          className="bg-purple-500 text-white p-3 rounded-full shadow-token hover:bg-purple-600 transition-colors"
-          title="Resumo Rápido"
-        >
-          <BarChart3 size={20} />
-        </button>
-      </div>
+      <QuickTools
+        characters={characters}
+        locations={locations}
+        saveCharacter={saveCharacter}
+        saveLocation={saveLocation}
+        setShowStatsPanel={setShowStatsPanel}
+      />
 
       {(selectedCharacter || selectedLocation) && (
         <EntityRelationsGraph
