@@ -1,5 +1,5 @@
 import React from 'react';
-import { Users, MapPin, BookOpen, Edit3, PlusCircle, X, Sparkles } from 'lucide-react';
+import { Users, MapPin, BookOpen, Edit3, PlusCircle, X, Sparkles, Link2 } from 'lucide-react';
 import { useTheme } from '../ui/ThemeProvider';
 import CharacterForm from './CharacterForm';
 
@@ -9,12 +9,18 @@ interface SidebarProps {
   characters: any[];
   locations: any[];
   plotPoints: any[];
+  subplots: any[];
+  charLocations: any[];
   showCharacterForm: boolean;
   setShowCharacterForm: (value: boolean) => void;
   showLocationForm: boolean;
   setShowLocationForm: (value: boolean) => void;
   showPlotForm: boolean;
   setShowPlotForm: (value: boolean) => void;
+  showSubplotForm: boolean;
+  setShowSubplotForm: (value: boolean) => void;
+  showRelationForm: boolean;
+  setShowRelationForm: (value: boolean) => void;
   newCharacter: { name: string; description: string; role: string };
   setNewCharacter: (char: { name: string; description: string; role: string }) => void;
   addCharacter: () => void;
@@ -24,6 +30,12 @@ interface SidebarProps {
   newPlotPoint: { title: string; description: string; chapter: string };
   setNewPlotPoint: (plot: { title: string; description: string; chapter: string }) => void;
   addPlotPoint: () => void;
+  newSubplot: { title: string; description: string; parent: string };
+  setNewSubplot: (sp: { title: string; description: string; parent: string }) => void;
+  addSubplot: () => void;
+  newRelation: { characterId: string; locationId: string };
+  setNewRelation: (r: { characterId: string; locationId: string }) => void;
+  addRelation: () => void;
   insertTemplate: (template: string) => void;
   history: any[];
   loadVersion: (v: any) => void;
@@ -36,12 +48,18 @@ const Sidebar: React.FC<SidebarProps> = ({
   characters,
   locations,
   plotPoints,
+  subplots,
+  charLocations,
   showCharacterForm,
   setShowCharacterForm,
   showLocationForm,
   setShowLocationForm,
   showPlotForm,
   setShowPlotForm,
+  showSubplotForm,
+  setShowSubplotForm,
+  showRelationForm,
+  setShowRelationForm,
   newCharacter,
   setNewCharacter,
   addCharacter,
@@ -51,6 +69,12 @@ const Sidebar: React.FC<SidebarProps> = ({
   newPlotPoint,
   setNewPlotPoint,
   addPlotPoint,
+  newSubplot,
+  setNewSubplot,
+  addSubplot,
+  newRelation,
+  setNewRelation,
+  addRelation,
   insertTemplate,
   history,
   loadVersion,
@@ -68,7 +92,8 @@ const Sidebar: React.FC<SidebarProps> = ({
           { id: 'editor', icon: Edit3, label: 'Editor' },
           { id: 'characters', icon: Users, label: 'Personagens' },
           { id: 'locations', icon: MapPin, label: 'Locais' },
-          { id: 'plot', icon: BookOpen, label: 'Enredo' }
+          { id: 'plot', icon: BookOpen, label: 'Enredo' },
+          { id: 'relations', icon: Link2, label: 'Relações' }
         ].map(tab => (
           <button
             key={tab.id}
@@ -302,6 +327,138 @@ const Sidebar: React.FC<SidebarProps> = ({
                   </div>
                 </div>
               ))}
+            </div>
+
+            <div className="flex justify-between items-center mt-6">
+              <h3 className="font-semibold">Subplots</h3>
+              <button
+                onClick={() => setShowSubplotForm(!showSubplotForm)}
+                className="p-1 text-purple-600 hover:bg-purple-100 rounded"
+              >
+                <PlusCircle className="h-4 w-4" />
+              </button>
+            </div>
+
+            {showSubplotForm && (
+              <div className={`p-3 rounded-lg border ${isDark ? 'border-gray-600 bg-gray-700' : 'border-gray-200 bg-gray-50'}`}>
+                <input
+                  type="text"
+                  placeholder="Título do subplot"
+                  value={newSubplot.title}
+                  onChange={(e) => setNewSubplot({ ...newSubplot, title: e.target.value })}
+                  className={`w-full p-2 mb-2 border rounded ${isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
+                />
+                <select
+                  value={newSubplot.parent}
+                  onChange={(e) => setNewSubplot({ ...newSubplot, parent: e.target.value })}
+                  className={`w-full p-2 mb-2 border rounded ${isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
+                >
+                  <option value="">Plot principal</option>
+                  {plotPoints.map(p => (
+                    <option key={p.id} value={p.id}>{p.title}</option>
+                  ))}
+                </select>
+                <textarea
+                  placeholder="Descrição do subplot"
+                  value={newSubplot.description}
+                  onChange={(e) => setNewSubplot({ ...newSubplot, description: e.target.value })}
+                  className={`w-full p-2 mb-2 border rounded h-20 ${isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
+                />
+                <button
+                  onClick={addSubplot}
+                  className="w-full bg-purple-600 text-white p-2 rounded hover:bg-purple-700"
+                >
+                  Adicionar
+                </button>
+              </div>
+            )}
+
+            <div className="space-y-3">
+              {subplots.map(sp => (
+                <div key={sp.id} className={`p-3 rounded-lg border ${isDark ? 'border-gray-600 bg-gray-700' : 'border-gray-200 bg-gray-50'}`}>
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <h4 className="font-medium">{sp.title}</h4>
+                      {sp.parent && <p className="text-sm text-purple-600">Plot: {plotPoints.find(p => p.id === sp.parent)?.title}</p>}
+                      {sp.description && <p className={`text-sm mt-1 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>{sp.description}</p>}
+                    </div>
+                    <button
+                      onClick={() => removeItem(sp.id, 'subplot')}
+                      className={`p-1 rounded ${isDark ? 'hover:bg-gray-600 text-gray-400' : 'hover:bg-gray-200 text-gray-500'}`}
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activePanel === 'relations' && (
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="font-semibold">Personagem & Local</h3>
+              <button
+                onClick={() => setShowRelationForm(!showRelationForm)}
+                className="p-1 text-purple-600 hover:bg-purple-100 rounded"
+              >
+                <PlusCircle className="h-4 w-4" />
+              </button>
+            </div>
+
+            {showRelationForm && (
+              <div className={`p-3 rounded-lg border ${isDark ? 'border-gray-600 bg-gray-700' : 'border-gray-200 bg-gray-50'}`}>
+                <select
+                  value={newRelation.characterId}
+                  onChange={(e) => setNewRelation({ ...newRelation, characterId: e.target.value })}
+                  className={`w-full p-2 mb-2 border rounded ${isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
+                >
+                  <option value="">Personagem</option>
+                  {characters.map(c => (
+                    <option key={c.id} value={c.id}>{c.name}</option>
+                  ))}
+                </select>
+                <select
+                  value={newRelation.locationId}
+                  onChange={(e) => setNewRelation({ ...newRelation, locationId: e.target.value })}
+                  className={`w-full p-2 mb-2 border rounded ${isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
+                >
+                  <option value="">Local</option>
+                  {locations.map(l => (
+                    <option key={l.id} value={l.id}>{l.name}</option>
+                  ))}
+                </select>
+                <button
+                  onClick={addRelation}
+                  className="w-full bg-purple-600 text-white p-2 rounded hover:bg-purple-700"
+                >
+                  Integrar
+                </button>
+              </div>
+            )}
+
+            <div className="space-y-3">
+              {charLocations.map(rel => {
+                const char = characters.find(c => c.id === rel.characterId);
+                const loc = locations.find(l => l.id === rel.locationId);
+                return (
+                  <div key={rel.id} className={`p-3 rounded-lg border ${isDark ? 'border-gray-600 bg-gray-700' : 'border-gray-200 bg-gray-50'}`}>
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <h4 className="font-medium">{char?.name}</h4>
+                        <p className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>{loc?.name}</p>
+                      </div>
+                      <button
+                        onClick={() => removeItem(rel.id, 'relation')}
+                        className={`p-1 rounded ${isDark ? 'hover:bg-gray-600 text-gray-400' : 'hover:bg-gray-200 text-gray-500'}`}
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { Bold, Italic, Underline, Quote, List, AlignLeft, AlignCenter, AlignRight } from 'lucide-react';
+import { Bold, Italic, Underline, Quote, List, AlignLeft, AlignCenter, AlignRight, Undo2, Redo2, Heading1, Heading2 } from 'lucide-react';
 // Import from the editor folder's index to avoid self-importing this file
 import { Header, Sidebar } from './editor/index';
 import { createProject, exportToMarkdown } from '../project';
@@ -21,15 +21,24 @@ const FictionEditor = () => {
   const { characters, saveCharacter, removeCharacter } = useCharacters();
   const { locations, saveLocation, removeLocation } = useLocations();
   const [plotPoints, setPlotPoints] = useState([]);
+  const [subplots, setSubplots] = useState([]);
+  const [charLocations, setCharLocations] = useState([]);
   const [activePanel, setActivePanel] = useState('editor');
   const [showWordCount, setShowWordCount] = useState(true);
   const [newCharacter, setNewCharacter] = useState({ name: '', description: '', role: '' });
   const [newLocation, setNewLocation] = useState({ name: '', description: '', type: '' });
   const [newPlotPoint, setNewPlotPoint] = useState({ title: '', description: '', chapter: '' });
+  const [newSubplot, setNewSubplot] = useState({ title: '', description: '', parent: '' });
+  const [newRelation, setNewRelation] = useState({ characterId: '', locationId: '' });
   const [showCharacterForm, setShowCharacterForm] = useState(false);
   const [showLocationForm, setShowLocationForm] = useState(false);
   const [showPlotForm, setShowPlotForm] = useState(false);
+  const [showSubplotForm, setShowSubplotForm] = useState(false);
+  const [showRelationForm, setShowRelationForm] = useState(false);
   const [history, setHistory] = useState([]);
+  const [undoStack, setUndoStack] = useState<Descendant[][]>([]);
+  const [redoStack, setRedoStack] = useState<Descendant[][]>([]);
+  const [isApplying, setIsApplying] = useState(false);
   const [grammarSuggestions, setGrammarSuggestions] = useState([]);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
@@ -83,6 +92,18 @@ const FictionEditor = () => {
   const Element = ({ attributes, children, element }: any) => {
     const style = { textAlign: element.align } as React.CSSProperties;
     switch (element.type) {
+      case 'heading-one':
+        return (
+          <h1 style={style} {...attributes}>
+            {children}
+          </h1>
+        );
+      case 'heading-two':
+        return (
+          <h2 style={style} {...attributes}>
+            {children}
+          </h2>
+        );
       case 'quote':
         return (
           <blockquote style={style} {...attributes}>
@@ -149,6 +170,32 @@ const FictionEditor = () => {
     }
   };
 
+  const addSubplot = () => {
+    if (newSubplot.title.trim()) {
+      setSubplots([
+        ...subplots,
+        { ...newSubplot, id: Date.now(), parent: newSubplot.parent ? Number(newSubplot.parent) : undefined }
+      ]);
+      setNewSubplot({ title: '', description: '', parent: '' });
+      setShowSubplotForm(false);
+    }
+  };
+
+  const addRelation = () => {
+    if (newRelation.characterId && newRelation.locationId) {
+      setCharLocations([
+        ...charLocations,
+        {
+          id: Date.now(),
+          characterId: Number(newRelation.characterId),
+          locationId: Number(newRelation.locationId)
+        }
+      ]);
+      setNewRelation({ characterId: '', locationId: '' });
+      setShowRelationForm(false);
+    }
+  };
+
   const removeItem = (id: number, type: string) => {
     if (type === 'character') {
       removeCharacter(id);
@@ -156,6 +203,10 @@ const FictionEditor = () => {
       removeLocation(id);
     } else if (type === 'plot') {
       setPlotPoints(plotPoints.filter(plot => plot.id !== id));
+    } else if (type === 'subplot') {
+      setSubplots(subplots.filter(sp => sp.id !== id));
+    } else if (type === 'relation') {
+      setCharLocations(charLocations.filter(rel => rel.id !== id));
     }
   };
 
@@ -216,6 +267,47 @@ const FictionEditor = () => {
     }
   };
 
+  const handleChange = (val: Descendant[]) => {
+    if (!isApplying) {
+      setUndoStack([...undoStack, JSON.parse(JSON.stringify(value))]);
+      setRedoStack([]);
+    }
+    setValue(val);
+    if (isApplying) setIsApplying(false);
+  };
+
+  const undo = () => {
+    if (undoStack.length > 0) {
+      const prev = undoStack[undoStack.length - 1];
+      setUndoStack(undoStack.slice(0, -1));
+      setRedoStack([...redoStack, JSON.parse(JSON.stringify(value))]);
+      setIsApplying(true);
+      setValue(prev);
+    }
+  };
+
+  const redo = () => {
+    if (redoStack.length > 0) {
+      const next = redoStack[redoStack.length - 1];
+      setRedoStack(redoStack.slice(0, -1));
+      setUndoStack([...undoStack, JSON.parse(JSON.stringify(value))]);
+      setIsApplying(true);
+      setValue(next);
+    }
+  };
+
+  const onKeyDown = (event: React.KeyboardEvent) => {
+    if (event.ctrlKey || event.metaKey) {
+      if (event.key === 'z') {
+        event.preventDefault();
+        undo();
+      } else if (event.key === 'y') {
+        event.preventDefault();
+        redo();
+      }
+    }
+  };
+
   return (
     <main className={`min-h-screen transition-colors duration-300 `}>
       <Header
@@ -235,12 +327,18 @@ const FictionEditor = () => {
           characters={characters}
           locations={locations}
           plotPoints={plotPoints}
+          subplots={subplots}
+          charLocations={charLocations}
           showCharacterForm={showCharacterForm}
           setShowCharacterForm={setShowCharacterForm}
           showLocationForm={showLocationForm}
           setShowLocationForm={setShowLocationForm}
           showPlotForm={showPlotForm}
           setShowPlotForm={setShowPlotForm}
+          showSubplotForm={showSubplotForm}
+          setShowSubplotForm={setShowSubplotForm}
+          showRelationForm={showRelationForm}
+          setShowRelationForm={setShowRelationForm}
           newCharacter={newCharacter}
           setNewCharacter={setNewCharacter}
           addCharacter={addCharacter}
@@ -250,6 +348,12 @@ const FictionEditor = () => {
           newPlotPoint={newPlotPoint}
           setNewPlotPoint={setNewPlotPoint}
           addPlotPoint={addPlotPoint}
+          newSubplot={newSubplot}
+          setNewSubplot={setNewSubplot}
+          addSubplot={addSubplot}
+          newRelation={newRelation}
+          setNewRelation={setNewRelation}
+          addRelation={addRelation}
           insertTemplate={insertTemplate}
           history={history}
           loadVersion={loadVersion}
@@ -261,19 +365,37 @@ const FictionEditor = () => {
           <header className={`border-b p-4 bg-panel border-border`}>
             <div className="flex items-center space-x-2 flex-wrap">
               <button
+                onClick={undo}
+                title="Desfazer (Ctrl+Z)"
+                className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
+              >
+                <Undo2 className="h-4 w-4" />
+              </button>
+              <button
+                onClick={redo}
+                title="Refazer (Ctrl+Y)"
+                className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
+              >
+                <Redo2 className="h-4 w-4" />
+              </button>
+              <div className="w-px h-6 bg-gray-300 mx-2"></div>
+              <button
                 onClick={() => toggleMark('bold')}
+                title="Negrito"
                 className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
               >
                 <Bold className="h-4 w-4" />
               </button>
               <button
                 onClick={() => toggleMark('italic')}
+                title="Itálico"
                 className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
               >
                 <Italic className="h-4 w-4" />
               </button>
               <button
                 onClick={() => toggleMark('underline')}
+                title="Sublinhado"
                 className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
               >
                 <Underline className="h-4 w-4" />
@@ -281,31 +403,50 @@ const FictionEditor = () => {
               <div className="w-px h-6 bg-gray-300 mx-2"></div>
               <button
                 onClick={() => toggleBlock('quote')}
+                title="Citação"
                 className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
               >
                 <Quote className="h-4 w-4" />
               </button>
               <button
                 onClick={() => toggleBlock('list-item')}
+                title="Lista"
                 className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
               >
                 <List className="h-4 w-4" />
               </button>
+              <button
+                onClick={() => toggleBlock('heading-one')}
+                title="Cabeçalho 1"
+                className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
+              >
+                <Heading1 className="h-4 w-4" />
+              </button>
+              <button
+                onClick={() => toggleBlock('heading-two')}
+                title="Cabeçalho 2"
+                className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
+              >
+                <Heading2 className="h-4 w-4" />
+              </button>
               <div className="w-px h-6 bg-gray-300 mx-2"></div>
               <button
                 onClick={() => setAlign('left')}
+                title="Alinhar à esquerda"
                 className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
               >
                 <AlignLeft className="h-4 w-4" />
               </button>
               <button
                 onClick={() => setAlign('center')}
+                title="Centralizar"
                 className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
               >
                 <AlignCenter className="h-4 w-4" />
               </button>
               <button
                 onClick={() => setAlign('right')}
+                title="Alinhar à direita"
                 className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
               >
                 <AlignRight className="h-4 w-4" />
@@ -316,12 +457,13 @@ const FictionEditor = () => {
           {/* Writing Area */}
           <section className="flex-1 p-8">
             <section className={`max-w-4xl mx-auto ${isFocus ? 'theme-surface p-8' : ''}`}>
-              <Slate editor={editor} initialValue={value} onChange={setValue}>
+              <Slate editor={editor} initialValue={value} onChange={handleChange}>
                 <Editable
                   className={`min-h-96 outline-none text-lg text-text leading-1-8 ${isFocus ? 'font-serif' : 'font-sans'}`}
                   placeholder="Era uma vez, em uma terra muito distante..."
                   renderElement={renderElement}
                   renderLeaf={renderLeaf}
+                  onKeyDown={onKeyDown}
                 />
               </Slate>
             </section>
