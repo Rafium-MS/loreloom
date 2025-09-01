@@ -39,6 +39,7 @@ const UniverseCreator = () => {
   const [showReligionForm, setShowReligionForm] = useState(false);
   const [showTimelineForm, setShowTimelineForm] = useState(false);
   const [showLanguageForm, setShowLanguageForm] = useState(false);
+  const [showStatsPanel, setShowStatsPanel] = useState(false);
   const [expandedSections, setExpandedSections] = useState({});
 
   
@@ -958,11 +959,7 @@ const UniverseCreator = () => {
         </button>
 
         <button
-          onClick={() => {
-            const totalPop = locations.reduce((total, loc) => total + (loc.population || 0), 0);
-            const totalArmy = locations.reduce((total, loc) => total + (loc.army?.size || 0), 0);
-            alert(`Resumo do Universo:\n\n• Personagens: ${characters.length}\n• Localizações: ${locations.length}\n• População Total: ${totalPop.toLocaleString()}\n• Força Militar: ${totalArmy.toLocaleString()}`);
-          }}
+          onClick={() => setShowStatsPanel(true)}
           className="bg-purple-500 text-white p-3 rounded-full shadow-token hover:bg-purple-600 transition-colors"
           title="Resumo Rápido"
         >
@@ -1046,6 +1043,14 @@ const UniverseCreator = () => {
             setSelectedLanguage(null);
             setShowLanguageForm(false);
           }}
+        />
+      )}
+
+      {showStatsPanel && (
+        <StatsPanel
+          characters={characters}
+          locations={locations}
+          onClose={() => setShowStatsPanel(false)}
         />
       )}
     </main>
