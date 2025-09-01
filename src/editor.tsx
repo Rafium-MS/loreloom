@@ -45,7 +45,6 @@ const FictionEditor = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const { theme } = useTheme();
-  const isDark = theme === 'dark';
   const isFocus = theme === 'focus';
 
   useEffect(() => {
@@ -379,7 +378,7 @@ const FictionEditor = () => {
                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                 title="Alternar barra lateral"
                 aria-label="Alternar barra lateral"
-                className={`md:hidden p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
+                className="md:hidden p-2 rounded-lg transition-colors hover:bg-gray-200 dark:hover:bg-gray-700"
               >
                 <Menu className="h-4 w-4" />
               </button>
@@ -387,7 +386,7 @@ const FictionEditor = () => {
                 onClick={undo}
                 title="Desfazer (Ctrl+Z)"
                 aria-label="Desfazer"
-                className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
+                className="p-2 rounded-lg transition-colors hover:bg-gray-200 dark:hover:bg-gray-700"
               >
                 <Undo2 className="h-4 w-4" />
               </button>
@@ -395,7 +394,7 @@ const FictionEditor = () => {
                 onClick={redo}
                 title="Refazer (Ctrl+Y)"
                 aria-label="Refazer"
-                className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
+                className="p-2 rounded-lg transition-colors hover:bg-gray-200 dark:hover:bg-gray-700"
               >
                 <Redo2 className="h-4 w-4" />
               </button>
@@ -404,7 +403,7 @@ const FictionEditor = () => {
                 onClick={() => toggleMark('bold')}
                 title="Negrito"
                 aria-label="Negrito"
-                className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
+                className="p-2 rounded-lg transition-colors hover:bg-gray-200 dark:hover:bg-gray-700"
               >
                 <Bold className="h-4 w-4" />
               </button>
@@ -412,7 +411,7 @@ const FictionEditor = () => {
                 onClick={() => toggleMark('italic')}
                 title="Itálico"
                 aria-label="Itálico"
-                className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
+                className="p-2 rounded-lg transition-colors hover:bg-gray-200 dark:hover:bg-gray-700"
               >
                 <Italic className="h-4 w-4" />
               </button>
@@ -420,7 +419,7 @@ const FictionEditor = () => {
                 onClick={() => toggleMark('underline')}
                 title="Sublinhado"
                 aria-label="Sublinhado"
-                className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
+                className="p-2 rounded-lg transition-colors hover:bg-gray-200 dark:hover:bg-gray-700"
               >
                 <Underline className="h-4 w-4" />
               </button>
@@ -429,7 +428,7 @@ const FictionEditor = () => {
                 onClick={() => toggleBlock('quote')}
                 title="Citação"
                 aria-label="Citação"
-                className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
+                className="p-2 rounded-lg transition-colors hover:bg-gray-200 dark:hover:bg-gray-700"
               >
                 <Quote className="h-4 w-4" />
               </button>
@@ -437,7 +436,7 @@ const FictionEditor = () => {
                 onClick={() => toggleBlock('list-item')}
                 title="Lista"
                 aria-label="Lista"
-                className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
+                className="p-2 rounded-lg transition-colors hover:bg-gray-200 dark:hover:bg-gray-700"
               >
                 <List className="h-4 w-4" />
               </button>
@@ -445,7 +444,7 @@ const FictionEditor = () => {
                 onClick={() => toggleBlock('heading-one')}
                 title="Cabeçalho 1"
                 aria-label="Cabeçalho 1"
-                className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
+                className="p-2 rounded-lg transition-colors hover:bg-gray-200 dark:hover:bg-gray-700"
               >
                 <Heading1 className="h-4 w-4" />
               </button>
@@ -453,7 +452,7 @@ const FictionEditor = () => {
                 onClick={() => toggleBlock('heading-two')}
                 title="Cabeçalho 2"
                 aria-label="Cabeçalho 2"
-                className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
+                className="p-2 rounded-lg transition-colors hover:bg-gray-200 dark:hover:bg-gray-700"
               >
                 <Heading2 className="h-4 w-4" />
               </button>
@@ -462,7 +461,7 @@ const FictionEditor = () => {
                 onClick={() => setAlign('left')}
                 title="Alinhar à esquerda"
                 aria-label="Alinhar à esquerda"
-                className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
+                className="p-2 rounded-lg transition-colors hover:bg-gray-200 dark:hover:bg-gray-700"
               >
                 <AlignLeft className="h-4 w-4" />
               </button>
@@ -470,7 +469,7 @@ const FictionEditor = () => {
                 onClick={() => setAlign('center')}
                 title="Centralizar"
                 aria-label="Centralizar"
-                className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
+                className="p-2 rounded-lg transition-colors hover:bg-gray-200 dark:hover:bg-gray-700"
               >
                 <AlignCenter className="h-4 w-4" />
               </button>
@@ -478,7 +477,7 @@ const FictionEditor = () => {
                 onClick={() => setAlign('right')}
                 title="Alinhar à direita"
                 aria-label="Alinhar à direita"
-                className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
+                className="p-2 rounded-lg transition-colors hover:bg-gray-200 dark:hover:bg-gray-700"
               >
                 <AlignRight className="h-4 w-4" />
               </button>
@@ -487,10 +486,14 @@ const FictionEditor = () => {
 
           {/* Writing Area */}
           <section className="flex-1 p-8">
-            <section className={`max-w-4xl mx-auto ${isFocus ? 'theme-surface p-8' : ''}`}>
+            <section
+              className={`max-w-4xl mx-auto ${
+                isFocus ? 'bg-panel border border-border rounded-lg shadow-token p-8' : ''
+              }`}
+            >
               <Slate editor={editor} initialValue={value} onChange={handleChange}>
                 <Editable
-                  className={`min-h-96 outline-none text-lg text-text leading-1-8 ${isFocus ? 'font-serif' : 'font-sans'}`}
+                  className={`min-h-96 outline-none text-lg text-foreground leading-[1.8] ${isFocus ? 'font-serif' : 'font-sans'}`}
                   placeholder="Era uma vez, em uma terra muito distante..."
                   renderElement={renderElement}
                   renderLeaf={renderLeaf}
@@ -529,7 +532,10 @@ const FictionEditor = () => {
                     placeholder="Adicionar comentário"
                     className="border p-2 flex-1 rounded"
                   />
-                  <button type="submit" className="bg-blue-500 text-white px-3 rounded">
+                  <button
+                    type="submit"
+                    className="bg-primary text-primary-foreground px-3 rounded-md"
+                  >
                     Adicionar
                   </button>
                 </form>

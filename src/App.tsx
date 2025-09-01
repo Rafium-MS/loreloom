@@ -18,25 +18,22 @@ const App = () => {
           <strong>LoreLoom</strong>
         </div>
         <nav
-          className="flex flex-col sm:flex-row items-start sm:items-center gap-3"
+          className="flex flex-col sm:flex-row items-start sm:items-center gap-1"
           aria-label="Navegação principal"
         >
-          <Link
-            to="/editor"
-            className="px-2 py-1 cursor-pointer no-underline"
-            aria-current={location.pathname === '/editor' ? 'page' : undefined}
+          <Button
+            asChild
+            variant={location.pathname === '/editor' ? 'secondary' : 'ghost'}
           >
-            Editor
-          </Link>
-          <Link
-            to="/universo"
-            className="px-2 py-1 cursor-pointer no-underline"
-            aria-current={location.pathname === '/universo' ? 'page' : undefined}
+            <Link to="/editor">Editor</Link>
+          </Button>
+          <Button
+            asChild
+            variant={location.pathname === '/universo' ? 'secondary' : 'ghost'}
           >
-            Universo
-          </Link>
+            <Link to="/universo">Universo</Link>
+          </Button>
           <ThemeToggle />
-          <Button>Shadcn</Button>
         </nav>
       </header>
       <main className="flex-1 overflow-auto">
