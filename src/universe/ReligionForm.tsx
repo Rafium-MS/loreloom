@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React, { useState } from 'react';
 import '../tokens.css';
+import { useCharacters } from '../hooks/useCharacters';
 
 interface ReligionFormProps {
   religion: any;
@@ -17,13 +18,19 @@ const ReligionForm = ({ religion, onSave, onCancel }: ReligionFormProps) => {
     }
   );
   const [errors, setErrors] = useState({ name: '' });
+  const { characters } = useCharacters();
+  const [selectedCharacters, setSelectedCharacters] = useState<number[]>(religion?.characterIds || []);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const newErrors = { name: formData.name.trim() ? '' : 'Nome é obrigatório' };
     setErrors(newErrors);
     if (Object.values(newErrors).some(Boolean)) return;
-    onSave({ ...formData, id: religion?.id || Date.now() });
+    onSave({
+      ...formData,
+      id: religion?.id || Date.now(),
+      characterIds: selectedCharacters,
+    });
   };
 
   return (
@@ -65,6 +72,28 @@ const ReligionForm = ({ religion, onSave, onCancel }: ReligionFormProps) => {
               onChange={(e) => setFormData({ ...formData, factions: e.target.value })}
               className="border rounded px-3 py-2 w-full"
             />
+          </div>
+          <div className="flex flex-col">
+
+            <label htmlFor="religion-characters" className="mb-1 text-sm">Personagens</label>
+            <select
+              id="religion-characters"
+              multiple
+              value={selectedCharacters.map(String)}
+              onChange={(e) =>
+                setSelectedCharacters(
+                  Array.from(e.target.selectedOptions, (option) => Number(option.value))
+                )
+              }
+              className="border rounded px-3 py-2 w-full"
+
+            >
+              {characters.map((char) => (
+                <option key={char.id} value={char.id}>
+                  {char.name}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="flex gap-2 pt-4">
             <button

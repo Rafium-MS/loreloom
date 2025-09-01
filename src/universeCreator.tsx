@@ -1,12 +1,16 @@
 // @ts-nocheck
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
-  User, MapPin, Crown, Shield, Coins, Users, Home,
-  Sword, Church, UtensilsCrossed, Building, Clock,
-  Plus, Edit, Trash2, Eye, ChevronDown, ChevronRight,
-  BarChart3, PieChart, TrendingUp, Calendar, BookOpen
+  User, MapPin, Shield, Coins, Users,
+  Church, UtensilsCrossed, Clock, Plus,
+  Edit, Trash2, ChevronDown, ChevronRight,
+  BarChart3, BookOpen
 } from 'lucide-react';
-import { CharacterForm, LocationForm, EconomyForm, ReligionForm, TimelineForm, LanguageForm } from './universe';
+
+import {
+  CharacterForm, LocationForm, EconomyForm, ReligionForm, TimelineForm, LanguageForm
+} from './universe';
+
 import { useCharacters } from './hooks/useCharacters';
 import { useLocations } from './hooks/useLocations';
 import { useEconomies } from './hooks/useEconomies';
@@ -16,34 +20,144 @@ import { useLanguages } from './hooks/useLanguages';
 import { useTheme } from './ui/ThemeProvider';
 import EntityRelationsGraph from './components/EntityRelationsGraph';
 import './tokens.css';
+import EntityRelationsGraph from './components/EntityRelationsGraph';
+
+/** Painel rápido de estatísticas (evita reference error) */
+const StatsPanel = ({ characters, locations, onClose }) => {
+  const totalPop = useMemo(
+    () => locations.reduce((t, l) => t + (l.population || 0), 0),
+    [locations]
+  );
+  const totalArmy = useMemo(
+    () => locations.reduce((t, l) => t + (l.army?.size || 0), 0),
+    [locations]
+  );
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50"
+    >
+      <div className="w-full max-w-xl rounded-lg p-6 bg-panel shadow-token">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold">Resumo do Universo</h3>
+          <button
+            onClick={onClose}
+            className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 text-sm"
+          >
+            Fechar
+          </button>
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="rounded-lg p-4 bg-panel shadow-token">
+            <div className="flex items-center">
+              <User className="h-6 w-6 text-blue-500" />
+              <div className="ml-3">
+                <p className="text-xs" style={{ color: 'var(--muted)' }}>Personagens</p>
+                <p className="text-xl font-semibold">{characters.length}</p>
+              </div>
+            </div>
+          </div>
+          <div className="rounded-lg p-4 bg-panel shadow-token">
+            <div className="flex items-center">
+              <MapPin className="h-6 w-6 text-green-500" />
+              <div className="ml-3">
+                <p className="text-xs" style={{ color: 'var(--muted)' }}>Localizações</p>
+                <p className="text-xl font-semibold">{locations.length}</p>
+              </div>
+            </div>
+          </div>
+          <div className="rounded-lg p-4 bg-panel shadow-token">
+            <div className="flex items-center">
+              <Users className="h-6 w-6 text-purple-500" />
+              <div className="ml-3">
+                <p className="text-xs" style={{ color: 'var(--muted)' }}>População Total</p>
+                <p className="text-xl font-semibold">{totalPop.toLocaleString()}</p>
+              </div>
+            </div>
+          </div>
+          <div className="rounded-lg p-4 bg-panel shadow-token">
+            <div className="flex items-center">
+              <Shield className="h-6 w-6 text-red-500" />
+              <div className="ml-3">
+                <p className="text-xs" style={{ color: 'var(--muted)' }}>Força Militar</p>
+                <p className="text-xl font-semibold">{totalArmy.toLocaleString()}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const UniverseCreator = () => {
   const [activeTab, setActiveTab] = useState('characters');
-  const { characters, saveCharacter, removeCharacter } = useCharacters();
-  const { locations, saveLocation, removeLocation } = useLocations();
+
+  // ===== Characters
+  const {
+    characters,
+    saveCharacter,
+    removeCharacter,
+    linkCharacterToLocation,
+    linkCharacterToReligion,
+    // os seguintes podem não existir no hook; colocamos fallbacks abaixo
+    unlinkCharacterFromLocation: _unlinkCharacterFromLocation,
+    unlinkCharacterFromReligion: _unlinkCharacterFromReligion,
+  } = useCharacters();
+
+  // fallbacks (no-ops) para evitar crashes se o hook não expuser as funções
+  const unlinkCharacterFromLocation = _unlinkCharacterFromLocation ?? (async () => {});
+  const unlinkCharacterFromReligion = _unlinkCharacterFromReligion ?? (async () => {});
+
+  // ===== Locations
+  const {
+    locations,
+    saveLocation,
+    removeLocation,
+    linkLocationToCharacter,
+    unlinkLocationFromCharacter: _unlinkLocationFromCharacter,
+  } = useLocations();
+  const unlinkLocationFromCharacter = _unlinkLocationFromCharacter ?? (async () => {});
+
+  // ===== Economies
   const { economies, saveEconomy, removeEconomy } = useEconomies();
-  const { religions, saveReligion, removeReligion } = useReligions();
+
+  // ===== Religions
+  const {
+    religions,
+    saveReligion,
+    removeReligion,
+    linkReligionToCharacter,
+    unlinkReligionFromCharacter: _unlinkReligionFromCharacter2,
+  } = useReligions();
+  const unlinkReligionFromCharacter = _unlinkReligionFromCharacter2 ?? (async () => {});
+
+  // ===== Timelines & Languages
   const { timelines, saveTimeline, removeTimeline } = useTimelines();
   const { languages, saveLanguage, removeLanguage } = useLanguages();
+
   const { theme } = useTheme();
   const isDark = theme === 'dark';
+
+  // seleção e modais
   const [selectedCharacter, setSelectedCharacter] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedEconomy, setSelectedEconomy] = useState(null);
   const [selectedReligion, setSelectedReligion] = useState(null);
   const [selectedTimeline, setSelectedTimeline] = useState(null);
   const [selectedLanguage, setSelectedLanguage] = useState(null);
+
   const [showCharacterForm, setShowCharacterForm] = useState(false);
   const [showLocationForm, setShowLocationForm] = useState(false);
   const [showEconomyForm, setShowEconomyForm] = useState(false);
   const [showReligionForm, setShowReligionForm] = useState(false);
   const [showTimelineForm, setShowTimelineForm] = useState(false);
   const [showLanguageForm, setShowLanguageForm] = useState(false);
+  const [showStatsPanel, setShowStatsPanel] = useState(false);
   const [expandedSections, setExpandedSections] = useState({});
 
-  
-
-  // Dados de exemplo para demonstração
+  // Dados de exemplo
   const professionsList = [
     'Mercador', 'Ferreiro', 'Agricultor', 'Soldado', 'Pescador', 'Carpinteiro',
     'Alquimista', 'Escriba', 'Tavarneiro', 'Guarda', 'Artesão', 'Curandeiro'
@@ -59,17 +173,12 @@ const UniverseCreator = () => {
     'Queijo de cabra', 'Cerveja de cevada', 'Vinho tinto', 'Mel silvestre'
   ];
 
-  // Funções auxiliares
+  // Auxiliares
   const toggleSection = (section) => {
-    setExpandedSections(prev => ({
-      ...prev,
-      [section]: !prev[section]
-    }));
+    setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
   };
 
-  const generatePopulation = () => {
-    return Math.floor(Math.random() * 50000) + 1000;
-  };
+  const generatePopulation = () => Math.floor(Math.random() * 50000) + 1000;
 
   const generateEconomy = () => {
     const resources = ['Agricultura', 'Mineração', 'Comércio', 'Pesca', 'Artesanato'];
@@ -87,7 +196,7 @@ const UniverseCreator = () => {
     return name.charAt(0).toUpperCase() + name.slice(1);
   };
 
-  // Componente de Visualização de Personagem
+  // ==== Views
   const CharacterView = ({ character }) => (
     <section className="rounded-lg p-6 bg-panel shadow-token">
       <div className="flex justify-between items-start mb-4">
@@ -102,9 +211,7 @@ const UniverseCreator = () => {
             <Edit size={16} />
           </button>
           <button
-            onClick={() => {
-              removeCharacter(character.id);
-            }}
+            onClick={() => { removeCharacter(character.id); }}
             title="Remover personagem"
             aria-label="Remover personagem"
             className="text-red-500 hover:text-red-700"
@@ -124,7 +231,6 @@ const UniverseCreator = () => {
     </section>
   );
 
-  // Componente de Visualização de Localização
   const LocationView = ({ location }) => (
     <section className="rounded-lg p-6 bg-panel shadow-token">
       <div className="flex justify-between items-start mb-4">
@@ -142,9 +248,7 @@ const UniverseCreator = () => {
             <Edit size={16} />
           </button>
           <button
-            onClick={() => {
-              removeLocation(location.id);
-            }}
+            onClick={() => { removeLocation(location.id); }}
             title="Remover local"
             aria-label="Remover local"
             className="text-red-500 hover:text-red-700"
@@ -158,40 +262,39 @@ const UniverseCreator = () => {
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <Users size={16} className="text-blue-500" />
-            <span className="font-semibold">População:</span> 
+            <span className="font-semibold">População:</span>
             <span>{location.population?.toLocaleString()}</span>
           </div>
           <div className="flex items-center gap-2">
             <Coins size={16} className="text-green-500" />
-            <span className="font-semibold">Economia:</span> 
+            <span className="font-semibold">Economia:</span>
             <span>{location.economy}</span>
           </div>
           <div className="flex items-center gap-2">
             <Shield size={16} className="text-red-500" />
-            <span className="font-semibold">Exército:</span> 
+            <span className="font-semibold">Exército:</span>
             <span>{location.army?.size || 0} soldados</span>
           </div>
         </div>
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <Church size={16} className="text-purple-500" />
-            <span className="font-semibold">Religiões:</span> 
+            <span className="font-semibold">Religiões:</span>
             <span>{location.religions?.length || 0}</span>
           </div>
           <div className="flex items-center gap-2">
             <UtensilsCrossed size={16} className="text-orange-500" />
-            <span className="font-semibold">Pratos típicos:</span> 
+            <span className="font-semibold">Pratos típicos:</span>
             <span>{location.commonFoods?.length || 0}</span>
           </div>
           <div className="flex items-center gap-2">
             <MapPin size={16} style={{ color: 'var(--muted)' }} />
-            <span className="font-semibold">Clima:</span> 
+            <span className="font-semibold">Clima:</span>
             <span>{location.climate || 'Não definido'}</span>
           </div>
         </div>
       </div>
 
-      {/* Seções expansíveis */}
       <div className="mt-4 space-y-2">
         {location.mainProfessions?.length > 0 && (
           <div>
@@ -201,7 +304,7 @@ const UniverseCreator = () => {
               aria-expanded={expandedSections[`professions-${location.id}`] || false}
               aria-controls={`professions-${location.id}-content`}
             >
-              {expandedSections[`professions-${location.id}`] ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+              {(expandedSections[`professions-${location.id}`]) ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
               Profissões Principais
             </button>
             {expandedSections[`professions-${location.id}`] && (
@@ -220,7 +323,7 @@ const UniverseCreator = () => {
               aria-expanded={expandedSections[`strategic-${location.id}`] || false}
               aria-controls={`strategic-${location.id}-content`}
             >
-              {expandedSections[`strategic-${location.id}`] ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+              {(expandedSections[`strategic-${location.id}`]) ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
               Pontos Estratégicos
             </button>
             {expandedSections[`strategic-${location.id}`] && (
@@ -363,15 +466,51 @@ const UniverseCreator = () => {
     </section>
   );
 
-  // Handlers
+  // ===== Handlers
   const handleSaveCharacter = async (characterData) => {
     await saveCharacter(characterData);
+
+    const charId = characterData.id;
+    const prevLocs = selectedCharacter?.locationIds || [];
+    const newLocs = characterData.locationIds || [];
+
+    // vincula/desvincula locais
+    for (const id of newLocs.filter(id => !prevLocs.includes(id))) {
+      await linkCharacterToLocation(charId, id);
+    }
+    for (const id of prevLocs.filter(id => !newLocs.includes(id))) {
+      await unlinkCharacterFromLocation(charId, id);
+    }
+
+    const prevRels = selectedCharacter?.religionIds || [];
+    const newRels = characterData.religionIds || [];
+
+    // vincula/desvincula religiões
+    for (const id of newRels.filter(id => !prevRels.includes(id))) {
+      await linkCharacterToReligion(charId, id);
+    }
+    for (const id of prevRels.filter(id => !newRels.includes(id))) {
+      await unlinkCharacterFromReligion(charId, id);
+    }
+
     setSelectedCharacter(null);
     setShowCharacterForm(false);
   };
 
   const handleSaveLocation = async (locationData) => {
     await saveLocation(locationData);
+
+    const locId = locationData.id;
+    const prevChars = selectedLocation?.characterIds || [];
+    const newChars = locationData.characterIds || [];
+
+    for (const id of newChars.filter(id => !prevChars.includes(id))) {
+      await linkLocationToCharacter(locId, id);
+    }
+    for (const id of prevChars.filter(id => !newChars.includes(id))) {
+      await unlinkLocationFromCharacter(locId, id);
+    }
+
     setSelectedLocation(null);
     setShowLocationForm(false);
   };
@@ -384,6 +523,18 @@ const UniverseCreator = () => {
 
   const handleSaveReligion = async (religionData) => {
     await saveReligion(religionData);
+
+    const relId = religionData.id;
+    const prevChars = selectedReligion?.characterIds || [];
+    const newChars = religionData.characterIds || [];
+
+    for (const id of newChars.filter(id => !prevChars.includes(id))) {
+      await linkReligionToCharacter(relId, id);
+    }
+    for (const id of prevChars.filter(id => !newChars.includes(id))) {
+      await unlinkReligionFromCharacter(relId, id);
+    }
+
     setSelectedReligion(null);
     setShowReligionForm(false);
   };
@@ -417,9 +568,7 @@ const UniverseCreator = () => {
             <button
               id="characters-tab"
               onClick={() => setActiveTab('characters')}
-              className={`py-4 px-2 border-b-2 font-medium text-sm border-transparent ${
-                activeTab === 'characters' ? 'border-blue-500 text-blue-600' : ''
-              }`}
+              className={`py-4 px-2 border-b-2 font-medium text-sm border-transparent ${activeTab === 'characters' ? 'border-blue-500 text-blue-600' : ''}`}
               style={activeTab === 'characters' ? undefined : { color: 'var(--muted)' }}
               aria-controls="characters-panel"
               aria-selected={activeTab === 'characters'}
@@ -431,9 +580,7 @@ const UniverseCreator = () => {
             <button
               id="locations-tab"
               onClick={() => setActiveTab('locations')}
-              className={`py-4 px-2 border-b-2 font-medium text-sm border-transparent ${
-                activeTab === 'locations' ? 'border-blue-500 text-blue-600' : ''
-              }`}
+              className={`py-4 px-2 border-b-2 font-medium text-sm border-transparent ${activeTab === 'locations' ? 'border-blue-500 text-blue-600' : ''}`}
               style={activeTab === 'locations' ? undefined : { color: 'var(--muted)' }}
               aria-controls="locations-panel"
               aria-selected={activeTab === 'locations'}
@@ -445,9 +592,7 @@ const UniverseCreator = () => {
             <button
               id="economies-tab"
               onClick={() => setActiveTab('economies')}
-              className={`py-4 px-2 border-b-2 font-medium text-sm border-transparent ${
-                activeTab === 'economies' ? 'border-blue-500 text-blue-600' : ''
-              }`}
+              className={`py-4 px-2 border-b-2 font-medium text-sm border-transparent ${activeTab === 'economies' ? 'border-blue-500 text-blue-600' : ''}`}
               style={activeTab === 'economies' ? undefined : { color: 'var(--muted)' }}
               aria-controls="economies-panel"
               aria-selected={activeTab === 'economies'}
@@ -459,9 +604,7 @@ const UniverseCreator = () => {
             <button
               id="religions-tab"
               onClick={() => setActiveTab('religions')}
-              className={`py-4 px-2 border-b-2 font-medium text-sm border-transparent ${
-                activeTab === 'religions' ? 'border-blue-500 text-blue-600' : ''
-              }`}
+              className={`py-4 px-2 border-b-2 font-medium text-sm border-transparent ${activeTab === 'religions' ? 'border-blue-500 text-blue-600' : ''}`}
               style={activeTab === 'religions' ? undefined : { color: 'var(--muted)' }}
               aria-controls="religions-panel"
               aria-selected={activeTab === 'religions'}
@@ -473,9 +616,7 @@ const UniverseCreator = () => {
             <button
               id="timelines-tab"
               onClick={() => setActiveTab('timelines')}
-              className={`py-4 px-2 border-b-2 font-medium text-sm border-transparent ${
-                activeTab === 'timelines' ? 'border-blue-500 text-blue-600' : ''
-              }`}
+              className={`py-4 px-2 border-b-2 font-medium text-sm border-transparent ${activeTab === 'timelines' ? 'border-blue-500 text-blue-600' : ''}`}
               style={activeTab === 'timelines' ? undefined : { color: 'var(--muted)' }}
               aria-controls="timelines-panel"
               aria-selected={activeTab === 'timelines'}
@@ -487,9 +628,7 @@ const UniverseCreator = () => {
             <button
               id="languages-tab"
               onClick={() => setActiveTab('languages')}
-              className={`py-4 px-2 border-b-2 font-medium text-sm border-transparent ${
-                activeTab === 'languages' ? 'border-blue-500 text-blue-600' : ''
-              }`}
+              className={`py-4 px-2 border-b-2 font-medium text-sm border-transparent ${activeTab === 'languages' ? 'border-blue-500 text-blue-600' : ''}`}
               style={activeTab === 'languages' ? undefined : { color: 'var(--muted)' }}
               aria-controls="languages-panel"
               aria-selected={activeTab === 'languages'}
@@ -501,9 +640,7 @@ const UniverseCreator = () => {
             <button
               id="analytics-tab"
               onClick={() => setActiveTab('analytics')}
-              className={`py-4 px-2 border-b-2 font-medium text-sm border-transparent ${
-                activeTab === 'analytics' ? 'border-blue-500 text-blue-600' : ''
-              }`}
+              className={`py-4 px-2 border-b-2 font-medium text-sm border-transparent ${activeTab === 'analytics' ? 'border-blue-500 text-blue-600' : ''}`}
               style={activeTab === 'analytics' ? undefined : { color: 'var(--muted)' }}
               aria-controls="analytics-panel"
               aria-selected={activeTab === 'analytics'}
@@ -771,7 +908,6 @@ const UniverseCreator = () => {
               </div>
             </div>
 
-            {/* Gráficos e Análises */}
             {locations.length > 0 && (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div className="rounded-lg p-6 bg-panel shadow-token">
@@ -784,11 +920,8 @@ const UniverseCreator = () => {
                         <div key={type} className="flex justify-between items-center">
                           <span className="capitalize text-sm font-medium">{type}</span>
                           <div className="flex items-center gap-2">
-                            <div className={`w-24 rounded-full h-2 ${isDark ? 'bg-gray-700' : 'bg-gray-200'}`}> 
-                              <div
-                                className="bg-blue-500 h-2 rounded-full"
-                                style={{width: `${percentage}%`}}
-                              ></div>
+                            <div className={`w-24 rounded-full h-2 ${isDark ? 'bg-gray-700' : 'bg-gray-200'}`}>
+                              <div className="bg-blue-500 h-2 rounded-full" style={{ width: `${percentage}%` }} />
                             </div>
                             <span className="text-sm w-12" style={{ color: 'var(--muted)' }}>{count}</span>
                           </div>
@@ -802,6 +935,7 @@ const UniverseCreator = () => {
                   <h3 className="text-lg font-medium mb-4">Maiores Populações</h3>
                   <div className="space-y-3">
                     {locations
+                      .slice() // evitar sort in-place
                       .sort((a, b) => (b.population || 0) - (a.population || 0))
                       .slice(0, 5)
                       .map(location => (
@@ -824,20 +958,18 @@ const UniverseCreator = () => {
                   <div className="space-y-3">
                     {Object.entries(
                       locations.reduce((acc, loc) => {
-                        if (loc.economy) {
-                          acc[loc.economy] = (acc[loc.economy] || 0) + 1;
-                        }
+                        if (loc.economy) acc[loc.economy] = (acc[loc.economy] || 0) + 1;
                         return acc;
                       }, {})
                     ).map(([sector, count]) => (
                       <div key={sector} className="flex justify-between items-center">
                         <span className="text-sm font-medium">{sector}</span>
                         <div className="flex items-center gap-2">
-                          <div className={`w-24 rounded-full h-2 ${isDark ? 'bg-gray-700' : 'bg-gray-200'}`}> 
+                          <div className={`w-24 rounded-full h-2 ${isDark ? 'bg-gray-700' : 'bg-gray-200'}`}>
                             <div
                               className="bg-green-500 h-2 rounded-full"
-                              style={{width: `${locations.length > 0 ? (count / locations.length * 100) : 0}%`}}
-                            ></div>
+                              style={{ width: `${locations.length > 0 ? (count / locations.length * 100) : 0}%` }}
+                            />
                           </div>
                           <span className="text-sm w-12" style={{ color: 'var(--muted)' }}>{count}</span>
                         </div>
@@ -849,40 +981,28 @@ const UniverseCreator = () => {
                 <div className="rounded-lg p-6 bg-panel shadow-token">
                   <h3 className="text-lg font-medium mb-4">Diversidade Religiosa</h3>
                   <div className="space-y-3">
-                    {Object.entries(
-                      locations.reduce((acc, loc) => {
-                        (loc.religions || []).forEach(religion => {
-                          acc[religion] = (acc[religion] || 0) + 1;
-                        });
+                    {(() => {
+                      const counts = locations.reduce((acc, loc) => {
+                        (loc.religions || []).forEach(r => { acc[r] = (acc[r] || 0) + 1; });
                         return acc;
-                      }, {})
-                    )
-                    .sort(([,a], [,b]) => b - a)
-                    .slice(0, 6)
-                    .map(([religion, count]) => (
-                      <div key={religion} className="flex justify-between items-center">
-                        <span className="text-sm font-medium">{religion}</span>
-                        <div className="flex items-center gap-2">
-                          <div className={`w-24 rounded-full h-2 ${isDark ? 'bg-gray-700' : 'bg-gray-200'}`}> 
-                            <div
-                              className="bg-purple-500 h-2 rounded-full"
-                              style={{width: `${Math.max(...Object.values(locations.reduce((acc, loc) => {
-                                (loc.religions || []).forEach(r => {
-                                  acc[r] = (acc[r] || 0) + 1;
-                                });
-                                return acc;
-                              }, {}))) > 0 ? (count / Math.max(...Object.values(locations.reduce((acc, loc) => {
-                                (loc.religions || []).forEach(r => {
-                                  acc[r] = (acc[r] || 0) + 1;
-                                });
-                                return acc;
-                              }, {}))) * 100) : 0}%`}}
-                            ></div>
+                      }, {});
+                      const entries = Object.entries(counts).sort(([, a], [, b]) => b - a).slice(0, 6);
+                      const max = Math.max(0, ...entries.map(([, c]) => c));
+                      return entries.map(([religion, count]) => (
+                        <div key={religion} className="flex justify-between items-center">
+                          <span className="text-sm font-medium">{religion}</span>
+                          <div className="flex items-center gap-2">
+                            <div className={`w-24 rounded-full h-2 ${isDark ? 'bg-gray-700' : 'bg-gray-200'}`}>
+                              <div
+                                className="bg-purple-500 h-2 rounded-full"
+                                style={{ width: `${max ? (count / max) * 100 : 0}%` }}
+                              />
+                            </div>
+                            <span className="text-sm w-12" style={{ color: 'var(--muted)' }}>{count}</span>
                           </div>
-                          <span className="text-sm w-12" style={{ color: 'var(--muted)' }}>{count}</span>
                         </div>
-                      </div>
-                    ))}
+                      ));
+                    })()}
                   </div>
                 </div>
               </div>
@@ -958,11 +1078,7 @@ const UniverseCreator = () => {
         </button>
 
         <button
-          onClick={() => {
-            const totalPop = locations.reduce((total, loc) => total + (loc.population || 0), 0);
-            const totalArmy = locations.reduce((total, loc) => total + (loc.army?.size || 0), 0);
-            alert(`Resumo do Universo:\n\n• Personagens: ${characters.length}\n• Localizações: ${locations.length}\n• População Total: ${totalPop.toLocaleString()}\n• Força Militar: ${totalArmy.toLocaleString()}`);
-          }}
+          onClick={() => setShowStatsPanel(true)}
           className="bg-purple-500 text-white p-3 rounded-full shadow-token hover:bg-purple-600 transition-colors"
           title="Resumo Rápido"
         >
@@ -977,6 +1093,8 @@ const UniverseCreator = () => {
           religions={religions}
           character={selectedCharacter}
           location={selectedLocation}
+          selectedCharacter={selectedCharacter}
+          selectedLocation={selectedLocation}
         />
       )}
 
@@ -1046,6 +1164,14 @@ const UniverseCreator = () => {
             setSelectedLanguage(null);
             setShowLanguageForm(false);
           }}
+        />
+      )}
+
+      {showStatsPanel && (
+        <StatsPanel
+          characters={characters}
+          locations={locations}
+          onClose={() => setShowStatsPanel(false)}
         />
       )}
     </main>
