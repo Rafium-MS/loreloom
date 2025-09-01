@@ -19,6 +19,8 @@ async function getDB() {
       db.run('CREATE TABLE IF NOT EXISTS religions (id INTEGER PRIMARY KEY, name TEXT, doctrine TEXT, factions TEXT);');
       db.run('CREATE TABLE IF NOT EXISTS timelines (id INTEGER PRIMARY KEY, title TEXT, date TEXT, description TEXT, relations TEXT);');
       db.run('CREATE TABLE IF NOT EXISTS languages (id INTEGER PRIMARY KEY, name TEXT, vocabulary TEXT, grammar TEXT, syllables TEXT);');
+      db.run('CREATE TABLE IF NOT EXISTS character_location (character_id INTEGER, location_id INTEGER);');
+      db.run('CREATE TABLE IF NOT EXISTS character_religion (character_id INTEGER, religion_id INTEGER);');
       return db;
     });
   }
@@ -61,6 +63,44 @@ export async function saveCharacter(char: {id: number; name: string; description
 export async function removeCharacter(id: number) {
   const db = await getDB();
   db.run('DELETE FROM characters WHERE id = ?', [id]);
+  db.run('DELETE FROM character_location WHERE character_id = ?', [id]);
+  db.run('DELETE FROM character_religion WHERE character_id = ?', [id]);
+  await persist();
+}
+
+export async function getCharacterLocations(characterId: number) {
+  const db = await getDB();
+  const res: number[] = [];
+  const stmt = db.prepare('SELECT location_id FROM character_location WHERE character_id = ?');
+  stmt.bind([characterId]);
+  while (stmt.step()) {
+    res.push(stmt.get()[0] as number);
+  }
+  stmt.free();
+  return res;
+}
+
+export async function getLocationCharacters(locationId: number) {
+  const db = await getDB();
+  const res: number[] = [];
+  const stmt = db.prepare('SELECT character_id FROM character_location WHERE location_id = ?');
+  stmt.bind([locationId]);
+  while (stmt.step()) {
+    res.push(stmt.get()[0] as number);
+  }
+  stmt.free();
+  return res;
+}
+
+export async function linkCharacterToLocation(characterId: number, locationId: number) {
+  const db = await getDB();
+  db.run('INSERT OR IGNORE INTO character_location (character_id, location_id) VALUES (?, ?)', [characterId, locationId]);
+  await persist();
+}
+
+export async function unlinkCharacterFromLocation(characterId: number, locationId: number) {
+  const db = await getDB();
+  db.run('DELETE FROM character_location WHERE character_id = ? AND location_id = ?', [characterId, locationId]);
   await persist();
 }
 
@@ -84,6 +124,7 @@ export async function saveLocation(loc: {id: number; name: string; description: 
 export async function removeLocation(id: number) {
   const db = await getDB();
   db.run('DELETE FROM locations WHERE id = ?', [id]);
+  db.run('DELETE FROM character_location WHERE location_id = ?', [id]);
   await persist();
 }
 
@@ -130,6 +171,43 @@ export async function saveReligion(rel: {id: number; name: string; doctrine: str
 export async function removeReligion(id: number) {
   const db = await getDB();
   db.run('DELETE FROM religions WHERE id = ?', [id]);
+  db.run('DELETE FROM character_religion WHERE religion_id = ?', [id]);
+  await persist();
+}
+
+export async function getCharacterReligions(characterId: number) {
+  const db = await getDB();
+  const res: number[] = [];
+  const stmt = db.prepare('SELECT religion_id FROM character_religion WHERE character_id = ?');
+  stmt.bind([characterId]);
+  while (stmt.step()) {
+    res.push(stmt.get()[0] as number);
+  }
+  stmt.free();
+  return res;
+}
+
+export async function getReligionCharacters(religionId: number) {
+  const db = await getDB();
+  const res: number[] = [];
+  const stmt = db.prepare('SELECT character_id FROM character_religion WHERE religion_id = ?');
+  stmt.bind([religionId]);
+  while (stmt.step()) {
+    res.push(stmt.get()[0] as number);
+  }
+  stmt.free();
+  return res;
+}
+
+export async function linkCharacterToReligion(characterId: number, religionId: number) {
+  const db = await getDB();
+  db.run('INSERT OR IGNORE INTO character_religion (character_id, religion_id) VALUES (?, ?)', [characterId, religionId]);
+  await persist();
+}
+
+export async function unlinkCharacterFromReligion(characterId: number, religionId: number) {
+  const db = await getDB();
+  db.run('DELETE FROM character_religion WHERE character_id = ? AND religion_id = ?', [characterId, religionId]);
   await persist();
 }
 

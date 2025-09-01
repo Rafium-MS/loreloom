@@ -6,6 +6,7 @@ interface Religion {
   name: string;
   doctrine: string;
   factions: string;
+  characterIds?: number[];
 }
 
 type Action =
@@ -31,7 +32,13 @@ export function useReligions() {
 
   const load = useCallback(async () => {
     const rels = await dataStore.getReligions();
-    dispatch({ type: 'set', payload: rels });
+    const enriched = await Promise.all(
+      rels.map(async (r) => {
+        const characterIds = await dataStore.getReligionCharacters(r.id);
+        return { ...r, characterIds } as Religion;
+      })
+    );
+    dispatch({ type: 'set', payload: enriched });
   }, []);
 
   useEffect(() => {
@@ -54,7 +61,30 @@ export function useReligions() {
     [load]
   );
 
-  return { religions, saveReligion, removeReligion, refresh: load };
+  const linkReligionToCharacter = useCallback(
+    async (religionId: number, characterId: number) => {
+      await dataStore.linkCharacterToReligion(characterId, religionId);
+      await load();
+    },
+    [load]
+  );
+
+  const unlinkReligionFromCharacter = useCallback(
+    async (religionId: number, characterId: number) => {
+      await dataStore.unlinkCharacterFromReligion(characterId, religionId);
+      await load();
+    },
+    [load]
+  );
+
+  return {
+    religions,
+    saveReligion,
+    removeReligion,
+    linkReligionToCharacter,
+    unlinkReligionFromCharacter,
+    refresh: load,
+  };
 }
 
 export default useReligions;
