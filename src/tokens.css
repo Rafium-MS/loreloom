@@ -1,4 +1,4 @@
-/* Global design tokens and utility classes */
+/* Global design tokens */
 :root {
   --bg: #0b0b10;
   --panel: #11121a;
@@ -7,9 +7,9 @@
   --primary: #7c3aed;
   --accent: #22d3ee;
   --border: #1f2230;
-  --ring: rgba(124,58,237,.35);
+  --ring: rgba(124, 58, 237, 0.35);
   --radius: 14px;
-  --shadow: 0 8px 28px rgba(0,0,0,.28);
+  --shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
   --background: var(--bg);
   --foreground: var(--text);
   --primary-foreground: var(--bg);
@@ -23,47 +23,13 @@
   --primary: #9a6a2f;
   --accent: #c59b6d;
   --border: #e6dcc8;
-  --ring: rgba(154,106,47,.35);
+  --ring: rgba(154, 106, 47, 0.35);
   --background: var(--bg);
   --foreground: var(--text);
   --primary-foreground: var(--bg);
 }
 
-body { background: var(--bg); color: var(--text); }
-
-/* Utility classes */
-.min-h-screen { min-height: 100vh; }
-.flex { display: flex; }
-.flex-col { flex-direction: column; }
-.flex-1 { flex: 1 1 0%; }
-.items-center { align-items: center; }
-.justify-between { justify-content: space-between; }
-.gap-2 { gap: 0.5rem; }
-.gap-3 { gap: 0.75rem; }
-.px-4 { padding-left: 1rem; padding-right: 1rem; }
-.py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
-.px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
-.py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
-.p-4 { padding: 1rem; }
-.p-8 { padding: 2rem; }
-.border { border: 1px solid; }
-.border-b { border-bottom: 1px solid; }
-.border-border { border-color: var(--border); }
-.bg-panel { background: var(--panel); }
-.cursor-pointer { cursor: pointer; }
-.no-underline { text-decoration: none; }
-.font-bold { font-weight: bold; }
-.overflow-auto { overflow: auto; }
-.theme-surface { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
-.rounded-token { border-radius: var(--radius); }
-.shadow-token { box-shadow: var(--shadow); }
-.text-text { color: var(--text); }
-.leading-1-8 { line-height: 1.8; }
-.outline-none { outline: none; }
-.min-h-96 { min-height: 24rem; }
-.max-w-4xl { max-width: 56rem; }
-.mx-auto { margin-left: auto; margin-right: auto; }
-.mt-8 { margin-top: 2rem; }
-.font-sans { font-family: system-ui, sans-serif; }
-.font-serif { font-family: Georgia, serif; }
-.text-lg { font-size: 1.125rem; }
+body {
+  background: var(--bg);
+  color: var(--text);
+}
