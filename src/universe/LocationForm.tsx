@@ -239,13 +239,36 @@ const LocationForm = ({ location, onSave, onCancel, generatePopulation, generate
                   onChange={(e) => handleArrayChange('commonFoods', e.target.value)}
                   className="border rounded px-3 py-2"
                 />
-              </div>
-            </div>
           </div>
+        </div>
+      </div>
 
-          {/* Infraestrutura */}
-          <div className="border-b pb-4">
-            <h4 className="font-semibold mb-3">Infraestrutura</h4>
+      {/* Personagens */}
+      <div className="border-b pb-4">
+        <h4 className="font-semibold mb-3">Personagens</h4>
+        <div className="flex flex-col">
+          <label htmlFor="loc-characters" className="mb-1 text-sm">Personagens presentes</label>
+          <select
+            id="loc-characters"
+            multiple
+            value={selectedCharacters.map(String)}
+            onChange={(e) =>
+              setSelectedCharacters(Array.from(e.target.selectedOptions, (o) => Number(o.value)))
+            }
+            className="border rounded px-3 py-2 w-full h-32"
+          >
+            {characters.map((char) => (
+              <option key={char.id} value={char.id}>
+                {char.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* Infraestrutura */}
+      <div className="border-b pb-4">
+        <h4 className="font-semibold mb-3">Infraestrutura</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex flex-col">
                 <label htmlFor="loc-establishments" className="mb-1 text-sm">Estabelecimentos comerciais</label>

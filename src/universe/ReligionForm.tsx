@@ -74,6 +74,7 @@ const ReligionForm = ({ religion, onSave, onCancel }: ReligionFormProps) => {
             />
           </div>
           <div className="flex flex-col">
+
             <label htmlFor="religion-characters" className="mb-1 text-sm">Personagens</label>
             <select
               id="religion-characters"
@@ -85,6 +86,7 @@ const ReligionForm = ({ religion, onSave, onCancel }: ReligionFormProps) => {
                 )
               }
               className="border rounded px-3 py-2 w-full"
+
             >
               {characters.map((char) => (
                 <option key={char.id} value={char.id}>
