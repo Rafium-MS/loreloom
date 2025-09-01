@@ -17,9 +17,13 @@ const EconomyForm = ({ economy, onSave, onCancel }: EconomyFormProps) => {
       mainExports: ''
     }
   );
+  const [errors, setErrors] = useState({ name: '' });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const newErrors = { name: formData.name.trim() ? '' : 'Nome é obrigatório' };
+    setErrors(newErrors);
+    if (Object.values(newErrors).some(Boolean)) return;
     onSave({ ...formData, id: economy?.id || Date.now() });
   };
 
@@ -30,35 +34,50 @@ const EconomyForm = ({ economy, onSave, onCancel }: EconomyFormProps) => {
           {economy ? 'Editar Economia' : 'Nova Economia'}
         </h3>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="text"
-            placeholder="Nome"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="border rounded px-3 py-2 w-full"
-            required
-          />
-          <input
-            type="text"
-            placeholder="Moeda"
-            value={formData.currency}
-            onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
-            className="border rounded px-3 py-2 w-full"
-          />
-          <input
-            type="text"
-            placeholder="Mercados principais"
-            value={formData.markets}
-            onChange={(e) => setFormData({ ...formData, markets: e.target.value })}
-            className="border rounded px-3 py-2 w-full"
-          />
-          <input
-            type="text"
-            placeholder="Exportações"
-            value={formData.mainExports}
-            onChange={(e) => setFormData({ ...formData, mainExports: e.target.value })}
-            className="border rounded px-3 py-2 w-full"
-          />
+          <div className="flex flex-col">
+            <label htmlFor="economy-name" className="mb-1 text-sm">Nome</label>
+            <input
+              id="economy-name"
+              type="text"
+              value={formData.name}
+              onChange={(e) => {
+                setFormData({ ...formData, name: e.target.value });
+                if (errors.name) setErrors({ name: '' });
+              }}
+              className={`border rounded px-3 py-2 w-full ${errors.name ? 'border-red-500' : ''}`}
+            />
+            {errors.name && <span className="text-red-500 text-sm mt-1">{errors.name}</span>}
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="economy-currency" className="mb-1 text-sm">Moeda</label>
+            <input
+              id="economy-currency"
+              type="text"
+              value={formData.currency}
+              onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
+              className="border rounded px-3 py-2 w-full"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="economy-markets" className="mb-1 text-sm">Mercados principais</label>
+            <input
+              id="economy-markets"
+              type="text"
+              value={formData.markets}
+              onChange={(e) => setFormData({ ...formData, markets: e.target.value })}
+              className="border rounded px-3 py-2 w-full"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="economy-exports" className="mb-1 text-sm">Exportações</label>
+            <input
+              id="economy-exports"
+              type="text"
+              value={formData.mainExports}
+              onChange={(e) => setFormData({ ...formData, mainExports: e.target.value })}
+              className="border rounded px-3 py-2 w-full"
+            />
+          </div>
           <div className="flex gap-2 pt-4">
             <button
               type="submit"

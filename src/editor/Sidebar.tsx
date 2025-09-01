@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Users, MapPin, BookOpen, Edit3, PlusCircle, X, Sparkles, Link2 } from 'lucide-react';
 import { useTheme } from '../ui/ThemeProvider';
 import CharacterForm from './CharacterForm';
@@ -85,6 +85,52 @@ const Sidebar: React.FC<SidebarProps> = ({
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   const isFocus = theme === 'focus';
+  const [locationErrors, setLocationErrors] = useState({ name: '', type: '', description: '' });
+  const [plotErrors, setPlotErrors] = useState({ title: '', chapter: '', description: '' });
+  const [subplotErrors, setSubplotErrors] = useState({ title: '', description: '' });
+  const [relationErrors, setRelationErrors] = useState({ characterId: '', locationId: '' });
+
+  const handleAddLocation = () => {
+    const errors = {
+      name: newLocation.name.trim() ? '' : 'Nome é obrigatório',
+      type: newLocation.type.trim() ? '' : 'Tipo é obrigatório',
+      description: newLocation.description.trim() ? '' : 'Descrição é obrigatória'
+    };
+    setLocationErrors(errors);
+    if (Object.values(errors).some(Boolean)) return;
+    addLocation();
+  };
+
+  const handleAddPlotPoint = () => {
+    const errors = {
+      title: newPlotPoint.title.trim() ? '' : 'Título é obrigatório',
+      chapter: newPlotPoint.chapter.trim() ? '' : 'Capítulo é obrigatório',
+      description: newPlotPoint.description.trim() ? '' : 'Descrição é obrigatória'
+    };
+    setPlotErrors(errors);
+    if (Object.values(errors).some(Boolean)) return;
+    addPlotPoint();
+  };
+
+  const handleAddSubplot = () => {
+    const errors = {
+      title: newSubplot.title.trim() ? '' : 'Título é obrigatório',
+      description: newSubplot.description.trim() ? '' : 'Descrição é obrigatória'
+    };
+    setSubplotErrors(errors);
+    if (Object.values(errors).some(Boolean)) return;
+    addSubplot();
+  };
+
+  const handleAddRelation = () => {
+    const errors = {
+      characterId: newRelation.characterId.trim() ? '' : 'Personagem é obrigatório',
+      locationId: newRelation.locationId.trim() ? '' : 'Local é obrigatório'
+    };
+    setRelationErrors(errors);
+    if (Object.values(errors).some(Boolean)) return;
+    addRelation();
+  };
 
   return (
     <div
@@ -151,7 +197,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               <div>
                 <h3 className="font-semibold mt-4">Histórico</h3>
                 <ul className="mt-2 space-y-1 text-sm">
-                  {history.map((h, idx) => (
+                  {history.map((h: any, idx: number) => (
                     <li key={h.timestamp}>
                       <button onClick={() => loadVersion(h)} className="text-purple-600 hover:underline">
                         Versão {idx + 1}
@@ -187,7 +233,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             )}
 
             <div className="space-y-3">
-              {characters.map(char => (
+              {characters.map((char: any) => (
                 <div key={char.id} className={`p-3 rounded-lg border ${isDark ? 'border-gray-600 bg-gray-700' : 'border-gray-200 bg-gray-50'}`}>
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
@@ -226,28 +272,49 @@ const Sidebar: React.FC<SidebarProps> = ({
 
             {showLocationForm && (
               <div className={`p-3 rounded-lg border ${isDark ? 'border-gray-600 bg-gray-700' : 'border-gray-200 bg-gray-50'}`}>
-                <input
-                  type="text"
-                  placeholder="Nome do local"
-                  value={newLocation.name}
-                  onChange={(e) => setNewLocation({ ...newLocation, name: e.target.value })}
-                  className={`w-full p-2 mb-2 border rounded ${isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
-                />
-                <input
-                  type="text"
-                  placeholder="Tipo (cidade, floresta, castelo...)"
-                  value={newLocation.type}
-                  onChange={(e) => setNewLocation({ ...newLocation, type: e.target.value })}
-                  className={`w-full p-2 mb-2 border rounded ${isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
-                />
-                <textarea
-                  placeholder="Descrição do local"
-                  value={newLocation.description}
-                  onChange={(e) => setNewLocation({ ...newLocation, description: e.target.value })}
-                  className={`w-full p-2 mb-2 border rounded h-20 ${isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
-                />
+                <div className="mb-2">
+                  <label htmlFor="location-name" className="block text-sm mb-1">Nome do local</label>
+                  <input
+                    id="location-name"
+                    type="text"
+                    value={newLocation.name}
+                    onChange={(e) => {
+                      setNewLocation({ ...newLocation, name: e.target.value });
+                      if (locationErrors.name) setLocationErrors({ ...locationErrors, name: '' });
+                    }}
+                    className={`w-full p-2 border rounded ${locationErrors.name ? 'border-red-500' : isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
+                  />
+                  {locationErrors.name && <p className="text-red-500 text-sm mt-1">{locationErrors.name}</p>}
+                </div>
+                <div className="mb-2">
+                  <label htmlFor="location-type" className="block text-sm mb-1">Tipo</label>
+                  <input
+                    id="location-type"
+                    type="text"
+                    value={newLocation.type}
+                    onChange={(e) => {
+                      setNewLocation({ ...newLocation, type: e.target.value });
+                      if (locationErrors.type) setLocationErrors({ ...locationErrors, type: '' });
+                    }}
+                    className={`w-full p-2 border rounded ${locationErrors.type ? 'border-red-500' : isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
+                  />
+                  {locationErrors.type && <p className="text-red-500 text-sm mt-1">{locationErrors.type}</p>}
+                </div>
+                <div className="mb-2">
+                  <label htmlFor="location-description" className="block text-sm mb-1">Descrição do local</label>
+                  <textarea
+                    id="location-description"
+                    value={newLocation.description}
+                    onChange={(e) => {
+                      setNewLocation({ ...newLocation, description: e.target.value });
+                      if (locationErrors.description) setLocationErrors({ ...locationErrors, description: '' });
+                    }}
+                    className={`w-full p-2 border rounded h-20 ${locationErrors.description ? 'border-red-500' : isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
+                  />
+                  {locationErrors.description && <p className="text-red-500 text-sm mt-1">{locationErrors.description}</p>}
+                </div>
                 <button
-                  onClick={addLocation}
+                  onClick={handleAddLocation}
                   className="w-full bg-purple-600 text-white p-2 rounded hover:bg-purple-700"
                 >
                   Adicionar
@@ -256,7 +323,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             )}
 
             <div className="space-y-3">
-              {locations.map(loc => (
+              {locations.map((loc: any) => (
                 <div key={loc.id} className={`p-3 rounded-lg border ${isDark ? 'border-gray-600 bg-gray-700' : 'border-gray-200 bg-gray-50'}`}>
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
@@ -295,28 +362,49 @@ const Sidebar: React.FC<SidebarProps> = ({
 
             {showPlotForm && (
               <div className={`p-3 rounded-lg border ${isDark ? 'border-gray-600 bg-gray-700' : 'border-gray-200 bg-gray-50'}`}>
-                <input
-                  type="text"
-                  placeholder="Título do evento"
-                  value={newPlotPoint.title}
-                  onChange={(e) => setNewPlotPoint({ ...newPlotPoint, title: e.target.value })}
-                  className={`w-full p-2 mb-2 border rounded ${isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
-                />
-                <input
-                  type="text"
-                  placeholder="Capítulo/Seção"
-                  value={newPlotPoint.chapter}
-                  onChange={(e) => setNewPlotPoint({ ...newPlotPoint, chapter: e.target.value })}
-                  className={`w-full p-2 mb-2 border rounded ${isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
-                />
-                <textarea
-                  placeholder="Descrição do evento"
-                  value={newPlotPoint.description}
-                  onChange={(e) => setNewPlotPoint({ ...newPlotPoint, description: e.target.value })}
-                  className={`w-full p-2 mb-2 border rounded h-20 ${isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
-                />
+                <div className="mb-2">
+                  <label htmlFor="plot-title" className="block text-sm mb-1">Título do evento</label>
+                  <input
+                    id="plot-title"
+                    type="text"
+                    value={newPlotPoint.title}
+                    onChange={(e) => {
+                      setNewPlotPoint({ ...newPlotPoint, title: e.target.value });
+                      if (plotErrors.title) setPlotErrors({ ...plotErrors, title: '' });
+                    }}
+                    className={`w-full p-2 border rounded ${plotErrors.title ? 'border-red-500' : isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
+                  />
+                  {plotErrors.title && <p className="text-red-500 text-sm mt-1">{plotErrors.title}</p>}
+                </div>
+                <div className="mb-2">
+                  <label htmlFor="plot-chapter" className="block text-sm mb-1">Capítulo/Seção</label>
+                  <input
+                    id="plot-chapter"
+                    type="text"
+                    value={newPlotPoint.chapter}
+                    onChange={(e) => {
+                      setNewPlotPoint({ ...newPlotPoint, chapter: e.target.value });
+                      if (plotErrors.chapter) setPlotErrors({ ...plotErrors, chapter: '' });
+                    }}
+                    className={`w-full p-2 border rounded ${plotErrors.chapter ? 'border-red-500' : isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
+                  />
+                  {plotErrors.chapter && <p className="text-red-500 text-sm mt-1">{plotErrors.chapter}</p>}
+                </div>
+                <div className="mb-2">
+                  <label htmlFor="plot-description" className="block text-sm mb-1">Descrição do evento</label>
+                  <textarea
+                    id="plot-description"
+                    value={newPlotPoint.description}
+                    onChange={(e) => {
+                      setNewPlotPoint({ ...newPlotPoint, description: e.target.value });
+                      if (plotErrors.description) setPlotErrors({ ...plotErrors, description: '' });
+                    }}
+                    className={`w-full p-2 border rounded h-20 ${plotErrors.description ? 'border-red-500' : isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
+                  />
+                  {plotErrors.description && <p className="text-red-500 text-sm mt-1">{plotErrors.description}</p>}
+                </div>
                 <button
-                  onClick={addPlotPoint}
+                  onClick={handleAddPlotPoint}
                   className="w-full bg-purple-600 text-white p-2 rounded hover:bg-purple-700"
                 >
                   Adicionar
@@ -325,7 +413,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             )}
 
             <div className="space-y-3">
-              {plotPoints.map(plot => (
+              {plotPoints.map((plot: any) => (
                 <div key={plot.id} className={`p-3 rounded-lg border ${isDark ? 'border-gray-600 bg-gray-700' : 'border-gray-200 bg-gray-50'}`}>
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
@@ -360,31 +448,49 @@ const Sidebar: React.FC<SidebarProps> = ({
 
             {showSubplotForm && (
               <div className={`p-3 rounded-lg border ${isDark ? 'border-gray-600 bg-gray-700' : 'border-gray-200 bg-gray-50'}`}>
-                <input
-                  type="text"
-                  placeholder="Título do subplot"
-                  value={newSubplot.title}
-                  onChange={(e) => setNewSubplot({ ...newSubplot, title: e.target.value })}
-                  className={`w-full p-2 mb-2 border rounded ${isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
-                />
-                <select
-                  value={newSubplot.parent}
-                  onChange={(e) => setNewSubplot({ ...newSubplot, parent: e.target.value })}
-                  className={`w-full p-2 mb-2 border rounded ${isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
-                >
-                  <option value="">Plot principal</option>
-                  {plotPoints.map(p => (
-                    <option key={p.id} value={p.id}>{p.title}</option>
-                  ))}
-                </select>
-                <textarea
-                  placeholder="Descrição do subplot"
-                  value={newSubplot.description}
-                  onChange={(e) => setNewSubplot({ ...newSubplot, description: e.target.value })}
-                  className={`w-full p-2 mb-2 border rounded h-20 ${isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
-                />
+                <div className="mb-2">
+                  <label htmlFor="subplot-title" className="block text-sm mb-1">Título do subplot</label>
+                  <input
+                    id="subplot-title"
+                    type="text"
+                    value={newSubplot.title}
+                    onChange={(e) => {
+                      setNewSubplot({ ...newSubplot, title: e.target.value });
+                      if (subplotErrors.title) setSubplotErrors({ ...subplotErrors, title: '' });
+                    }}
+                    className={`w-full p-2 border rounded ${subplotErrors.title ? 'border-red-500' : isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
+                  />
+                  {subplotErrors.title && <p className="text-red-500 text-sm mt-1">{subplotErrors.title}</p>}
+                </div>
+                <div className="mb-2">
+                  <label htmlFor="subplot-parent" className="block text-sm mb-1">Plot pai</label>
+                  <select
+                    id="subplot-parent"
+                    value={newSubplot.parent}
+                    onChange={(e) => setNewSubplot({ ...newSubplot, parent: e.target.value })}
+                    className={`w-full p-2 border rounded ${isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
+                  >
+                    <option value="">Plot principal</option>
+                    {plotPoints.map((p: any) => (
+                      <option key={p.id} value={p.id}>{p.title}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="mb-2">
+                  <label htmlFor="subplot-description" className="block text-sm mb-1">Descrição do subplot</label>
+                  <textarea
+                    id="subplot-description"
+                    value={newSubplot.description}
+                    onChange={(e) => {
+                      setNewSubplot({ ...newSubplot, description: e.target.value });
+                      if (subplotErrors.description) setSubplotErrors({ ...subplotErrors, description: '' });
+                    }}
+                    className={`w-full p-2 border rounded h-20 ${subplotErrors.description ? 'border-red-500' : isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
+                  />
+                  {subplotErrors.description && <p className="text-red-500 text-sm mt-1">{subplotErrors.description}</p>}
+                </div>
                 <button
-                  onClick={addSubplot}
+                  onClick={handleAddSubplot}
                   className="w-full bg-purple-600 text-white p-2 rounded hover:bg-purple-700"
                 >
                   Adicionar
@@ -393,12 +499,12 @@ const Sidebar: React.FC<SidebarProps> = ({
             )}
 
             <div className="space-y-3">
-              {subplots.map(sp => (
+              {subplots.map((sp: any) => (
                 <div key={sp.id} className={`p-3 rounded-lg border ${isDark ? 'border-gray-600 bg-gray-700' : 'border-gray-200 bg-gray-50'}`}>
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
                       <h4 className="font-medium">{sp.title}</h4>
-                      {sp.parent && <p className="text-sm text-purple-600">Plot: {plotPoints.find(p => p.id === sp.parent)?.title}</p>}
+                      {sp.parent && <p className="text-sm text-purple-600">Plot: {plotPoints.find((p: any) => p.id === sp.parent)?.title}</p>}
                       {sp.description && <p className={`text-sm mt-1 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>{sp.description}</p>}
                     </div>
                     <button
@@ -432,28 +538,44 @@ const Sidebar: React.FC<SidebarProps> = ({
 
             {showRelationForm && (
               <div className={`p-3 rounded-lg border ${isDark ? 'border-gray-600 bg-gray-700' : 'border-gray-200 bg-gray-50'}`}>
-                <select
-                  value={newRelation.characterId}
-                  onChange={(e) => setNewRelation({ ...newRelation, characterId: e.target.value })}
-                  className={`w-full p-2 mb-2 border rounded ${isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
-                >
-                  <option value="">Personagem</option>
-                  {characters.map(c => (
-                    <option key={c.id} value={c.id}>{c.name}</option>
-                  ))}
-                </select>
-                <select
-                  value={newRelation.locationId}
-                  onChange={(e) => setNewRelation({ ...newRelation, locationId: e.target.value })}
-                  className={`w-full p-2 mb-2 border rounded ${isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
-                >
-                  <option value="">Local</option>
-                  {locations.map(l => (
-                    <option key={l.id} value={l.id}>{l.name}</option>
-                  ))}
-                </select>
+                <div className="mb-2">
+                  <label htmlFor="relation-character" className="block text-sm mb-1">Personagem</label>
+                  <select
+                    id="relation-character"
+                    value={newRelation.characterId}
+                    onChange={(e) => {
+                      setNewRelation({ ...newRelation, characterId: e.target.value });
+                      if (relationErrors.characterId) setRelationErrors({ ...relationErrors, characterId: '' });
+                    }}
+                    className={`w-full p-2 border rounded ${relationErrors.characterId ? 'border-red-500' : isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
+                  >
+                    <option value="">Personagem</option>
+                    {characters.map((c: any) => (
+                      <option key={c.id} value={c.id}>{c.name}</option>
+                    ))}
+                  </select>
+                  {relationErrors.characterId && <p className="text-red-500 text-sm mt-1">{relationErrors.characterId}</p>}
+                </div>
+                <div className="mb-2">
+                  <label htmlFor="relation-location" className="block text-sm mb-1">Local</label>
+                  <select
+                    id="relation-location"
+                    value={newRelation.locationId}
+                    onChange={(e) => {
+                      setNewRelation({ ...newRelation, locationId: e.target.value });
+                      if (relationErrors.locationId) setRelationErrors({ ...relationErrors, locationId: '' });
+                    }}
+                    className={`w-full p-2 border rounded ${relationErrors.locationId ? 'border-red-500' : isDark ? 'bg-gray-600 border-gray-500 text-gray-100' : 'bg-white border-gray-300'}`}
+                  >
+                    <option value="">Local</option>
+                    {locations.map((l: any) => (
+                      <option key={l.id} value={l.id}>{l.name}</option>
+                    ))}
+                  </select>
+                  {relationErrors.locationId && <p className="text-red-500 text-sm mt-1">{relationErrors.locationId}</p>}
+                </div>
                 <button
-                  onClick={addRelation}
+                  onClick={handleAddRelation}
                   className="w-full bg-purple-600 text-white p-2 rounded hover:bg-purple-700"
                 >
                   Integrar
@@ -462,9 +584,9 @@ const Sidebar: React.FC<SidebarProps> = ({
             )}
 
             <div className="space-y-3">
-              {charLocations.map(rel => {
-                const char = characters.find(c => c.id === rel.characterId);
-                const loc = locations.find(l => l.id === rel.locationId);
+              {charLocations.map((rel: any) => {
+                const char = characters.find((c: any) => c.id === rel.characterId);
+                const loc = locations.find((l: any) => l.id === rel.locationId);
                 return (
                   <div key={rel.id} className={`p-3 rounded-lg border ${isDark ? 'border-gray-600 bg-gray-700' : 'border-gray-200 bg-gray-50'}`}>
                     <div className="flex justify-between items-start">

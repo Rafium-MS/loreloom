@@ -18,6 +18,7 @@ const LanguageForm = ({ language, onSave, onCancel }: LanguageFormProps) => {
     }
   );
   const [generatedName, setGeneratedName] = useState('');
+  const [errors, setErrors] = useState({ name: '' });
 
   const generateName = () => {
     const syllables = formData.syllables
@@ -35,6 +36,9 @@ const LanguageForm = ({ language, onSave, onCancel }: LanguageFormProps) => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const newErrors = { name: formData.name.trim() ? '' : 'Nome é obrigatório' };
+    setErrors(newErrors);
+    if (Object.values(newErrors).some(Boolean)) return;
     onSave({ ...formData, id: language?.id || Date.now() });
   };
 
@@ -45,33 +49,49 @@ const LanguageForm = ({ language, onSave, onCancel }: LanguageFormProps) => {
           {language ? 'Editar Língua' : 'Nova Língua'}
         </h3>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="text"
-            placeholder="Nome"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="border rounded px-3 py-2 w-full"
-            required
-          />
-          <textarea
-            placeholder="Vocabulário (palavra:tradução por linha)"
-            value={formData.vocabulary}
-            onChange={(e) => setFormData({ ...formData, vocabulary: e.target.value })}
-            className="border rounded px-3 py-2 w-full h-24"
-          />
-          <textarea
-            placeholder="Regras gramaticais"
-            value={formData.grammar}
-            onChange={(e) => setFormData({ ...formData, grammar: e.target.value })}
-            className="border rounded px-3 py-2 w-full h-24"
-          />
-          <input
-            type="text"
-            placeholder="Sílabas para gerador (separadas por vírgula)"
-            value={formData.syllables}
-            onChange={(e) => setFormData({ ...formData, syllables: e.target.value })}
-            className="border rounded px-3 py-2 w-full"
-          />
+          <div className="flex flex-col">
+            <label htmlFor="language-name" className="mb-1 text-sm">Nome</label>
+            <input
+              id="language-name"
+              type="text"
+              value={formData.name}
+              onChange={(e) => {
+                setFormData({ ...formData, name: e.target.value });
+                if (errors.name) setErrors({ name: '' });
+              }}
+              className={`border rounded px-3 py-2 w-full ${errors.name ? 'border-red-500' : ''}`}
+            />
+            {errors.name && <span className="text-red-500 text-sm mt-1">{errors.name}</span>}
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="language-vocab" className="mb-1 text-sm">Vocabulário (palavra:tradução por linha)</label>
+            <textarea
+              id="language-vocab"
+              value={formData.vocabulary}
+              onChange={(e) => setFormData({ ...formData, vocabulary: e.target.value })}
+              className="border rounded px-3 py-2 w-full h-24"
+            />
+          </div>
+  
+          <div className="flex flex-col">
+            <label htmlFor="language-grammar" className="mb-1 text-sm">Regras gramaticais</label>
+            <textarea
+              id="language-grammar"
+              value={formData.grammar}
+              onChange={(e) => setFormData({ ...formData, grammar: e.target.value })}
+              className="border rounded px-3 py-2 w-full h-24"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="language-syllables" className="mb-1 text-sm">Sílabas para gerador (separadas por vírgula)</label>
+            <input
+              id="language-syllables"
+              type="text"
+              value={formData.syllables}
+              onChange={(e) => setFormData({ ...formData, syllables: e.target.value })}
+              className="border rounded px-3 py-2 w-full"
+            />
+          </div>
           {generatedName && (
             <p className="text-sm">Nome gerado: <span className="font-semibold">{generatedName}</span></p>
           )}

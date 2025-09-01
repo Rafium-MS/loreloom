@@ -17,9 +17,13 @@ const TimelineForm = ({ event, onSave, onCancel }: TimelineFormProps) => {
       relations: ''
     }
   );
+  const [errors, setErrors] = useState({ title: '' });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const newErrors = { title: formData.title.trim() ? '' : 'Título é obrigatório' };
+    setErrors(newErrors);
+    if (Object.values(newErrors).some(Boolean)) return;
     onSave({ ...formData, id: event?.id || Date.now() });
   };
 
@@ -30,34 +34,49 @@ const TimelineForm = ({ event, onSave, onCancel }: TimelineFormProps) => {
           {event ? 'Editar Evento' : 'Novo Evento'}
         </h3>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="text"
-            placeholder="Título"
-            value={formData.title}
-            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-            className="border rounded px-3 py-2 w-full"
-            required
-          />
-          <input
-            type="date"
-            placeholder="Data"
-            value={formData.date}
-            onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-            className="border rounded px-3 py-2 w-full"
-          />
-          <textarea
-            placeholder="Descrição"
-            value={formData.description}
-            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-            className="border rounded px-3 py-2 w-full h-24"
-          />
-          <input
-            type="text"
-            placeholder="Relacionamentos"
-            value={formData.relations}
-            onChange={(e) => setFormData({ ...formData, relations: e.target.value })}
-            className="border rounded px-3 py-2 w-full"
-          />
+          <div className="flex flex-col">
+            <label htmlFor="timeline-title" className="mb-1 text-sm">Título</label>
+            <input
+              id="timeline-title"
+              type="text"
+              value={formData.title}
+              onChange={(e) => {
+                setFormData({ ...formData, title: e.target.value });
+                if (errors.title) setErrors({ title: '' });
+              }}
+              className={`border rounded px-3 py-2 w-full ${errors.title ? 'border-red-500' : ''}`}
+            />
+            {errors.title && <span className="text-red-500 text-sm mt-1">{errors.title}</span>}
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="timeline-date" className="mb-1 text-sm">Data</label>
+            <input
+              id="timeline-date"
+              type="date"
+              value={formData.date}
+              onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+              className="border rounded px-3 py-2 w-full"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="timeline-description" className="mb-1 text-sm">Descrição</label>
+            <textarea
+              id="timeline-description"
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              className="border rounded px-3 py-2 w-full h-24"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="timeline-relations" className="mb-1 text-sm">Relacionamentos</label>
+            <input
+              id="timeline-relations"
+              type="text"
+              value={formData.relations}
+              onChange={(e) => setFormData({ ...formData, relations: e.target.value })}
+              className="border rounded px-3 py-2 w-full"
+            />
+          </div>
           <div className="flex gap-2 pt-4">
             <button
               type="submit"
