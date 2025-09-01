@@ -7,6 +7,8 @@ export interface EconomyFormData {
   currency: string;
   markets: string;
   mainExports: string;
+  basicItems: string;
+  goods: string;
 }
 
 interface EconomyFormProps {
@@ -17,7 +19,7 @@ interface EconomyFormProps {
 
 const EconomyForm = ({ economy, onSave, onCancel }: EconomyFormProps) => {
   const [formData, setFormData] = useState(
-    (economy || { name: '', currency: '', markets: '', mainExports: '' }) as EconomyFormData,
+    (economy || { name: '', currency: '', markets: '', mainExports: '', basicItems: '', goods: '' }) as EconomyFormData,
   );
   const [errors, setErrors] = useState({ name: '' });
 
@@ -78,6 +80,24 @@ const EconomyForm = ({ economy, onSave, onCancel }: EconomyFormProps) => {
               value={formData.mainExports}
               onChange={(e) => setFormData({ ...formData, mainExports: e.target.value })}
               className="border rounded px-3 py-2 w-full"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="economy-basic" className="mb-1 text-sm">Valores de itens básicos</label>
+            <textarea
+              id="economy-basic"
+              value={formData.basicItems}
+              onChange={(e) => setFormData({ ...formData, basicItems: e.target.value })}
+              className="border rounded px-3 py-2 w-full h-24"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="economy-goods" className="mb-1 text-sm">Mercadorias</label>
+            <textarea
+              id="economy-goods"
+              value={formData.goods}
+              onChange={(e) => setFormData({ ...formData, goods: e.target.value })}
+              className="border rounded px-3 py-2 w-full h-24"
             />
           </div>
           <div className="flex gap-2 pt-4">

@@ -7,6 +7,9 @@ export interface TimelineFormData {
   date: string;
   description: string;
   relations: string;
+  era: string;
+  importance: string;
+  historicMark: string;
 }
 
 interface TimelineFormProps {
@@ -17,7 +20,7 @@ interface TimelineFormProps {
 
 const TimelineForm = ({ event, onSave, onCancel }: TimelineFormProps) => {
   const [formData, setFormData] = useState(
-    (event || { title: '', date: '', description: '', relations: '' }) as TimelineFormData,
+    (event || { title: '', date: '', description: '', relations: '', era: '', importance: '', historicMark: '' }) as TimelineFormData,
   );
   const [errors, setErrors] = useState({ title: '' });
 
@@ -61,11 +64,39 @@ const TimelineForm = ({ event, onSave, onCancel }: TimelineFormProps) => {
             />
           </div>
           <div className="flex flex-col">
+            <label htmlFor="timeline-era" className="mb-1 text-sm">Era</label>
+            <input
+              id="timeline-era"
+              type="text"
+              value={formData.era}
+              onChange={(e) => setFormData({ ...formData, era: e.target.value })}
+              className="border rounded px-3 py-2 w-full"
+            />
+          </div>
+          <div className="flex flex-col">
             <label htmlFor="timeline-description" className="mb-1 text-sm">Descrição</label>
             <textarea
               id="timeline-description"
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              className="border rounded px-3 py-2 w-full h-24"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="timeline-importance" className="mb-1 text-sm">Importância do acontecimento</label>
+            <textarea
+              id="timeline-importance"
+              value={formData.importance}
+              onChange={(e) => setFormData({ ...formData, importance: e.target.value })}
+              className="border rounded px-3 py-2 w-full h-24"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="timeline-historic" className="mb-1 text-sm">Marco histórico</label>
+            <textarea
+              id="timeline-historic"
+              value={formData.historicMark}
+              onChange={(e) => setFormData({ ...formData, historicMark: e.target.value })}
               className="border rounded px-3 py-2 w-full h-24"
             />
           </div>

@@ -7,6 +7,7 @@ interface Language {
   vocabulary: string;
   grammar: string;
   syllables: string;
+  race?: string;
 }
 
 type Action =

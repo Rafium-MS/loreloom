@@ -7,6 +7,8 @@ export interface ReligionFormData {
   name: string;
   doctrine: string;
   factions: string;
+  pantheon: string;
+  magicConnection: string;
   characterIds?: number[];
 }
 
@@ -18,7 +20,7 @@ interface ReligionFormProps {
 
 const ReligionForm = ({ religion, onSave, onCancel }: ReligionFormProps) => {
   const [formData, setFormData] = useState(
-    (religion || { name: '', doctrine: '', factions: '' }) as ReligionFormData,
+    (religion || { name: '', doctrine: '', factions: '', pantheon: '', magicConnection: '' }) as ReligionFormData,
   );
   const [errors, setErrors] = useState({ name: '' });
   const { characters } = useCharacters();
@@ -69,6 +71,16 @@ const ReligionForm = ({ religion, onSave, onCancel }: ReligionFormProps) => {
             />
           </div>
           <div className="flex flex-col">
+            <label htmlFor="religion-pantheon" className="mb-1 text-sm">Panteão (separado por vírgula)</label>
+            <input
+              id="religion-pantheon"
+              type="text"
+              value={formData.pantheon}
+              onChange={(e) => setFormData({ ...formData, pantheon: e.target.value })}
+              className="border rounded px-3 py-2 w-full"
+            />
+          </div>
+          <div className="flex flex-col">
             <label htmlFor="religion-factions" className="mb-1 text-sm">Facções (separadas por vírgula)</label>
             <input
               id="religion-factions"
@@ -76,6 +88,15 @@ const ReligionForm = ({ religion, onSave, onCancel }: ReligionFormProps) => {
               value={formData.factions}
               onChange={(e) => setFormData({ ...formData, factions: e.target.value })}
               className="border rounded px-3 py-2 w-full"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="religion-magic" className="mb-1 text-sm">Ligação com magia</label>
+            <textarea
+              id="religion-magic"
+              value={formData.magicConnection}
+              onChange={(e) => setFormData({ ...formData, magicConnection: e.target.value })}
+              className="border rounded px-3 py-2 w-full h-24"
             />
           </div>
           <div className="flex flex-col">

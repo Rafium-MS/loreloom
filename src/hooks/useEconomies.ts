@@ -7,6 +7,8 @@ interface Economy {
   currency: string;
   markets: string;
   mainExports: string;
+  basicItems?: string;
+  goods?: string;
 }
 
 type Action =
