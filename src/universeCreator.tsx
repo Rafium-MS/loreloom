@@ -4,21 +4,37 @@ import {
   User, MapPin, Crown, Shield, Coins, Users, Home,
   Sword, Church, UtensilsCrossed, Building, Clock,
   Plus, Edit, Trash2, Eye, ChevronDown, ChevronRight,
-  BarChart3, PieChart, TrendingUp, Calendar
+  BarChart3, PieChart, TrendingUp, Calendar, BookOpen
 } from 'lucide-react';
-import { CharacterForm, LocationForm } from './universe';
+import { CharacterForm, LocationForm, EconomyForm, ReligionForm, TimelineForm, LanguageForm } from './universe';
 import { useCharacters } from './hooks/useCharacters';
 import { useLocations } from './hooks/useLocations';
+import { useEconomies } from './hooks/useEconomies';
+import { useReligions } from './hooks/useReligions';
+import { useTimelines } from './hooks/useTimelines';
+import { useLanguages } from './hooks/useLanguages';
 import './tokens.css';
 
 const UniverseCreator = () => {
   const [activeTab, setActiveTab] = useState('characters');
   const { characters, saveCharacter, removeCharacter } = useCharacters();
   const { locations, saveLocation, removeLocation } = useLocations();
+  const { economies, saveEconomy, removeEconomy } = useEconomies();
+  const { religions, saveReligion, removeReligion } = useReligions();
+  const { timelines, saveTimeline, removeTimeline } = useTimelines();
+  const { languages, saveLanguage, removeLanguage } = useLanguages();
   const [selectedCharacter, setSelectedCharacter] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
+  const [selectedEconomy, setSelectedEconomy] = useState(null);
+  const [selectedReligion, setSelectedReligion] = useState(null);
+  const [selectedTimeline, setSelectedTimeline] = useState(null);
+  const [selectedLanguage, setSelectedLanguage] = useState(null);
   const [showCharacterForm, setShowCharacterForm] = useState(false);
   const [showLocationForm, setShowLocationForm] = useState(false);
+  const [showEconomyForm, setShowEconomyForm] = useState(false);
+  const [showReligionForm, setShowReligionForm] = useState(false);
+  const [showTimelineForm, setShowTimelineForm] = useState(false);
+  const [showLanguageForm, setShowLanguageForm] = useState(false);
   const [expandedSections, setExpandedSections] = useState({});
 
   
@@ -54,6 +70,17 @@ const UniverseCreator = () => {
   const generateEconomy = () => {
     const resources = ['Agricultura', 'Mineração', 'Comércio', 'Pesca', 'Artesanato'];
     return resources[Math.floor(Math.random() * resources.length)];
+  };
+
+  const generateNameFromSyllables = (syllablesString) => {
+    const syllables = syllablesString.split(',').map(s => s.trim()).filter(Boolean);
+    if (syllables.length === 0) return '';
+    const count = Math.floor(Math.random() * 2) + 2;
+    let name = '';
+    for (let i = 0; i < count; i++) {
+      name += syllables[Math.floor(Math.random() * syllables.length)];
+    }
+    return name.charAt(0).toUpperCase() + name.slice(1);
   };
 
   // Componente de Visualização de Personagem
@@ -195,6 +222,95 @@ const UniverseCreator = () => {
     </section>
   );
 
+  const EconomyView = ({ economy }) => (
+    <section className="bg-white rounded-lg shadow-md p-6">
+      <div className="flex justify-between items-start mb-4">
+        <h3 className="text-xl font-bold">{economy.name}</h3>
+        <div className="flex gap-2">
+          <button onClick={() => setSelectedEconomy(economy)} className="text-blue-500 hover:text-blue-700">
+            <Edit size={16} />
+          </button>
+          <button onClick={() => removeEconomy(economy.id)} className="text-red-500 hover:text-red-700">
+            <Trash2 size={16} />
+          </button>
+        </div>
+      </div>
+      <div className="space-y-2 text-sm">
+        {economy.currency && <p><span className="font-semibold">Moeda:</span> {economy.currency}</p>}
+        {economy.markets && <p><span className="font-semibold">Mercados:</span> {economy.markets}</p>}
+        {economy.mainExports && <p><span className="font-semibold">Exportações:</span> {economy.mainExports}</p>}
+      </div>
+    </section>
+  );
+
+  const ReligionView = ({ religion }) => (
+    <section className="bg-white rounded-lg shadow-md p-6">
+      <div className="flex justify-between items-start mb-4">
+        <h3 className="text-xl font-bold">{religion.name}</h3>
+        <div className="flex gap-2">
+          <button onClick={() => setSelectedReligion(religion)} className="text-blue-500 hover:text-blue-700">
+            <Edit size={16} />
+          </button>
+          <button onClick={() => removeReligion(religion.id)} className="text-red-500 hover:text-red-700">
+            <Trash2 size={16} />
+          </button>
+        </div>
+      </div>
+      <div className="space-y-2 text-sm">
+        {religion.doctrine && <p><span className="font-semibold">Doutrina:</span> {religion.doctrine}</p>}
+        {religion.factions && <p><span className="font-semibold">Facções:</span> {religion.factions}</p>}
+      </div>
+    </section>
+  );
+
+  const TimelineView = ({ event }) => (
+    <section className="bg-white rounded-lg shadow-md p-6">
+      <div className="flex justify-between items-start mb-4">
+        <h3 className="text-xl font-bold">{event.title}</h3>
+        <div className="flex gap-2">
+          <button onClick={() => setSelectedTimeline(event)} className="text-blue-500 hover:text-blue-700">
+            <Edit size={16} />
+          </button>
+          <button onClick={() => removeTimeline(event.id)} className="text-red-500 hover:text-red-700">
+            <Trash2 size={16} />
+          </button>
+        </div>
+      </div>
+      <div className="space-y-2 text-sm">
+        {event.date && <p><span className="font-semibold">Data:</span> {event.date}</p>}
+        {event.description && <p><span className="font-semibold">Descrição:</span> {event.description}</p>}
+        {event.relations && <p><span className="font-semibold">Relacionamentos:</span> {event.relations}</p>}
+      </div>
+    </section>
+  );
+
+  const LanguageView = ({ language }) => (
+    <section className="bg-white rounded-lg shadow-md p-6">
+      <div className="flex justify-between items-start mb-4">
+        <h3 className="text-xl font-bold">{language.name}</h3>
+        <div className="flex gap-2">
+          <button onClick={() => setSelectedLanguage(language)} className="text-blue-500 hover:text-blue-700">
+            <Edit size={16} />
+          </button>
+          <button onClick={() => removeLanguage(language.id)} className="text-red-500 hover:text-red-700">
+            <Trash2 size={16} />
+          </button>
+        </div>
+      </div>
+      <div className="space-y-2 text-sm">
+        {language.grammar && <p><span className="font-semibold">Gramática:</span> {language.grammar}</p>}
+      </div>
+      {language.syllables && (
+        <button
+          onClick={() => alert(generateNameFromSyllables(language.syllables))}
+          className="mt-2 bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 text-sm"
+        >
+          Gerar Nome
+        </button>
+      )}
+    </section>
+  );
+
   // Handlers
   const handleSaveCharacter = async (characterData) => {
     await saveCharacter(characterData);
@@ -206,6 +322,30 @@ const UniverseCreator = () => {
     await saveLocation(locationData);
     setSelectedLocation(null);
     setShowLocationForm(false);
+  };
+
+  const handleSaveEconomy = async (economyData) => {
+    await saveEconomy(economyData);
+    setSelectedEconomy(null);
+    setShowEconomyForm(false);
+  };
+
+  const handleSaveReligion = async (religionData) => {
+    await saveReligion(religionData);
+    setSelectedReligion(null);
+    setShowReligionForm(false);
+  };
+
+  const handleSaveTimeline = async (timelineData) => {
+    await saveTimeline(timelineData);
+    setSelectedTimeline(null);
+    setShowTimelineForm(false);
+  };
+
+  const handleSaveLanguage = async (languageData) => {
+    await saveLanguage(languageData);
+    setSelectedLanguage(null);
+    setShowLanguageForm(false);
   };
 
   return (
@@ -251,6 +391,66 @@ const UniverseCreator = () => {
             >
               <MapPin className="inline mr-2" size={16} />
               Localizações
+            </button>
+            <button
+              id="economies-tab"
+              onClick={() => setActiveTab('economies')}
+              className={`py-4 px-2 border-b-2 font-medium text-sm ${
+                activeTab === 'economies'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+              aria-controls="economies-panel"
+              aria-selected={activeTab === 'economies'}
+              role="tab"
+            >
+              <Coins className="inline mr-2" size={16} />
+              Economia
+            </button>
+            <button
+              id="religions-tab"
+              onClick={() => setActiveTab('religions')}
+              className={`py-4 px-2 border-b-2 font-medium text-sm ${
+                activeTab === 'religions'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+              aria-controls="religions-panel"
+              aria-selected={activeTab === 'religions'}
+              role="tab"
+            >
+              <Church className="inline mr-2" size={16} />
+              Religiões
+            </button>
+            <button
+              id="timelines-tab"
+              onClick={() => setActiveTab('timelines')}
+              className={`py-4 px-2 border-b-2 font-medium text-sm ${
+                activeTab === 'timelines'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+              aria-controls="timelines-panel"
+              aria-selected={activeTab === 'timelines'}
+              role="tab"
+            >
+              <Clock className="inline mr-2" size={16} />
+              Linha do Tempo
+            </button>
+            <button
+              id="languages-tab"
+              onClick={() => setActiveTab('languages')}
+              className={`py-4 px-2 border-b-2 font-medium text-sm ${
+                activeTab === 'languages'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+              aria-controls="languages-panel"
+              aria-selected={activeTab === 'languages'}
+              role="tab"
+            >
+              <BookOpen className="inline mr-2" size={16} />
+              Línguas
             </button>
             <button
               id="analytics-tab"
@@ -337,6 +537,142 @@ const UniverseCreator = () => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {locations.map(location => (
                   <LocationView key={location.id} location={location} />
+                ))}
+              </div>
+            )}
+          </section>
+        )}
+
+        {activeTab === 'economies' && (
+          <section id="economies-panel" role="tabpanel" aria-labelledby="economies-tab">
+            <header className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-semibold">Economia e Mercados</h2>
+              <button
+                onClick={() => setShowEconomyForm(true)}
+                className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 flex items-center gap-2"
+              >
+                <Plus size={16} />
+                Nova Economia
+              </button>
+            </header>
+            {economies.length === 0 ? (
+              <div className="text-center py-12">
+                <Coins size={48} className="mx-auto text-gray-400 mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhuma economia cadastrada</h3>
+                <p className="text-gray-600 mb-4">Adicione mercados e sistemas econômicos</p>
+                <button
+                  onClick={() => setShowEconomyForm(true)}
+                  className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600"
+                >
+                  Criar Economia
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {economies.map(econ => (
+                  <EconomyView key={econ.id} economy={econ} />
+                ))}
+              </div>
+            )}
+          </section>
+        )}
+
+        {activeTab === 'religions' && (
+          <section id="religions-panel" role="tabpanel" aria-labelledby="religions-tab">
+            <header className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-semibold">Religiões e Facções</h2>
+              <button
+                onClick={() => setShowReligionForm(true)}
+                className="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 flex items-center gap-2"
+              >
+                <Plus size={16} />
+                Nova Religião
+              </button>
+            </header>
+            {religions.length === 0 ? (
+              <div className="text-center py-12">
+                <Church size={48} className="mx-auto text-gray-400 mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhuma religião cadastrada</h3>
+                <p className="text-gray-600 mb-4">Crie crenças e facções para seu mundo</p>
+                <button
+                  onClick={() => setShowReligionForm(true)}
+                  className="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600"
+                >
+                  Criar Religião
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {religions.map(rel => (
+                  <ReligionView key={rel.id} religion={rel} />
+                ))}
+              </div>
+            )}
+          </section>
+        )}
+
+        {activeTab === 'timelines' && (
+          <section id="timelines-panel" role="tabpanel" aria-labelledby="timelines-tab">
+            <header className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-semibold">Linha do Tempo</h2>
+              <button
+                onClick={() => setShowTimelineForm(true)}
+                className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 flex items-center gap-2"
+              >
+                <Plus size={16} />
+                Novo Evento
+              </button>
+            </header>
+            {timelines.length === 0 ? (
+              <div className="text-center py-12">
+                <Clock size={48} className="mx-auto text-gray-400 mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhum evento registrado</h3>
+                <p className="text-gray-600 mb-4">Construa a história do seu universo</p>
+                <button
+                  onClick={() => setShowTimelineForm(true)}
+                  className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600"
+                >
+                  Criar Evento
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {timelines.map(ev => (
+                  <TimelineView key={ev.id} event={ev} />
+                ))}
+              </div>
+            )}
+          </section>
+        )}
+
+        {activeTab === 'languages' && (
+          <section id="languages-panel" role="tabpanel" aria-labelledby="languages-tab">
+            <header className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-semibold">Línguas</h2>
+              <button
+                onClick={() => setShowLanguageForm(true)}
+                className="bg-pink-500 text-white px-4 py-2 rounded-lg hover:bg-pink-600 flex items-center gap-2"
+              >
+                <Plus size={16} />
+                Nova Língua
+              </button>
+            </header>
+            {languages.length === 0 ? (
+              <div className="text-center py-12">
+                <BookOpen size={48} className="mx-auto text-gray-400 mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhuma língua criada</h3>
+                <p className="text-gray-600 mb-4">Crie vocabulários e regras gramaticais</p>
+                <button
+                  onClick={() => setShowLanguageForm(true)}
+                  className="bg-pink-500 text-white px-4 py-2 rounded-lg hover:bg-pink-600"
+                >
+                  Criar Língua
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {languages.map(lang => (
+                  <LanguageView key={lang.id} language={lang} />
                 ))}
               </div>
             )}
@@ -614,6 +950,50 @@ const UniverseCreator = () => {
           }}
           generatePopulation={generatePopulation}
           generateEconomy={generateEconomy}
+        />
+      )}
+
+      {(showEconomyForm || selectedEconomy) && (
+        <EconomyForm
+          economy={selectedEconomy}
+          onSave={handleSaveEconomy}
+          onCancel={() => {
+            setSelectedEconomy(null);
+            setShowEconomyForm(false);
+          }}
+        />
+      )}
+
+      {(showReligionForm || selectedReligion) && (
+        <ReligionForm
+          religion={selectedReligion}
+          onSave={handleSaveReligion}
+          onCancel={() => {
+            setSelectedReligion(null);
+            setShowReligionForm(false);
+          }}
+        />
+      )}
+
+      {(showTimelineForm || selectedTimeline) && (
+        <TimelineForm
+          event={selectedTimeline}
+          onSave={handleSaveTimeline}
+          onCancel={() => {
+            setSelectedTimeline(null);
+            setShowTimelineForm(false);
+          }}
+        />
+      )}
+
+      {(showLanguageForm || selectedLanguage) && (
+        <LanguageForm
+          language={selectedLanguage}
+          onSave={handleSaveLanguage}
+          onCancel={() => {
+            setSelectedLanguage(null);
+            setShowLanguageForm(false);
+          }}
         />
       )}
     </main>
