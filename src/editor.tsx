@@ -367,6 +367,7 @@ const FictionEditor = () => {
               <button
                 onClick={undo}
                 title="Desfazer (Ctrl+Z)"
+                aria-label="Desfazer"
                 className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
               >
                 <Undo2 className="h-4 w-4" />
@@ -374,6 +375,7 @@ const FictionEditor = () => {
               <button
                 onClick={redo}
                 title="Refazer (Ctrl+Y)"
+                aria-label="Refazer"
                 className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
               >
                 <Redo2 className="h-4 w-4" />
@@ -382,6 +384,7 @@ const FictionEditor = () => {
               <button
                 onClick={() => toggleMark('bold')}
                 title="Negrito"
+                aria-label="Negrito"
                 className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
               >
                 <Bold className="h-4 w-4" />
@@ -389,6 +392,7 @@ const FictionEditor = () => {
               <button
                 onClick={() => toggleMark('italic')}
                 title="Itálico"
+                aria-label="Itálico"
                 className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
               >
                 <Italic className="h-4 w-4" />
@@ -396,6 +400,7 @@ const FictionEditor = () => {
               <button
                 onClick={() => toggleMark('underline')}
                 title="Sublinhado"
+                aria-label="Sublinhado"
                 className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
               >
                 <Underline className="h-4 w-4" />
@@ -404,6 +409,7 @@ const FictionEditor = () => {
               <button
                 onClick={() => toggleBlock('quote')}
                 title="Citação"
+                aria-label="Citação"
                 className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
               >
                 <Quote className="h-4 w-4" />
@@ -411,6 +417,7 @@ const FictionEditor = () => {
               <button
                 onClick={() => toggleBlock('list-item')}
                 title="Lista"
+                aria-label="Lista"
                 className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
               >
                 <List className="h-4 w-4" />
@@ -418,6 +425,7 @@ const FictionEditor = () => {
               <button
                 onClick={() => toggleBlock('heading-one')}
                 title="Cabeçalho 1"
+                aria-label="Cabeçalho 1"
                 className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
               >
                 <Heading1 className="h-4 w-4" />
@@ -425,6 +433,7 @@ const FictionEditor = () => {
               <button
                 onClick={() => toggleBlock('heading-two')}
                 title="Cabeçalho 2"
+                aria-label="Cabeçalho 2"
                 className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
               >
                 <Heading2 className="h-4 w-4" />
@@ -433,6 +442,7 @@ const FictionEditor = () => {
               <button
                 onClick={() => setAlign('left')}
                 title="Alinhar à esquerda"
+                aria-label="Alinhar à esquerda"
                 className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
               >
                 <AlignLeft className="h-4 w-4" />
@@ -440,6 +450,7 @@ const FictionEditor = () => {
               <button
                 onClick={() => setAlign('center')}
                 title="Centralizar"
+                aria-label="Centralizar"
                 className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
               >
                 <AlignCenter className="h-4 w-4" />
@@ -447,6 +458,7 @@ const FictionEditor = () => {
               <button
                 onClick={() => setAlign('right')}
                 title="Alinhar à direita"
+                aria-label="Alinhar à direita"
                 className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
               >
                 <AlignRight className="h-4 w-4" />

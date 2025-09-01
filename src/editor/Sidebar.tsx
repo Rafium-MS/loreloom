@@ -165,6 +165,8 @@ const Sidebar: React.FC<SidebarProps> = ({
               <h3 className="font-semibold">Personagens</h3>
               <button
                 onClick={() => setShowCharacterForm(!showCharacterForm)}
+                title="Adicionar personagem"
+                aria-label="Adicionar personagem"
                 className="p-1 text-purple-600 hover:bg-purple-100 rounded"
               >
                 <PlusCircle className="h-4 w-4" />
@@ -190,6 +192,8 @@ const Sidebar: React.FC<SidebarProps> = ({
                     </div>
                     <button
                       onClick={() => removeItem(char.id, 'character')}
+                      title="Remover personagem"
+                      aria-label="Remover personagem"
                       className={`p-1 rounded ${isDark ? 'hover:bg-gray-600 text-gray-400' : 'hover:bg-gray-200 text-gray-500'}`}
                     >
                       <X className="h-4 w-4" />
@@ -207,6 +211,8 @@ const Sidebar: React.FC<SidebarProps> = ({
               <h3 className="font-semibold">Locais</h3>
               <button
                 onClick={() => setShowLocationForm(!showLocationForm)}
+                title="Adicionar local"
+                aria-label="Adicionar local"
                 className="p-1 text-purple-600 hover:bg-purple-100 rounded"
               >
                 <PlusCircle className="h-4 w-4" />
@@ -255,6 +261,8 @@ const Sidebar: React.FC<SidebarProps> = ({
                     </div>
                     <button
                       onClick={() => removeItem(loc.id, 'location')}
+                      title="Remover local"
+                      aria-label="Remover local"
                       className={`p-1 rounded ${isDark ? 'hover:bg-gray-600 text-gray-400' : 'hover:bg-gray-200 text-gray-500'}`}
                     >
                       <X className="h-4 w-4" />
@@ -272,6 +280,8 @@ const Sidebar: React.FC<SidebarProps> = ({
               <h3 className="font-semibold">Pontos do Enredo</h3>
               <button
                 onClick={() => setShowPlotForm(!showPlotForm)}
+                title="Adicionar ponto do enredo"
+                aria-label="Adicionar ponto do enredo"
                 className="p-1 text-purple-600 hover:bg-purple-100 rounded"
               >
                 <PlusCircle className="h-4 w-4" />
@@ -320,6 +330,8 @@ const Sidebar: React.FC<SidebarProps> = ({
                     </div>
                     <button
                       onClick={() => removeItem(plot.id, 'plot')}
+                      title="Remover ponto do enredo"
+                      aria-label="Remover ponto do enredo"
                       className={`p-1 rounded ${isDark ? 'hover:bg-gray-600 text-gray-400' : 'hover:bg-gray-200 text-gray-500'}`}
                     >
                       <X className="h-4 w-4" />
@@ -333,6 +345,8 @@ const Sidebar: React.FC<SidebarProps> = ({
               <h3 className="font-semibold">Subplots</h3>
               <button
                 onClick={() => setShowSubplotForm(!showSubplotForm)}
+                title="Adicionar subplot"
+                aria-label="Adicionar subplot"
                 className="p-1 text-purple-600 hover:bg-purple-100 rounded"
               >
                 <PlusCircle className="h-4 w-4" />
@@ -384,6 +398,8 @@ const Sidebar: React.FC<SidebarProps> = ({
                     </div>
                     <button
                       onClick={() => removeItem(sp.id, 'subplot')}
+                      title="Remover subplot"
+                      aria-label="Remover subplot"
                       className={`p-1 rounded ${isDark ? 'hover:bg-gray-600 text-gray-400' : 'hover:bg-gray-200 text-gray-500'}`}
                     >
                       <X className="h-4 w-4" />
@@ -401,6 +417,8 @@ const Sidebar: React.FC<SidebarProps> = ({
               <h3 className="font-semibold">Personagem & Local</h3>
               <button
                 onClick={() => setShowRelationForm(!showRelationForm)}
+                title="Adicionar relação"
+                aria-label="Adicionar relação"
                 className="p-1 text-purple-600 hover:bg-purple-100 rounded"
               >
                 <PlusCircle className="h-4 w-4" />
@@ -451,6 +469,8 @@ const Sidebar: React.FC<SidebarProps> = ({
                       </div>
                       <button
                         onClick={() => removeItem(rel.id, 'relation')}
+                        title="Remover relação"
+                        aria-label="Remover relação"
                         className={`p-1 rounded ${isDark ? 'hover:bg-gray-600 text-gray-400' : 'hover:bg-gray-200 text-gray-500'}`}
                       >
                         <X className="h-4 w-4" />
