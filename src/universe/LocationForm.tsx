@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import '../tokens.css';
 import { useCharacters } from '../hooks/useCharacters';
+import type { Demographics } from './types';
 
 export interface LocationFormData {
   id?: number;
@@ -8,6 +9,7 @@ export interface LocationFormData {
   type: string;
   climate: string;
   population: number;
+  demographics: Demographics;
   culturalComposition: string;
   mainProfessions: string[];
   economy: string;
@@ -35,34 +37,43 @@ interface LocationFormProps {
   onCancel: () => void;
   generatePopulation: () => number;
   generateEconomy: () => string;
+  generateDemography: (population: number) => Demographics;
 }
 
-const LocationForm = ({ location, onSave, onCancel, generatePopulation, generateEconomy }: LocationFormProps) => {
+const LocationForm = ({ location, onSave, onCancel, generatePopulation, generateEconomy, generateDemography }: LocationFormProps) => {
+  const initialPopulation = location?.population ?? generatePopulation();
   const [formData, setFormData] = useState(
-    (location || {
-      name: '',
-      type: 'cidade',
-      climate: '',
-      population: generatePopulation(),
-      culturalComposition: '',
-      mainProfessions: [],
-      economy: generateEconomy(),
-      resources: '',
-      geography: '',
-      culture: '',
-      army: {
-        size: 0,
-        weapons: '',
-        training: '',
-      },
-      religions: [],
-      commonFoods: [],
-      establishments: '',
-      strategicPoints: '',
-      government: '',
-      battles: '',
-      events: '',
-    }) as LocationFormData,
+    (location
+      ? {
+          ...location,
+          population: initialPopulation,
+          demographics: location.demographics ?? generateDemography(initialPopulation),
+        }
+      : {
+          name: '',
+          type: 'cidade',
+          climate: '',
+          population: initialPopulation,
+          demographics: generateDemography(initialPopulation),
+          culturalComposition: '',
+          mainProfessions: [],
+          economy: generateEconomy(),
+          resources: '',
+          geography: '',
+          culture: '',
+          army: {
+            size: 0,
+            weapons: '',
+            training: '',
+          },
+          religions: [],
+          commonFoods: [],
+          establishments: '',
+          strategicPoints: '',
+          government: '',
+          battles: '',
+          events: '',
+        }) as LocationFormData,
   );
   const [errors, setErrors] = useState({ name: '' });
   const { characters } = useCharacters();
@@ -152,7 +163,14 @@ const LocationForm = ({ location, onSave, onCancel, generatePopulation, generate
                 id="loc-population"
                 type="number"
                 value={formData.population}
-                onChange={(e) => setFormData({ ...formData, population: parseInt(e.target.value) })}
+                onChange={(e) => {
+                  const value = parseInt(e.target.value);
+                  setFormData({
+                    ...formData,
+                    population: value,
+                    demographics: generateDemography(value),
+                  });
+                }}
                 className="border rounded px-3 py-2"
               />
             </div>
@@ -165,6 +183,12 @@ const LocationForm = ({ location, onSave, onCancel, generatePopulation, generate
                 onChange={(e) => setFormData({ ...formData, culturalComposition: e.target.value })}
                 className="border rounded px-3 py-2"
               />
+            </div>
+          </div>
+          <div className="flex flex-col mt-4">
+            <label className="mb-1 text-sm">Demografia estimada</label>
+            <div className="border rounded px-3 py-2 text-sm bg-gray-50">
+              Crianças: {formData.demographics.children}, Adultos: {formData.demographics.adults}, Idosos: {formData.demographics.elders}
             </div>
           </div>
           </div>

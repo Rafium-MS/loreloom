@@ -1,3 +1,5 @@
+import type { Demographics } from './types';
+
 export const professionsList = [
   'Mercador',
   'Ferreiro',
@@ -39,6 +41,13 @@ export const generatePopulation = (): number =>
 export const generateEconomy = (): string => {
   const resources = ['Agricultura', 'Mineração', 'Comércio', 'Pesca', 'Artesanato'];
   return resources[Math.floor(Math.random() * resources.length)];
+};
+
+export const generateDemography = (population: number): Demographics => {
+  const children = Math.round(population * (0.2 + Math.random() * 0.1));
+  const elders = Math.round(population * (0.08 + Math.random() * 0.04));
+  const adults = Math.max(population - children - elders, 0);
+  return { children, adults, elders };
 };
 
 export const generateNameFromSyllables = (syllablesString: string): string => {

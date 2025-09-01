@@ -26,6 +26,7 @@ import {
   Language,
   generatePopulation,
   generateEconomy,
+  generateDemography,
   CharacterView,
   LocationView,
   EconomyView,
@@ -739,17 +740,18 @@ const toggleSection = createSectionToggler(setExpandedSections);
       )}
 
       {(showLocationForm || selectedLocation) && (
-        <LocationForm
-          location={selectedLocation}
-          onSave={(data) => handleSaveLocation(data as Location)}
-          onCancel={() => {
-            setSelectedLocation(null);
-            setShowLocationForm(false);
-          }}
-          generatePopulation={generatePopulation}
-          generateEconomy={generateEconomy}
-        />
-      )}
+      <LocationForm
+        location={selectedLocation}
+        onSave={(data) => handleSaveLocation(data as Location)}
+        onCancel={() => {
+          setSelectedLocation(null);
+          setShowLocationForm(false);
+        }}
+        generatePopulation={generatePopulation}
+        generateEconomy={generateEconomy}
+        generateDemography={generateDemography}
+      />
+    )}
 
       {(showEconomyForm || selectedEconomy) && (
         <EconomyForm
