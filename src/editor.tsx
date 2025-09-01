@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { Bold, Italic, Underline, Quote, List, AlignLeft, AlignCenter, AlignRight, Undo2, Redo2, Heading1, Heading2 } from 'lucide-react';
+import { Bold, Italic, Underline, Quote, List, AlignLeft, AlignCenter, AlignRight, Undo2, Redo2, Heading1, Heading2, Menu } from 'lucide-react';
 // Import from the editor folder's index to avoid self-importing this file
 import { Header, Sidebar } from './editor/index';
 import { createProject, exportToMarkdown } from '../project';
@@ -42,10 +42,20 @@ const FictionEditor = () => {
   const [grammarSuggestions, setGrammarSuggestions] = useState([]);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   const isFocus = theme === 'focus';
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSidebarOpen(window.innerWidth >= 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const text = value.map((n) => Node.string(n)).join('\n');
@@ -320,8 +330,9 @@ const FictionEditor = () => {
         checkGrammar={checkGrammar}
         onExport={exportProject}
       />
-      <section className="flex h-screen">
+      <section className="flex h-screen relative">
         <Sidebar
+          className={`${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 absolute md:relative z-20 h-full top-0 left-0 transition-transform duration-300`}
           activePanel={activePanel}
           setActivePanel={setActivePanel}
           characters={characters}
@@ -364,6 +375,12 @@ const FictionEditor = () => {
           {/* Toolbar */}
           <header className={`border-b p-4 bg-panel border-border`}>
             <div className="flex items-center space-x-2 flex-wrap">
+              <button
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                className={`md:hidden p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
+              >
+                <Menu className="h-4 w-4" />
+              </button>
               <button
                 onClick={undo}
                 title="Desfazer (Ctrl+Z)"

@@ -40,6 +40,7 @@ interface SidebarProps {
   history: any[];
   loadVersion: (v: any) => void;
   removeItem: (id: number, type: string) => void;
+  className?: string;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -78,14 +79,18 @@ const Sidebar: React.FC<SidebarProps> = ({
   insertTemplate,
   history,
   loadVersion,
-  removeItem
+  removeItem,
+  className = ''
 }) => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   const isFocus = theme === 'focus';
 
   return (
-    <div className={`w-80 border-r flex flex-col`} style={{ borderColor: 'var(--border)', background: 'var(--panel)' }}>
+    <div
+      className={`w-80 border-r flex flex-col ${className}`}
+      style={{ borderColor: 'var(--border)', background: 'var(--panel)' }}
+    >
       {/* Navigation */}
       <div className="flex border-b" style={{ borderColor: 'var(--border)' }}>
         {[
