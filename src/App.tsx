@@ -14,7 +14,7 @@ const App = () => {
     <div className="min-h-screen flex flex-col">
       <header className="flex items-center justify-between px-4 py-3 border-b border-border">
         <div className="flex items-center gap-2">
-          <img src={logoUrl} alt="LoreLoom" height={24} />
+          <img src={logoUrl} alt="LoreLoom" className="h-5 w-auto" />
           <strong>LoreLoom</strong>
         </div>
         <nav className="flex items-center gap-3" aria-label="Navegação principal">
