@@ -10,6 +10,9 @@
   --ring: rgba(124,58,237,.35);
   --radius: 14px;
   --shadow: 0 8px 28px rgba(0,0,0,.28);
+  --background: var(--bg);
+  --foreground: var(--text);
+  --primary-foreground: var(--bg);
 }
 
 .theme-focus {
@@ -21,6 +24,9 @@
   --accent: #c59b6d;
   --border: #e6dcc8;
   --ring: rgba(154,106,47,.35);
+  --background: var(--bg);
+  --foreground: var(--text);
+  --primary-foreground: var(--bg);
 }
 
 body { background: var(--bg); color: var(--text); }

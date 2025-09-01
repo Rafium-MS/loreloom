@@ -5,6 +5,7 @@ import UniverseCreator from './universeCreator';
 import logoUrl from '../assets/logo.png';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import './tokens.css';
+import { Button } from '@/components/ui/button';
 
 const App = () => {
   const location = useLocation();
@@ -32,6 +33,7 @@ const App = () => {
             Universo
           </Link>
           <ThemeToggle />
+          <Button>Shadcn</Button>
         </nav>
       </header>
       <main className="flex-1 overflow-auto">

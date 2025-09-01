@@ -13,7 +13,11 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"]
+    }
     // Vite's client types require the package to be installed during type
     // checking. Removing the explicit reference prevents missing type
     // definition errors in environments where the dependency is absent.
