@@ -48,24 +48,32 @@ const Header: React.FC<HeaderProps> = ({
           )}
           <button
             onClick={saveVersion}
+            title="Salvar versão"
+            aria-label="Salvar versão"
             className={`p-2 rounded-lg ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
           >
             <Save className="h-4 w-4" />
           </button>
           <button
             onClick={checkGrammar}
+            title="Verificar gramática"
+            aria-label="Verificar gramática"
             className={`p-2 rounded-lg ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
           >
             <Sparkles className="h-4 w-4" />
           </button>
           <button
             onClick={onExport}
+            title="Exportar"
+            aria-label="Exportar"
             className={`p-2 rounded-lg ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
           >
             <FileText className="h-4 w-4" />
           </button>
           <button
             onClick={() => setShowWordCount(!showWordCount)}
+            title={showWordCount ? 'Ocultar contagem de palavras' : 'Mostrar contagem de palavras'}
+            aria-label={showWordCount ? 'Ocultar contagem de palavras' : 'Mostrar contagem de palavras'}
             className={`p-2 rounded-lg ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
           >
             {showWordCount ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
