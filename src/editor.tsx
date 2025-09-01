@@ -377,6 +377,8 @@ const FictionEditor = () => {
             <div className="flex items-center space-x-2 flex-wrap">
               <button
                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                title="Alternar barra lateral"
+                aria-label="Alternar barra lateral"
                 className={`md:hidden p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
               >
                 <Menu className="h-4 w-4" />
