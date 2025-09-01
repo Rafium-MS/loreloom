@@ -4,7 +4,6 @@
 // navigation for the application.
 // =========================================
 
-import React from 'react';
 import { Search } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 
@@ -27,13 +26,13 @@ export interface AppShellProps {
  * navigation tabs and a header containing search and theme toggle
  * actions.
  */
-const AppShell: React.FC<AppShellProps> = ({
+const AppShell = ({
   tabs,
   activeTab,
   onTabChange,
   children,
   rightActions,
-}) => {
+}: AppShellProps) => {
   return (
     <div className="flex flex-col min-h-screen">
       <header
@@ -58,7 +57,7 @@ const AppShell: React.FC<AppShellProps> = ({
         {/* Sidebar */}
         <aside className="w-60 border-r" style={{ borderColor: 'var(--border)' }}>
           <nav className="p-2 space-y-1">
-            {tabs.map((t) => (
+            {tabs.map((t: AppShellTab) => (
               <button
                 key={t.id}
                 onClick={() => onTabChange(t.id)}

@@ -2,7 +2,6 @@
 // src/ui/ThemeToggle.tsx
 // Botão de alternância de tema
 // =============================
-import React from 'react';
 import { Moon, Sun } from 'lucide-react';
 import { useTheme } from './ThemeProvider';
 import '../tokens.css';

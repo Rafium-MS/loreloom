@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useMemo } from 'react';
 import { Pie, Bar } from 'react-chartjs-2';
 import {
@@ -14,7 +13,24 @@ import { getTotalPopulation, getTotalArmySize } from '../utils/stats';
 
 ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
-const StatsPanel = ({ characters, locations, onClose }) => {
+interface Character {
+  role: string;
+}
+
+interface Location {
+  name: string;
+  type: string;
+  population?: number;
+  army?: { size?: number };
+}
+
+interface StatsPanelProps {
+  characters: Character[];
+  locations: Location[];
+  onClose: () => void;
+}
+
+const StatsPanel: React.FC<StatsPanelProps> = ({ characters, locations, onClose }) => {
   const [roleFilter, setRoleFilter] = useState('all');
   const [typeFilter, setTypeFilter] = useState('all');
 

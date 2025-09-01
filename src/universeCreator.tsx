@@ -1,5 +1,4 @@
-// @ts-nocheck
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import {
   User, MapPin, Shield, Coins, Users,
   Church, UtensilsCrossed, Clock, Plus,
@@ -21,14 +20,93 @@ import { useTheme } from './ui/ThemeProvider';
 import EntityRelationsGraph from './components/EntityRelationsGraph';
 import './tokens.css';
 
+interface Character {
+  id: number;
+  name: string;
+  age?: string | number;
+  appearance?: string;
+  background?: string;
+  abilities?: string;
+  motivations?: string;
+  relationships?: string;
+  role?: string;
+  locationIds?: number[];
+  religionIds?: number[];
+}
+
+interface Army {
+  size: number;
+  weapons?: string;
+  training?: string;
+}
+
+interface Location {
+  id: number;
+  name: string;
+  type: string;
+  climate?: string;
+  population?: number;
+  culturalComposition?: string;
+  mainProfessions?: string[];
+  economy?: string;
+  resources?: string;
+  army?: Army;
+  religions?: string[];
+  commonFoods?: string[];
+  establishments?: string;
+  strategicPoints?: string;
+  government?: string;
+  battles?: string;
+  events?: string;
+  characterIds?: number[];
+}
+
+interface Economy {
+  id: number;
+  name: string;
+  currency?: string;
+  markets?: string;
+  mainExports?: string;
+}
+
+interface Religion {
+  id: number;
+  name: string;
+  doctrine?: string;
+  factions?: string;
+  characterIds?: number[];
+}
+
+interface TimelineEvent {
+  id: number;
+  title: string;
+  date?: string;
+  description?: string;
+  relations?: string;
+}
+
+interface Language {
+  id: number;
+  name: string;
+  grammar?: string;
+  vocabulary?: string;
+  syllables?: string;
+}
+
+interface QuickStatsPanelProps {
+  characters: Character[];
+  locations: Location[];
+  onClose: () => void;
+}
+
 /** Painel rápido de estatísticas (evita reference error) */
-const StatsPanel = ({ characters, locations, onClose }) => {
+const StatsPanel = ({ characters, locations, onClose }: QuickStatsPanelProps) => {
   const totalPop = useMemo(
-    () => locations.reduce((t, l) => t + (l.population || 0), 0),
+    () => locations.reduce((t: number, l: Location) => t + (l.population || 0), 0),
     [locations]
   );
   const totalArmy = useMemo(
-    () => locations.reduce((t, l) => t + (l.army?.size || 0), 0),
+    () => locations.reduce((t: number, l: Location) => t + (l.army?.size || 0), 0),
     [locations]
   );
   return (
@@ -91,7 +169,15 @@ const StatsPanel = ({ characters, locations, onClose }) => {
 };
 
 const UniverseCreator = () => {
-  const [activeTab, setActiveTab] = useState('characters');
+  const [activeTab, setActiveTab] = useState(
+    'characters' as
+      | 'characters'
+      | 'locations'
+      | 'economies'
+      | 'religions'
+      | 'timelines'
+      | 'languages',
+  );
 
   // ===== Characters
   const {
@@ -140,12 +226,12 @@ const UniverseCreator = () => {
   const isDark = theme === 'dark';
 
   // seleção e modais
-  const [selectedCharacter, setSelectedCharacter] = useState(null);
-  const [selectedLocation, setSelectedLocation] = useState(null);
-  const [selectedEconomy, setSelectedEconomy] = useState(null);
-  const [selectedReligion, setSelectedReligion] = useState(null);
-  const [selectedTimeline, setSelectedTimeline] = useState(null);
-  const [selectedLanguage, setSelectedLanguage] = useState(null);
+  const [selectedCharacter, setSelectedCharacter] = useState(null as Character | null);
+  const [selectedLocation, setSelectedLocation] = useState(null as Location | null);
+  const [selectedEconomy, setSelectedEconomy] = useState(null as Economy | null);
+  const [selectedReligion, setSelectedReligion] = useState(null as Religion | null);
+  const [selectedTimeline, setSelectedTimeline] = useState(null as TimelineEvent | null);
+  const [selectedLanguage, setSelectedLanguage] = useState(null as Language | null);
 
   const [showCharacterForm, setShowCharacterForm] = useState(false);
   const [showLocationForm, setShowLocationForm] = useState(false);
@@ -154,7 +240,9 @@ const UniverseCreator = () => {
   const [showTimelineForm, setShowTimelineForm] = useState(false);
   const [showLanguageForm, setShowLanguageForm] = useState(false);
   const [showStatsPanel, setShowStatsPanel] = useState(false);
-  const [expandedSections, setExpandedSections] = useState({});
+  const [expandedSections, setExpandedSections] = useState(
+    {} as Record<string, boolean>,
+  );
 
   // Dados de exemplo
   const professionsList = [
@@ -173,18 +261,21 @@ const UniverseCreator = () => {
   ];
 
   // Auxiliares
-  const toggleSection = (section) => {
-    setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
+  const toggleSection = (section: string) => {
+    setExpandedSections((prev: Record<string, boolean>) => ({
+      ...prev,
+      [section]: !prev[section],
+    }));
   };
 
-  const generatePopulation = () => Math.floor(Math.random() * 50000) + 1000;
+  const generatePopulation = (): number => Math.floor(Math.random() * 50000) + 1000;
 
-  const generateEconomy = () => {
+  const generateEconomy = (): string => {
     const resources = ['Agricultura', 'Mineração', 'Comércio', 'Pesca', 'Artesanato'];
     return resources[Math.floor(Math.random() * resources.length)];
   };
 
-  const generateNameFromSyllables = (syllablesString) => {
+  const generateNameFromSyllables = (syllablesString: string): string => {
     const syllables = syllablesString.split(',').map(s => s.trim()).filter(Boolean);
     if (syllables.length === 0) return '';
     const count = Math.floor(Math.random() * 2) + 2;
@@ -196,7 +287,7 @@ const UniverseCreator = () => {
   };
 
   // ==== Views
-  const CharacterView = ({ character }) => (
+  const CharacterView = ({ character }: { character: Character }) => (
     <section className="rounded-lg p-6 bg-panel shadow-token">
       <div className="flex justify-between items-start mb-4">
         <h3 className="text-xl font-bold">{character.name}</h3>
@@ -230,7 +321,7 @@ const UniverseCreator = () => {
     </section>
   );
 
-  const LocationView = ({ location }) => (
+  const LocationView = ({ location }: { location: Location }) => (
     <section className="rounded-lg p-6 bg-panel shadow-token">
       <div className="flex justify-between items-start mb-4">
         <div>
@@ -295,7 +386,7 @@ const UniverseCreator = () => {
       </div>
 
       <div className="mt-4 space-y-2">
-        {location.mainProfessions?.length > 0 && (
+        {(location.mainProfessions?.length ?? 0) > 0 && (
           <div>
             <button
               onClick={() => toggleSection(`professions-${location.id}`)}
@@ -306,11 +397,15 @@ const UniverseCreator = () => {
               {(expandedSections[`professions-${location.id}`]) ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
               Profissões Principais
             </button>
-            {expandedSections[`professions-${location.id}`] && (
-              <div id={`professions-${location.id}-content`} className="ml-6 mt-1 text-sm" style={{ color: 'var(--muted)' }}>
-                {location.mainProfessions.join(', ')}
-              </div>
-            )}
+              {expandedSections[`professions-${location.id}`] && (
+                <div
+                  id={`professions-${location.id}-content`}
+                  className="ml-6 mt-1 text-sm"
+                  style={{ color: 'var(--muted)' }}
+                >
+                  {location.mainProfessions?.join(', ')}
+                </div>
+              )}
           </div>
         )}
 
@@ -336,7 +431,7 @@ const UniverseCreator = () => {
     </section>
   );
 
-  const EconomyView = ({ economy }) => (
+  const EconomyView = ({ economy }: { economy: Economy }) => (
     <section className="rounded-lg p-6 bg-panel shadow-token">
       <div className="flex justify-between items-start mb-4">
         <h3 className="text-xl font-bold">{economy.name}</h3>
@@ -367,7 +462,7 @@ const UniverseCreator = () => {
     </section>
   );
 
-  const ReligionView = ({ religion }) => (
+  const ReligionView = ({ religion }: { religion: Religion }) => (
     <section className="rounded-lg p-6 bg-panel shadow-token">
       <div className="flex justify-between items-start mb-4">
         <h3 className="text-xl font-bold">{religion.name}</h3>
@@ -397,7 +492,7 @@ const UniverseCreator = () => {
     </section>
   );
 
-  const TimelineView = ({ event }) => (
+  const TimelineView = ({ event }: { event: TimelineEvent }) => (
     <section className="rounded-lg p-6 bg-panel shadow-token">
       <div className="flex justify-between items-start mb-4">
         <h3 className="text-xl font-bold">{event.title}</h3>
@@ -428,7 +523,7 @@ const UniverseCreator = () => {
     </section>
   );
 
-  const LanguageView = ({ language }) => (
+  const LanguageView = ({ language }: { language: Language }) => (
     <section className="rounded-lg p-6 bg-panel shadow-token">
       <div className="flex justify-between items-start mb-4">
         <h3 className="text-xl font-bold">{language.name}</h3>
@@ -454,19 +549,19 @@ const UniverseCreator = () => {
       <div className="space-y-2 text-sm">
         {language.grammar && <p><span className="font-semibold">Gramática:</span> {language.grammar}</p>}
       </div>
-      {language.syllables && (
-        <button
-          onClick={() => alert(generateNameFromSyllables(language.syllables))}
-          className="mt-2 bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 text-sm"
-        >
-          Gerar Nome
-        </button>
-      )}
+        {language.syllables && (
+          <button
+            onClick={() => alert(generateNameFromSyllables(language.syllables ?? ''))}
+            className="mt-2 bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 text-sm"
+          >
+            Gerar Nome
+          </button>
+        )}
     </section>
   );
 
   // ===== Handlers
-  const handleSaveCharacter = async (characterData) => {
+  const handleSaveCharacter = async (characterData: Character) => {
     await saveCharacter(characterData);
 
     const charId = characterData.id;
@@ -474,10 +569,10 @@ const UniverseCreator = () => {
     const newLocs = characterData.locationIds || [];
 
     // vincula/desvincula locais
-    for (const id of newLocs.filter(id => !prevLocs.includes(id))) {
+    for (const id of newLocs.filter((id: number) => !prevLocs.includes(id))) {
       await linkCharacterToLocation(charId, id);
     }
-    for (const id of prevLocs.filter(id => !newLocs.includes(id))) {
+    for (const id of prevLocs.filter((id: number) => !newLocs.includes(id))) {
       await unlinkCharacterFromLocation(charId, id);
     }
 
@@ -485,10 +580,10 @@ const UniverseCreator = () => {
     const newRels = characterData.religionIds || [];
 
     // vincula/desvincula religiões
-    for (const id of newRels.filter(id => !prevRels.includes(id))) {
+    for (const id of newRels.filter((id: number) => !prevRels.includes(id))) {
       await linkCharacterToReligion(charId, id);
     }
-    for (const id of prevRels.filter(id => !newRels.includes(id))) {
+    for (const id of prevRels.filter((id: number) => !newRels.includes(id))) {
       await unlinkCharacterFromReligion(charId, id);
     }
 
@@ -496,17 +591,17 @@ const UniverseCreator = () => {
     setShowCharacterForm(false);
   };
 
-  const handleSaveLocation = async (locationData) => {
+  const handleSaveLocation = async (locationData: Location) => {
     await saveLocation(locationData);
 
     const locId = locationData.id;
     const prevChars = selectedLocation?.characterIds || [];
     const newChars = locationData.characterIds || [];
 
-    for (const id of newChars.filter(id => !prevChars.includes(id))) {
+    for (const id of newChars.filter((id: number) => !prevChars.includes(id))) {
       await linkLocationToCharacter(locId, id);
     }
-    for (const id of prevChars.filter(id => !newChars.includes(id))) {
+    for (const id of prevChars.filter((id: number) => !newChars.includes(id))) {
       await unlinkLocationFromCharacter(locId, id);
     }
 
@@ -514,23 +609,23 @@ const UniverseCreator = () => {
     setShowLocationForm(false);
   };
 
-  const handleSaveEconomy = async (economyData) => {
+  const handleSaveEconomy = async (economyData: Economy) => {
     await saveEconomy(economyData);
     setSelectedEconomy(null);
     setShowEconomyForm(false);
   };
 
-  const handleSaveReligion = async (religionData) => {
+  const handleSaveReligion = async (religionData: Religion) => {
     await saveReligion(religionData);
 
     const relId = religionData.id;
     const prevChars = selectedReligion?.characterIds || [];
     const newChars = religionData.characterIds || [];
 
-    for (const id of newChars.filter(id => !prevChars.includes(id))) {
+    for (const id of newChars.filter((id: number) => !prevChars.includes(id))) {
       await linkReligionToCharacter(relId, id);
     }
-    for (const id of prevChars.filter(id => !newChars.includes(id))) {
+    for (const id of prevChars.filter((id: number) => !newChars.includes(id))) {
       await unlinkReligionFromCharacter(relId, id);
     }
 
@@ -538,13 +633,13 @@ const UniverseCreator = () => {
     setShowReligionForm(false);
   };
 
-  const handleSaveTimeline = async (timelineData) => {
+  const handleSaveTimeline = async (timelineData: TimelineEvent) => {
     await saveTimeline(timelineData);
     setSelectedTimeline(null);
     setShowTimelineForm(false);
   };
 
-  const handleSaveLanguage = async (languageData) => {
+  const handleSaveLanguage = async (languageData: Language) => {
     await saveLanguage(languageData);
     setSelectedLanguage(null);
     setShowLanguageForm(false);
@@ -681,7 +776,7 @@ const UniverseCreator = () => {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {characters.map(character => (
+                {characters.map((character: Character) => (
                   <CharacterView key={character.id} character={character} />
                 ))}
               </div>
@@ -716,7 +811,7 @@ const UniverseCreator = () => {
               </div>
             ) : (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {locations.map(location => (
+                {locations.map((location: Location) => (
                   <LocationView key={location.id} location={location} />
                 ))}
               </div>
@@ -750,7 +845,7 @@ const UniverseCreator = () => {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {economies.map(econ => (
+                {economies.map((econ: Economy) => (
                   <EconomyView key={econ.id} economy={econ} />
                 ))}
               </div>
@@ -784,7 +879,7 @@ const UniverseCreator = () => {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {religions.map(rel => (
+                {religions.map((rel: Religion) => (
                   <ReligionView key={rel.id} religion={rel} />
                 ))}
               </div>
@@ -818,7 +913,7 @@ const UniverseCreator = () => {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {timelines.map(ev => (
+                {timelines.map((ev: TimelineEvent) => (
                   <TimelineView key={ev.id} event={ev} />
                 ))}
               </div>
@@ -852,7 +947,7 @@ const UniverseCreator = () => {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {languages.map(lang => (
+                {languages.map((lang: Language) => (
                   <LanguageView key={lang.id} language={lang} />
                 ))}
               </div>
@@ -889,7 +984,12 @@ const UniverseCreator = () => {
                   <div className="ml-4">
                     <p className="text-sm font-medium" style={{ color: 'var(--muted)' }}>População Total</p>
                     <p className="text-2xl font-semibold" style={{ color: 'var(--text)' }}>
-                      {locations.reduce((total, loc) => total + (loc.population || 0), 0).toLocaleString()}
+                      {locations
+                        .reduce(
+                          (total: number, loc: Location) => total + (loc.population || 0),
+                          0,
+                        )
+                        .toLocaleString()}
                     </p>
                   </div>
                 </div>
@@ -900,7 +1000,12 @@ const UniverseCreator = () => {
                   <div className="ml-4">
                     <p className="text-sm font-medium" style={{ color: 'var(--muted)' }}>Força Militar</p>
                     <p className="text-2xl font-semibold" style={{ color: 'var(--text)' }}>
-                      {locations.reduce((total, loc) => total + (loc.army?.size || 0), 0).toLocaleString()}
+                      {locations
+                        .reduce(
+                          (total: number, loc: Location) => total + (loc.army?.size || 0),
+                          0,
+                        )
+                        .toLocaleString()}
                     </p>
                   </div>
                 </div>
@@ -913,8 +1018,9 @@ const UniverseCreator = () => {
                   <h3 className="text-lg font-medium mb-4">Distribuição por Tipo de Localização</h3>
                   <div className="space-y-3">
                     {['cidade', 'vila', 'reino', 'fortaleza'].map(type => {
-                      const count = locations.filter(loc => loc.type === type).length;
-                      const percentage = locations.length > 0 ? (count / locations.length * 100).toFixed(1) : 0;
+                      const count = locations.filter((loc: Location) => loc.type === type).length;
+                      const percentage =
+                        locations.length > 0 ? ((count / locations.length) * 100).toFixed(1) : 0;
                       return (
                         <div key={type} className="flex justify-between items-center">
                           <span className="capitalize text-sm font-medium">{type}</span>
@@ -935,10 +1041,16 @@ const UniverseCreator = () => {
                   <div className="space-y-3">
                     {locations
                       .slice() // evitar sort in-place
-                      .sort((a, b) => (b.population || 0) - (a.population || 0))
+                      .sort(
+                        (a: Location, b: Location) =>
+                          (b.population || 0) - (a.population || 0),
+                      )
                       .slice(0, 5)
-                      .map(location => (
-                        <div key={location.id} className="flex justify-between items-center">
+                      .map((location: Location) => (
+                        <div
+                          key={location.id}
+                          className="flex justify-between items-center"
+                        >
                           <div>
                             <span className="font-medium">{location.name}</span>
                             <span className="text-sm ml-2 capitalize" style={{ color: 'var(--muted)' }}>({location.type})</span>
@@ -956,10 +1068,14 @@ const UniverseCreator = () => {
                   <h3 className="text-lg font-medium mb-4">Setores Econômicos</h3>
                   <div className="space-y-3">
                     {Object.entries(
-                      locations.reduce((acc, loc) => {
-                        if (loc.economy) acc[loc.economy] = (acc[loc.economy] || 0) + 1;
-                        return acc;
-                      }, {})
+                      (locations as Location[]).reduce(
+                        (acc: Record<string, number>, loc) => {
+                          if (loc.economy)
+                            acc[loc.economy] = (acc[loc.economy] || 0) + 1;
+                          return acc;
+                        },
+                        {} as Record<string, number>,
+                      ),
                     ).map(([sector, count]) => (
                       <div key={sector} className="flex justify-between items-center">
                         <span className="text-sm font-medium">{sector}</span>
@@ -967,7 +1083,9 @@ const UniverseCreator = () => {
                           <div className={`w-24 rounded-full h-2 ${isDark ? 'bg-gray-700' : 'bg-gray-200'}`}>
                             <div
                               className="bg-green-500 h-2 rounded-full"
-                              style={{ width: `${locations.length > 0 ? (count / locations.length * 100) : 0}%` }}
+                              style={{
+                                width: `${locations.length > 0 ? (count / locations.length) * 100 : 0}%`,
+                              }}
                             />
                           </div>
                           <span className="text-sm w-12" style={{ color: 'var(--muted)' }}>{count}</span>
@@ -981,11 +1099,18 @@ const UniverseCreator = () => {
                   <h3 className="text-lg font-medium mb-4">Diversidade Religiosa</h3>
                   <div className="space-y-3">
                     {(() => {
-                      const counts = locations.reduce((acc, loc) => {
-                        (loc.religions || []).forEach(r => { acc[r] = (acc[r] || 0) + 1; });
-                        return acc;
-                      }, {});
-                      const entries = Object.entries(counts).sort(([, a], [, b]) => b - a).slice(0, 6);
+                      const counts = (locations as Location[]).reduce(
+                        (acc: Record<string, number>, loc) => {
+                          (loc.religions || []).forEach((r: string) => {
+                            acc[r] = (acc[r] || 0) + 1;
+                          });
+                          return acc;
+                        },
+                        {} as Record<string, number>,
+                      );
+                      const entries = Object.entries(counts)
+                        .sort(([, a], [, b]) => b - a)
+                        .slice(0, 6);
                       const max = Math.max(0, ...entries.map(([, c]) => c));
                       return entries.map(([religion, count]) => (
                         <div key={religion} className="flex justify-between items-center">
@@ -1022,7 +1147,7 @@ const UniverseCreator = () => {
       <div className="fixed right-4 top-1/2 transform -translate-y-1/2 space-y-2">
         <button
           onClick={() => {
-            const randomCharacter = {
+            const randomCharacter: Character = {
               id: Date.now(),
               name: `Personagem ${characters.length + 1}`,
               age: Math.floor(Math.random() * 50) + 18,
@@ -1031,7 +1156,7 @@ const UniverseCreator = () => {
               abilities: 'Habilidades variadas',
               motivations: 'Motivações complexas',
               relationships: 'Relacionamentos diversos',
-              role: 'Papel importante na narrativa'
+              role: 'Papel importante na narrativa',
             };
             saveCharacter(randomCharacter);
           }}
@@ -1045,7 +1170,7 @@ const UniverseCreator = () => {
           onClick={() => {
             const types = ['cidade', 'vila', 'reino', 'fortaleza'];
             const climates = ['Temperado', 'Tropical', 'Árido', 'Frio', 'Montanhoso'];
-            const randomLocation = {
+            const randomLocation: Location = {
               id: Date.now(),
               name: `Local ${locations.length + 1}`,
               type: types[Math.floor(Math.random() * types.length)],
@@ -1058,7 +1183,7 @@ const UniverseCreator = () => {
               army: {
                 size: Math.floor(Math.random() * 5000) + 100,
                 weapons: 'Espadas e arcos',
-                training: 'Treinamento regular'
+                training: 'Treinamento regular',
               },
               religions: religionsList.slice(0, Math.floor(Math.random() * 3) + 1),
               commonFoods: foodsList.slice(0, Math.floor(Math.random() * 4) + 2),
@@ -1066,7 +1191,7 @@ const UniverseCreator = () => {
               strategicPoints: 'Muralhas e torres de vigia',
               government: 'História de liderança estável',
               battles: 'Algumas escaramuças menores',
-              events: 'Festivais anuais e celebrações'
+              events: 'Festivais anuais e celebrações',
             };
             saveLocation(randomLocation);
           }}
@@ -1101,7 +1226,7 @@ const UniverseCreator = () => {
       {(showCharacterForm || selectedCharacter) && (
         <CharacterForm
           character={selectedCharacter}
-          onSave={handleSaveCharacter}
+          onSave={(data) => handleSaveCharacter(data as Character)}
           onCancel={() => {
             setSelectedCharacter(null);
             setShowCharacterForm(false);
@@ -1112,7 +1237,7 @@ const UniverseCreator = () => {
       {(showLocationForm || selectedLocation) && (
         <LocationForm
           location={selectedLocation}
-          onSave={handleSaveLocation}
+          onSave={(data) => handleSaveLocation(data as Location)}
           onCancel={() => {
             setSelectedLocation(null);
             setShowLocationForm(false);
@@ -1125,7 +1250,7 @@ const UniverseCreator = () => {
       {(showEconomyForm || selectedEconomy) && (
         <EconomyForm
           economy={selectedEconomy}
-          onSave={handleSaveEconomy}
+          onSave={(data) => handleSaveEconomy(data as Economy)}
           onCancel={() => {
             setSelectedEconomy(null);
             setShowEconomyForm(false);
@@ -1136,7 +1261,7 @@ const UniverseCreator = () => {
       {(showReligionForm || selectedReligion) && (
         <ReligionForm
           religion={selectedReligion}
-          onSave={handleSaveReligion}
+          onSave={(data) => handleSaveReligion(data as Religion)}
           onCancel={() => {
             setSelectedReligion(null);
             setShowReligionForm(false);
@@ -1147,7 +1272,7 @@ const UniverseCreator = () => {
       {(showTimelineForm || selectedTimeline) && (
         <TimelineForm
           event={selectedTimeline}
-          onSave={handleSaveTimeline}
+          onSave={(data) => handleSaveTimeline(data as TimelineEvent)}
           onCancel={() => {
             setSelectedTimeline(null);
             setShowTimelineForm(false);
@@ -1158,7 +1283,7 @@ const UniverseCreator = () => {
       {(showLanguageForm || selectedLanguage) && (
         <LanguageForm
           language={selectedLanguage}
-          onSave={handleSaveLanguage}
+          onSave={(data) => handleSaveLanguage(data as Language)}
           onCancel={() => {
             setSelectedLanguage(null);
             setShowLanguageForm(false);
