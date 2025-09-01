@@ -1,5 +1,4 @@
-import React from 'react';
-import { Scroll, Save, Sparkles, FileText, Eye, EyeOff } from 'lucide-react';
+import { Scroll, Save, Sparkles, FileText, FileDown, FileUp, Eye, EyeOff } from 'lucide-react';
 import { useTheme } from '../ui/ThemeProvider';
 
 interface HeaderProps {
@@ -10,10 +9,12 @@ interface HeaderProps {
   setShowWordCount: (value: boolean) => void;
   saveVersion: () => void;
   checkGrammar: () => void;
-  onExport: () => void;
+  onExportMarkdown: () => void;
+  onExportDocx: () => void;
+  onImportMarkdown: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({
+const Header = ({
   title,
   setTitle,
   wordCount,
@@ -21,8 +22,10 @@ const Header: React.FC<HeaderProps> = ({
   setShowWordCount,
   saveVersion,
   checkGrammar,
-  onExport
-}) => {
+  onExportMarkdown,
+  onExportDocx,
+  onImportMarkdown
+}: HeaderProps) => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
 
@@ -63,12 +66,28 @@ const Header: React.FC<HeaderProps> = ({
             <Sparkles className="h-4 w-4" />
           </button>
           <button
-            onClick={onExport}
-            title="Exportar"
-            aria-label="Exportar"
+            onClick={onExportMarkdown}
+            title="Exportar Markdown"
+            aria-label="Exportar Markdown"
             className={`p-2 rounded-lg ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
           >
             <FileText className="h-4 w-4" />
+          </button>
+          <button
+            onClick={onExportDocx}
+            title="Exportar DOCX"
+            aria-label="Exportar DOCX"
+            className={`p-2 rounded-lg ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
+          >
+            <FileDown className="h-4 w-4" />
+          </button>
+          <button
+            onClick={onImportMarkdown}
+            title="Importar Markdown"
+            aria-label="Importar Markdown"
+            className={`p-2 rounded-lg ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
+          >
+            <FileUp className="h-4 w-4" />
           </button>
           <button
             onClick={() => setShowWordCount(!showWordCount)}

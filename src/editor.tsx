@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { Bold, Italic, Underline, Quote, List, AlignLeft, AlignCenter, AlignRight, Undo2, Redo2, Heading1, Heading2, Menu } from 'lucide-react';
 // Import from the editor folder's index to avoid self-importing this file
 import { Header, Sidebar } from './editor/index';
-import { createProject, exportToMarkdown } from '../project';
+import { createProject, exportToMarkdown, exportToDocx, importFromMarkdown } from '../project';
 import { useTheme } from './ui/ThemeProvider';
 import { Slate, Editable, withReact } from 'slate-react';
 import { createEditor, Descendant, Transforms, Editor, Node } from 'slate';
@@ -43,6 +43,8 @@ const FictionEditor = () => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const { theme } = useTheme();
   const isFocus = theme === 'focus';
@@ -239,19 +241,74 @@ const FictionEditor = () => {
     setValue(nodes);
   };
 
-  const exportProject = () => {
+  const buildProject = () => {
     const project = createProject(title);
     project.characters = characters;
     project.locations = locations;
-    project.chapters = [{ id: Date.now(), title: 'Capítulo 1', scenes: [{ id: Date.now(), title: 'Cena 1', text: content }] }];
-    const md = exportToMarkdown(project);
-    const blob = new Blob([md], { type: 'text/markdown' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${title}.md`;
-    a.click();
-    URL.revokeObjectURL(url);
+    project.chapters = [
+      {
+        id: Date.now(),
+        title: 'Capítulo 1',
+        scenes: [{ id: Date.now(), title: 'Cena 1', text: content }],
+      },
+    ];
+    return project;
+  };
+
+  const exportMarkdown = () => {
+    try {
+      const md = exportToMarkdown(buildProject());
+      const blob = new Blob([md], { type: 'text/markdown' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${title}.md`;
+      a.click();
+      URL.revokeObjectURL(url);
+      setMessage({ type: 'success', text: 'Markdown exportado com sucesso.' });
+    } catch {
+      setMessage({ type: 'error', text: 'Erro ao exportar Markdown.' });
+    }
+  };
+
+  const exportDocx = async () => {
+    const blob = await exportToDocx(buildProject());
+    if (blob) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${title}.docx`;
+      a.click();
+      URL.revokeObjectURL(url);
+      setMessage({ type: 'success', text: 'DOCX exportado com sucesso.' });
+    } else {
+      setMessage({ type: 'error', text: 'Erro ao exportar DOCX.' });
+    }
+  };
+
+  const triggerImportMarkdown = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleMarkdownFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const project = importFromMarkdown(text);
+      if (project) {
+        setTitle(project.title);
+        const firstText = project.chapters[0]?.scenes[0]?.text || '';
+        const nodes: Descendant[] = [{ type: 'paragraph', children: [{ text: firstText }] }];
+        setValue(nodes);
+        setMessage({ type: 'success', text: 'Markdown importado com sucesso.' });
+      } else {
+        setMessage({ type: 'error', text: 'Erro ao importar Markdown.' });
+      }
+    } catch {
+      setMessage({ type: 'error', text: 'Erro ao ler arquivo.' });
+    }
+    e.target.value = '';
   };
 
   const checkGrammar = async () => {
@@ -305,7 +362,7 @@ const FictionEditor = () => {
     }
   };
 
-  const onKeyDown = (event: React.KeyboardEvent) => {
+  const onKeyDown = (event: any) => {
     if (event.ctrlKey || event.metaKey) {
       if (event.key === 'z') {
         event.preventDefault();
@@ -327,8 +384,28 @@ const FictionEditor = () => {
         setShowWordCount={setShowWordCount}
         saveVersion={saveVersion}
         checkGrammar={checkGrammar}
-        onExport={exportProject}
+        onExportMarkdown={exportMarkdown}
+        onExportDocx={exportDocx}
+        onImportMarkdown={triggerImportMarkdown}
       />
+      <input
+        type="file"
+        accept=".md"
+        ref={fileInputRef}
+        onChange={handleMarkdownFile}
+        className="hidden"
+      />
+      {message && (
+        <div
+          className={`text-center p-2 text-sm ${
+            message.type === 'success'
+              ? 'bg-green-100 text-green-800'
+              : 'bg-red-100 text-red-800'
+          }`}
+        >
+          {message.text}
+        </div>
+      )}
       <section className="flex h-screen relative">
         <Sidebar
           className={`${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 absolute md:relative z-20 h-full top-0 left-0 transition-transform duration-300`}
@@ -506,7 +583,7 @@ const FictionEditor = () => {
                 <section className="mb-4 p-4 border rounded bg-red-50">
                   <h3 className="font-semibold mb-2">Sugestões Gramaticais</h3>
                   <ul className="list-disc ml-5 text-sm space-y-1">
-                    {grammarSuggestions.map((s, idx) => (
+                    {grammarSuggestions.map((s: any, idx: number) => (
                       <li key={idx}>{s.message}</li>
                     ))}
                   </ul>
@@ -540,7 +617,7 @@ const FictionEditor = () => {
                   </button>
                 </form>
                 <ul className="space-y-1 text-sm">
-                  {comments.map(c => (
+                  {comments.map((c: any) => (
                     <li key={c.id}>[pos {c.position}] {c.text}</li>
                   ))}
                 </ul>
