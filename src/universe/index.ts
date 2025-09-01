@@ -9,3 +9,4 @@ export * from './types';
 export * from './utils';
 export * from './views';
 export * from './handlers';
+export * from './generators';
