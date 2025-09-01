@@ -36,7 +36,7 @@ const LocationForm = ({ location, onSave, onCancel, generatePopulation, generate
   });
   const [errors, setErrors] = useState({ name: '' });
   const { characters } = useCharacters();
-  const [selectedCharacters, setSelectedCharacters] = useState(location?.characterIds || []);
+  const [selectedCharacters, setSelectedCharacters] = useState<number[]>(location?.characterIds || []);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -318,22 +318,46 @@ const LocationForm = ({ location, onSave, onCancel, generatePopulation, generate
                 />
               </div>
             </div>
-            <div className="flex flex-col mt-2">
-              <label htmlFor="loc-events" className="mb-1 text-sm">Eventos importantes</label>
-              <textarea
-                id="loc-events"
-                placeholder="Eventos importantes"
-                value={formData.events}
-                onChange={(e) => setFormData({ ...formData, events: e.target.value })}
-                className="border rounded px-3 py-2 w-full h-20"
-              />
-            </div>
+          <div className="flex flex-col mt-2">
+            <label htmlFor="loc-events" className="mb-1 text-sm">Eventos importantes</label>
+            <textarea
+              id="loc-events"
+              placeholder="Eventos importantes"
+              value={formData.events}
+              onChange={(e) => setFormData({ ...formData, events: e.target.value })}
+              className="border rounded px-3 py-2 w-full h-20"
+            />
           </div>
+        </div>
 
-          <div className="flex gap-2 pt-4">
-            <button
-              type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        <div className="pb-4">
+          <h4 className="font-semibold mb-3">Personagens</h4>
+          <div className="flex flex-col">
+            <label htmlFor="loc-characters" className="mb-1 text-sm">Personagens</label>
+            <select
+              id="loc-characters"
+              multiple
+              value={selectedCharacters.map(String)}
+              onChange={(e) =>
+                setSelectedCharacters(
+                  Array.from(e.target.selectedOptions, (option) => Number(option.value))
+                )
+              }
+              className="border rounded px-3 py-2 w-full"
+            >
+              {characters.map((char) => (
+                <option key={char.id} value={char.id}>
+                  {char.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="flex gap-2 pt-4">
+          <button
+            type="submit"
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
             >
               Salvar
             </button>

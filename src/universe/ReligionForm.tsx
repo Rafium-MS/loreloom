@@ -19,7 +19,7 @@ const ReligionForm = ({ religion, onSave, onCancel }: ReligionFormProps) => {
   );
   const [errors, setErrors] = useState({ name: '' });
   const { characters } = useCharacters();
-  const [selectedCharacters, setSelectedCharacters] = useState(religion?.characterIds || []);
+  const [selectedCharacters, setSelectedCharacters] = useState<number[]>(religion?.characterIds || []);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -74,15 +74,19 @@ const ReligionForm = ({ religion, onSave, onCancel }: ReligionFormProps) => {
             />
           </div>
           <div className="flex flex-col">
-            <label htmlFor="religion-characters" className="mb-1 text-sm">Personagens associados</label>
+
+            <label htmlFor="religion-characters" className="mb-1 text-sm">Personagens</label>
             <select
               id="religion-characters"
               multiple
               value={selectedCharacters.map(String)}
               onChange={(e) =>
-                setSelectedCharacters(Array.from(e.target.selectedOptions, (o) => Number(o.value)))
+                setSelectedCharacters(
+                  Array.from(e.target.selectedOptions, (option) => Number(option.value))
+                )
               }
-              className="border rounded px-3 py-2 w-full h-32"
+              className="border rounded px-3 py-2 w-full"
+
             >
               {characters.map((char) => (
                 <option key={char.id} value={char.id}>
