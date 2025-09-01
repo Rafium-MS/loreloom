@@ -18,10 +18,26 @@ import './tokens.css';
 
 const UniverseCreator = () => {
   const [activeTab, setActiveTab] = useState('characters');
-  const { characters, saveCharacter, removeCharacter } = useCharacters();
-  const { locations, saveLocation, removeLocation } = useLocations();
+  const {
+    characters,
+    saveCharacter,
+    removeCharacter,
+    linkCharacterToLocation,
+    linkCharacterToReligion,
+  } = useCharacters();
+  const {
+    locations,
+    saveLocation,
+    removeLocation,
+    linkLocationToCharacter,
+  } = useLocations();
   const { economies, saveEconomy, removeEconomy } = useEconomies();
-  const { religions, saveReligion, removeReligion } = useReligions();
+  const {
+    religions,
+    saveReligion,
+    removeReligion,
+    linkReligionToCharacter,
+  } = useReligions();
   const { timelines, saveTimeline, removeTimeline } = useTimelines();
   const { languages, saveLanguage, removeLanguage } = useLanguages();
   const { theme } = useTheme();
@@ -365,12 +381,21 @@ const UniverseCreator = () => {
   // Handlers
   const handleSaveCharacter = async (characterData) => {
     await saveCharacter(characterData);
+    for (const locId of characterData.locationIds || []) {
+      await linkCharacterToLocation(characterData.id, locId);
+    }
+    for (const relId of characterData.religionIds || []) {
+      await linkCharacterToReligion(characterData.id, relId);
+    }
     setSelectedCharacter(null);
     setShowCharacterForm(false);
   };
 
   const handleSaveLocation = async (locationData) => {
     await saveLocation(locationData);
+    for (const charId of locationData.characterIds || []) {
+      await linkLocationToCharacter(locationData.id, charId);
+    }
     setSelectedLocation(null);
     setShowLocationForm(false);
   };
@@ -383,6 +408,9 @@ const UniverseCreator = () => {
 
   const handleSaveReligion = async (religionData) => {
     await saveReligion(religionData);
+    for (const charId of religionData.characterIds || []) {
+      await linkReligionToCharacter(religionData.id, charId);
+    }
     setSelectedReligion(null);
     setShowReligionForm(false);
   };

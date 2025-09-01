@@ -1,6 +1,8 @@
 // @ts-nocheck
 import React, { useState } from 'react';
 import '../tokens.css';
+import { useLocations } from '../hooks/useLocations';
+import { useReligions } from '../hooks/useReligions';
 
 interface CharacterFormProps {
   character: any;
@@ -20,13 +22,22 @@ const CharacterForm = ({ character, onSave, onCancel }: CharacterFormProps) => {
     role: ''
   });
   const [errors, setErrors] = useState({ name: '' });
+  const { locations } = useLocations();
+  const { religions } = useReligions();
+  const [selectedLocations, setSelectedLocations] = useState(character?.locationIds || []);
+  const [selectedReligions, setSelectedReligions] = useState(character?.religionIds || []);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const newErrors = { name: formData.name.trim() ? '' : 'Nome é obrigatório' };
     setErrors(newErrors);
     if (Object.values(newErrors).some(Boolean)) return;
-    onSave({ ...formData, id: character?.id || Date.now() });
+    onSave({
+      ...formData,
+      id: character?.id || Date.now(),
+      locationIds: selectedLocations,
+      religionIds: selectedReligions,
+    });
   };
 
   return (
@@ -116,6 +127,42 @@ const CharacterForm = ({ character, onSave, onCancel }: CharacterFormProps) => {
               onChange={(e) => setFormData({ ...formData, role: e.target.value })}
               className="border rounded px-3 py-2 w-full"
             />
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="char-locations" className="mb-1 text-sm">Localizações</label>
+            <select
+              id="char-locations"
+              multiple
+              value={selectedLocations.map(String)}
+              onChange={(e) =>
+                setSelectedLocations(Array.from(e.target.selectedOptions, (o) => Number(o.value)))
+              }
+              className="border rounded px-3 py-2 w-full h-32"
+            >
+              {locations.map((loc) => (
+                <option key={loc.id} value={loc.id}>
+                  {loc.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="char-religions" className="mb-1 text-sm">Religiões</label>
+            <select
+              id="char-religions"
+              multiple
+              value={selectedReligions.map(String)}
+              onChange={(e) =>
+                setSelectedReligions(Array.from(e.target.selectedOptions, (o) => Number(o.value)))
+              }
+              className="border rounded px-3 py-2 w-full h-32"
+            >
+              {religions.map((rel) => (
+                <option key={rel.id} value={rel.id}>
+                  {rel.name}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="flex gap-2 pt-4">
             <button
