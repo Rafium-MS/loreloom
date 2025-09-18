@@ -8,6 +8,7 @@ import {
   type ReactNode,
 } from 'react';
 import * as dataStore from '../../dataStore';
+import { hashPassword } from '@/utils/password';
 
 type AuthUser = dataStore.UserRecord;
 
@@ -26,25 +27,6 @@ const AUTH_STORAGE_KEY = 'loreloom.auth.userId';
 const DEFAULT_ADMIN_NAME = 'Admin Master';
 const DEFAULT_ADMIN_EMAIL = 'admin@loreloom.app';
 const DEFAULT_ADMIN_PASSWORD = 'admin_master';
-
-function getCrypto() {
-  if (typeof globalThis === 'undefined') {
-    return undefined;
-  }
-  return globalThis.crypto ?? undefined;
-}
-
-async function hashPassword(password: string) {
-  const cryptoInstance = getCrypto();
-  if (!cryptoInstance?.subtle) {
-    return password;
-  }
-  const data = new TextEncoder().encode(password);
-  const digest = await cryptoInstance.subtle.digest('SHA-256', data);
-  return Array.from(new Uint8Array(digest))
-    .map((byte) => byte.toString(16).padStart(2, '0'))
-    .join('');
-}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);

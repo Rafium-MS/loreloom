@@ -6,10 +6,31 @@ import logoUrl from '../assets/logo.png';
 import { Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
 import './tokens.css';
 import { Button } from '@/components/ui/button';
+import { useAuth } from './context/AuthContext';
+import UserManagement from '@/pages/UserManagement';
+
+function AdminRoute({ children }: { children: React.ReactNode }) {
+  const { isAdminMaster, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="flex h-full items-center justify-center p-6 text-sm text-muted">
+        Carregando permissões...
+      </div>
+    );
+  }
+
+  if (!isAdminMaster) {
+    return <Navigate to="/editor" replace />;
+  }
+
+  return <>{children}</>;
+}
 
 const App = () => {
   const location = useLocation();
   const currentPath = location.pathname === '/' ? '/editor' : location.pathname;
+  const { isAdminMaster, loading } = useAuth();
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -34,6 +55,14 @@ const App = () => {
           >
             <Link to="/universo">Universo</Link>
           </Button>
+          {!loading && isAdminMaster ? (
+            <Button
+              asChild
+              variant={currentPath === '/usuarios' ? 'secondary' : 'ghost'}
+            >
+              <Link to="/usuarios">Usuários</Link>
+            </Button>
+          ) : null}
           <ThemeToggle />
         </nav>
       </header>
@@ -42,6 +71,14 @@ const App = () => {
           <Route path="/" element={<Navigate to="/editor" replace />} />
           <Route path="/editor" element={<FictionEditor />} />
           <Route path="/universo" element={<UniverseCreator />} />
+          <Route
+            path="/usuarios"
+            element={
+              <AdminRoute>
+                <UserManagement />
+              </AdminRoute>
+            }
+          />
         </Routes>
       </main>
     </div>
