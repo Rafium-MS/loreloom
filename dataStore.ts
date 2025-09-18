@@ -40,6 +40,7 @@ async function loadDB(SQL: any) {
       db.run('CREATE TABLE IF NOT EXISTS religions (id INTEGER PRIMARY KEY, name TEXT, doctrine TEXT, factions TEXT);');
       db.run('CREATE TABLE IF NOT EXISTS timelines (id INTEGER PRIMARY KEY, title TEXT, date TEXT, description TEXT, relations TEXT);');
       db.run('CREATE TABLE IF NOT EXISTS languages (id INTEGER PRIMARY KEY, name TEXT, vocabulary TEXT, grammar TEXT, syllables TEXT);');
+      db.run('CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT, email TEXT UNIQUE, passwordHash TEXT, role TEXT);');
       db.run('CREATE TABLE IF NOT EXISTS character_location (character_id INTEGER, location_id INTEGER);');
       db.run('CREATE TABLE IF NOT EXISTS character_religion (character_id INTEGER, religion_id INTEGER);');
       resolve(db);
@@ -73,6 +74,50 @@ export async function getCharacters() {
   }
   stmt.free();
   return res;
+}
+
+export interface UserRecord {
+  id: number;
+  name: string;
+  email: string;
+  passwordHash: string;
+  role: string;
+}
+
+export async function getUsers(): Promise<UserRecord[]> {
+  const db = await getDB();
+  const res: UserRecord[] = [];
+  const stmt = db.prepare('SELECT id, name, email, passwordHash, role FROM users');
+  while (stmt.step()) {
+    const row = stmt.getAsObject();
+    res.push({
+      id: Number(row.id ?? 0),
+      name: String(row.name ?? ''),
+      email: String(row.email ?? ''),
+      passwordHash: String(row.passwordHash ?? ''),
+      role: String(row.role ?? ''),
+    });
+  }
+  stmt.free();
+  return res;
+}
+
+export async function saveUser(user: UserRecord) {
+  const db = await getDB();
+  db.run('INSERT OR REPLACE INTO users (id, name, email, passwordHash, role) VALUES (?, ?, ?, ?, ?)', [
+    user.id,
+    user.name,
+    user.email,
+    user.passwordHash,
+    user.role,
+  ]);
+  await saveDB(db);
+}
+
+export async function removeUser(id: number) {
+  const db = await getDB();
+  db.run('DELETE FROM users WHERE id = ?', [id]);
+  await saveDB(db);
 }
 
 export async function saveCharacter(char: {id: number; name: string; description: string; role: string;}) {
