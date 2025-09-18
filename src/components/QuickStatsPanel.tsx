@@ -1,14 +1,22 @@
 import { useMemo } from 'react';
-import { User, MapPin, Users, Shield } from 'lucide-react';
-import type { Character, Location } from '../universe/types';
+import { User, MapPin, Users, Shield, TrendingUp } from 'lucide-react';
+import type { Character, Location, Economy } from '../universe/types';
+import { useAuth } from '../context/AuthContext';
 
 interface QuickStatsPanelProps {
   characters: Character[];
   locations: Location[];
+  economies: Economy[];
   onClose: () => void;
 }
 
-const QuickStatsPanel = ({ characters, locations, onClose }: QuickStatsPanelProps) => {
+const currencyFormatter = new Intl.NumberFormat('pt-BR', {
+  style: 'currency',
+  currency: 'BRL',
+});
+
+const QuickStatsPanel = ({ characters, locations, economies, onClose }: QuickStatsPanelProps) => {
+  const { user } = useAuth();
   const totalPop = useMemo(
     () => locations.reduce((t, l) => t + (l.population || 0), 0),
     [locations],
@@ -17,6 +25,11 @@ const QuickStatsPanel = ({ characters, locations, onClose }: QuickStatsPanelProp
     () => locations.reduce((t, l) => t + (l.army?.size || 0), 0),
     [locations],
   );
+  const totalMonthlyExports = useMemo(
+    () => economies.reduce((total, economy) => total + (economy.monthlyExports ?? 0), 0),
+    [economies],
+  );
+  const showMonthlyExportCard = user?.role === 'admin_master';
 
   return (
     <div
@@ -34,7 +47,7 @@ const QuickStatsPanel = ({ characters, locations, onClose }: QuickStatsPanelProp
             Fechar
           </button>
         </div>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="rounded-lg p-4 bg-panel shadow-token">
             <div className="flex items-center">
               <User className="h-6 w-6 text-blue-500" />
@@ -83,6 +96,21 @@ const QuickStatsPanel = ({ characters, locations, onClose }: QuickStatsPanelProp
               </div>
             </div>
           </div>
+          {showMonthlyExportCard ? (
+            <div className="rounded-lg p-4 bg-panel shadow-token">
+              <div className="flex items-center">
+                <TrendingUp className="h-6 w-6 text-amber-500" />
+                <div className="ml-3">
+                  <p className="text-xs" style={{ color: 'var(--muted)' }}>
+                    Exportação mensal
+                  </p>
+                  <p className="text-xl font-semibold">
+                    {currencyFormatter.format(totalMonthlyExports)}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : null}
         </div>
       </div>
     </div>

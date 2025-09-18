@@ -21,6 +21,11 @@ import type {
 } from './types';
 import { generateNameFromSyllables } from './utils';
 
+const currencyFormatter = new Intl.NumberFormat('pt-BR', {
+  style: 'currency',
+  currency: 'BRL',
+});
+
 export const CharacterView = ({
   character,
   onEdit,
@@ -273,6 +278,12 @@ export const EconomyView = ({
       {economy.mainExports && (
         <p>
           <span className="font-semibold">Exportações:</span> {economy.mainExports}
+        </p>
+      )}
+      {economy.monthlyExports !== undefined && economy.monthlyExports !== null && (
+        <p>
+          <span className="font-semibold">Exportação mensal:</span>{' '}
+          {currencyFormatter.format(economy.monthlyExports)}
         </p>
       )}
     </div>
