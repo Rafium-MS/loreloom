@@ -36,7 +36,17 @@ async function loadDB(SQL: any) {
       // Ensure all tables exist. The conflicted code was missing some.
       db.run('CREATE TABLE IF NOT EXISTS characters (id INTEGER PRIMARY KEY, name TEXT, description TEXT, role TEXT);');
       db.run('CREATE TABLE IF NOT EXISTS locations (id INTEGER PRIMARY KEY, name TEXT, description TEXT, type TEXT);');
-      db.run('CREATE TABLE IF NOT EXISTS economies (id INTEGER PRIMARY KEY, name TEXT, currency TEXT, markets TEXT, mainExports TEXT);');
+      db.run(
+        'CREATE TABLE IF NOT EXISTS economies (id INTEGER PRIMARY KEY, name TEXT, currency TEXT, markets TEXT, mainExports TEXT, monthlyExports REAL DEFAULT 0);',
+      );
+      try {
+        db.run('ALTER TABLE economies ADD COLUMN monthlyExports REAL DEFAULT 0');
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : '';
+        if (!/duplicate column name/i.test(message)) {
+          console.warn('Failed to ensure monthlyExports column in economies table', error);
+        }
+      }
       db.run('CREATE TABLE IF NOT EXISTS religions (id INTEGER PRIMARY KEY, name TEXT, doctrine TEXT, factions TEXT);');
       db.run('CREATE TABLE IF NOT EXISTS timelines (id INTEGER PRIMARY KEY, title TEXT, date TEXT, description TEXT, relations TEXT);');
       db.run('CREATE TABLE IF NOT EXISTS languages (id INTEGER PRIMARY KEY, name TEXT, vocabulary TEXT, grammar TEXT, syllables TEXT);');
@@ -199,17 +209,40 @@ export async function removeLocation(id: number) {
 export async function getEconomies() {
   const db = await getDB();
   const res: any[] = [];
-  const stmt = db.prepare('SELECT * FROM economies');
+  const stmt = db.prepare('SELECT id, name, currency, markets, mainExports, COALESCE(monthlyExports, 0) as monthlyExports FROM economies');
   while (stmt.step()) {
-    res.push(stmt.getAsObject());
+    const row = stmt.getAsObject();
+    res.push({
+      ...row,
+      monthlyExports: Number(row.monthlyExports ?? 0),
+    });
   }
   stmt.free();
   return res;
 }
 
-export async function saveEconomy(econ: {id: number; name: string; currency: string; markets: string; mainExports: string;}) {
+export async function saveEconomy(econ: {
+  id: number;
+  name: string;
+  currency: string;
+  markets: string;
+  mainExports: string;
+  monthlyExports?: number | null;
+}) {
   const db = await getDB();
-  db.run('INSERT OR REPLACE INTO economies (id, name, currency, markets, mainExports) VALUES (?, ?, ?, ?, ?)', [econ.id, econ.name, econ.currency, econ.markets, econ.mainExports]);
+  db.run(
+    'INSERT OR REPLACE INTO economies (id, name, currency, markets, mainExports, monthlyExports) VALUES (?, ?, ?, ?, ?, ?)',
+    [
+      econ.id,
+      econ.name,
+      econ.currency,
+      econ.markets,
+      econ.mainExports,
+      typeof econ.monthlyExports === 'number' && Number.isFinite(econ.monthlyExports)
+        ? econ.monthlyExports
+        : 0,
+    ],
+  );
   await saveDB(db);
 }
 

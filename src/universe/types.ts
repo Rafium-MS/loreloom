@@ -57,6 +57,7 @@ export interface Economy {
   mainExports?: string;
   basicItems?: string;
   goods?: string;
+  monthlyExports?: number;
 }
 
 export interface Religion {

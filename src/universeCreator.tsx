@@ -801,6 +801,7 @@ const toggleSection = createSectionToggler(setExpandedSections);
         <QuickStatsPanel
           characters={characters}
           locations={locations}
+          economies={economies}
           onClose={() => setShowStatsPanel(false)}
         />
       )}

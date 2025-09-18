@@ -9,6 +9,7 @@ export interface EconomyFormData {
   mainExports: string;
   basicItems: string;
   goods: string;
+  monthlyExports?: number;
 }
 
 interface EconomyFormProps {
@@ -18,8 +19,18 @@ interface EconomyFormProps {
 }
 
 const EconomyForm = ({ economy, onSave, onCancel }: EconomyFormProps) => {
-  const [formData, setFormData] = useState(
-    (economy || { name: '', currency: '', markets: '', mainExports: '', basicItems: '', goods: '' }) as EconomyFormData,
+  const [formData, setFormData] = useState<EconomyFormData>(
+    economy
+      ? { ...economy }
+      : {
+          name: '',
+          currency: '',
+          markets: '',
+          mainExports: '',
+          basicItems: '',
+          goods: '',
+          monthlyExports: undefined,
+        },
   );
   const [errors, setErrors] = useState({ name: '' });
 
@@ -28,7 +39,11 @@ const EconomyForm = ({ economy, onSave, onCancel }: EconomyFormProps) => {
     const newErrors = { name: formData.name.trim() ? '' : 'Nome é obrigatório' };
     setErrors(newErrors);
     if (Object.values(newErrors).some(Boolean)) return;
-    onSave({ ...formData, id: economy?.id || Date.now() });
+    onSave({
+      ...formData,
+      id: economy?.id || Date.now(),
+      monthlyExports: formData.monthlyExports ?? 0,
+    });
   };
 
   return (
@@ -79,6 +94,24 @@ const EconomyForm = ({ economy, onSave, onCancel }: EconomyFormProps) => {
               type="text"
               value={formData.mainExports}
               onChange={(e) => setFormData({ ...formData, mainExports: e.target.value })}
+              className="border rounded px-3 py-2 w-full"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="economy-monthly-exports" className="mb-1 text-sm">Exportação mensal</label>
+            <input
+              id="economy-monthly-exports"
+              type="number"
+              min="0"
+              step="0.01"
+              value={formData.monthlyExports ?? ''}
+              onChange={(e) => {
+                const rawValue = e.target.value;
+                setFormData({
+                  ...formData,
+                  monthlyExports: rawValue === '' ? undefined : Number(rawValue),
+                });
+              }}
               className="border rounded px-3 py-2 w-full"
             />
           </div>
