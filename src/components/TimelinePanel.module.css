@@ -1,0 +1,150 @@
+.panel {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 22px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.header h2 {
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--purple-deep);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.addBtn {
+  font-size: 12px;
+  padding: 5px 12px;
+  border: 1px solid var(--purple);
+  background: var(--purple);
+  border-radius: 4px;
+  color: #f0eeff;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 500;
+}
+
+.addBtn:hover { background: #443fa0; }
+.addBtn i { font-size: 14px; }
+
+.filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.filterBtn {
+  font-size: 11px;
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  background: transparent;
+  border-radius: 4px;
+  color: var(--muted);
+  font-family: 'Crimson Pro', serif;
+  transition: all 0.15s;
+}
+
+.filterBtn:hover { background: var(--surface-mid); }
+
+.filterBtn.active {
+  background: var(--purple-soft);
+  color: var(--purple);
+  border-color: rgba(83, 74, 183, 0.35);
+}
+
+.timeline {
+  position: relative;
+  padding-left: 28px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 10px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--purple-mid);
+  opacity: 0.3;
+}
+
+.event {
+  position: relative;
+  margin-bottom: 22px;
+  cursor: pointer;
+}
+
+.event::before {
+  content: '';
+  position: absolute;
+  left: -22px;
+  top: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--purple-mid);
+  border: 2px solid var(--surface);
+}
+
+.event.major::before {
+  background: var(--gold);
+  border-color: var(--surface);
+  width: 10px;
+  height: 10px;
+  left: -23px;
+  top: 5px;
+}
+
+.event.dim { opacity: 0.45; }
+
+.date {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  color: var(--gold);
+  letter-spacing: 0.12em;
+  margin-bottom: 3px;
+}
+
+.title {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--purple-deep);
+  margin-bottom: 4px;
+}
+
+.event:hover .title { color: var(--purple); }
+
+.desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  font-style: italic;
+}
+
+.tags {
+  display: flex;
+  gap: 5px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-size: 9px;
+  padding: 2px 7px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--muted);
+  font-family: 'Cinzel', serif;
+  background: var(--surface-mid);
+}

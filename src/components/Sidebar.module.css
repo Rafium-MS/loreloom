@@ -1,0 +1,112 @@
+.sidebar {
+  width: 204px;
+  background: var(--sidebar-bg);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  border-right: 1px solid rgba(201, 162, 39, 0.2);
+  overflow-y: auto;
+}
+
+.logo {
+  padding: 18px 16px 14px;
+  border-bottom: 1px solid rgba(201, 162, 39, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logoIcon {
+  width: 32px;
+  height: 32px;
+  background: var(--gold-dim);
+  border: 1px solid rgba(201, 162, 39, 0.4);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold);
+  font-size: 17px;
+  flex-shrink: 0;
+}
+
+.appName {
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.06em;
+  line-height: 1.1;
+}
+
+.appTagline {
+  font-size: 10px;
+  color: rgba(201, 162, 39, 0.45);
+  letter-spacing: 0.14em;
+  margin-top: 1px;
+  text-transform: uppercase;
+}
+
+.section {
+  padding: 10px 0 4px;
+}
+
+.sectionLabel {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  color: rgba(121, 113, 210, 0.55);
+  padding: 0 16px 6px;
+  text-transform: uppercase;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 16px;
+  color: var(--sidebar-text);
+  font-size: 13px;
+  transition: background 0.15s;
+  border: none;
+  border-left: 2px solid transparent;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font-family: 'Crimson Pro', serif;
+}
+
+.item i {
+  font-size: 15px;
+  opacity: 0.7;
+}
+
+.item:hover {
+  background: rgba(127, 119, 221, 0.08);
+}
+
+.item.active {
+  background: rgba(201, 162, 39, 0.1);
+  border-left-color: var(--gold);
+  color: #e8d88a;
+}
+
+.item.active i {
+  opacity: 1;
+  color: var(--gold);
+}
+
+.badge {
+  margin-left: auto;
+  font-size: 10px;
+  background: rgba(127, 119, 221, 0.18);
+  color: #a8a2e8;
+  padding: 1px 7px;
+  border-radius: 10px;
+  font-family: 'Cinzel', serif;
+}
+
+.item.active .badge {
+  background: rgba(201, 162, 39, 0.2);
+  color: var(--gold);
+}
