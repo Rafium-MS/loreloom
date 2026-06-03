@@ -3,7 +3,7 @@ import styles from './Sidebar.module.css'
 
 const sections = [
   { section: 'Escrita',  ids: ['editor'] },
-  { section: 'Mundo',    ids: ['characters', 'races', 'places', 'objects', 'grimoire', 'dictionary', 'timeline'] },
+  { section: 'Mundo',    ids: ['characters', 'races', 'places', 'objects', 'grimoire', 'dictionary', 'finance', 'timeline'] },
   { section: 'Projeto',  ids: ['stats', 'settings'] },
 ]
 
