@@ -1,0 +1,98 @@
+.screen {
+  min-height: 100vh;
+  background: #0a0812;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 48px;
+  padding: 32px;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo {
+  width: 56px;
+  height: 56px;
+  background: rgba(201,162,39,0.12);
+  border: 1px solid rgba(201,162,39,0.35);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #c9a227;
+  font-size: 26px;
+  margin-bottom: 4px;
+}
+
+.title {
+  font-family: 'Cinzel', serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: #e8d88a;
+  letter-spacing: 0.08em;
+}
+
+.sub {
+  font-family: 'Crimson Pro', serif;
+  font-size: 16px;
+  color: rgba(200,190,255,0.5);
+  letter-spacing: 0.04em;
+}
+
+.cards {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.card {
+  width: 220px;
+  padding: 36px 24px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  color: #e0d8ff;
+}
+
+.card:hover {
+  background: rgba(255,255,255,0.07);
+  border-color: rgba(255,255,255,0.25);
+  transform: translateY(-3px);
+}
+
+.cardIcon {
+  font-size: 36px;
+  color: #c9a227;
+  opacity: 0.85;
+}
+
+.card:last-child .cardIcon {
+  color: #00b4d8;
+}
+
+.cardLabel {
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.cardTagline {
+  font-family: 'Crimson Pro', serif;
+  font-size: 13px;
+  color: rgba(200,190,255,0.45);
+  text-align: center;
+}

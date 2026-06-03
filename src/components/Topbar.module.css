@@ -13,7 +13,7 @@
   font-family: 'Cinzel', serif;
   font-size: 13px;
   font-weight: 500;
-  color: var(--purple-deep);
+  color: var(--accent-deep);
   flex: 1;
   letter-spacing: 0.04em;
 }
@@ -32,21 +32,21 @@
 }
 
 .btn:hover {
-  background: var(--purple-soft);
-  color: var(--purple);
-  border-color: rgba(83, 74, 183, 0.35);
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: var(--border);
 }
 
 .btn i { font-size: 14px; }
 
-.gold {
-  background: var(--gold);
-  color: #1a1200;
-  border-color: var(--gold);
+.primary {
+  background: var(--primary);
+  color: #0a0800;
+  border-color: var(--primary);
   font-weight: 500;
 }
 
-.gold:hover {
-  background: var(--gold-light);
-  border-color: var(--gold-light);
+.primary:hover {
+  background: var(--primary-light);
+  border-color: var(--primary-light);
 }
