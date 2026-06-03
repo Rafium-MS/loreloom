@@ -7,6 +7,7 @@ import EditorPanel from './components/EditorPanel'
 import WorldPanel from './components/WorldPanel'
 import TimelinePanel from './components/TimelinePanel'
 import StatsPanel from './components/StatsPanel'
+import DictionaryPanel from './components/DictionaryPanel'
 import Modal from './components/Modal'
 import {
   initialChapters,
@@ -91,6 +92,7 @@ export default function App() {
         {panel === 'stats' && (
           <StatsPanel chapters={chapters} characters={characters} places={places} objects={objects} drafts={drafts} />
         )}
+        {panel === 'dictionary' && <DictionaryPanel />}
         {(panel === 'grimoire' || panel === 'races' || panel === 'settings') && (
           <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--muted)', fontFamily: "'Cinzel', serif", fontSize: 13 }}>
             Em breve...
