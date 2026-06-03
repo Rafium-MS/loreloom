@@ -1,4 +1,4 @@
-.layout {
+﻿.layout {
   display: flex;
   flex: 1;
   overflow: hidden;
@@ -32,7 +32,7 @@
 .addBtn {
   background: none;
   border: none;
-  color: var(--gold);
+  color: var(--primary);
   font-size: 18px;
   display: flex;
   align-items: center;
@@ -52,21 +52,21 @@
   transition: all 0.15s;
 }
 
-.chapterItem:hover { background: rgba(83, 74, 183, 0.06); }
+.chapterItem:hover { background: rgba(46,107,48,0.07); }
 
 .chapterItem.active {
-  border-left-color: var(--purple-mid);
-  background: rgba(83, 74, 183, 0.09);
+  border-left-color: var(--accent-mid);
+  background: rgba(46,107,48,0.09);
 }
 
 .chNum {
   font-family: 'Cinzel', serif;
   font-size: 9px;
-  color: var(--purple-mid);
+  color: var(--accent-mid);
   letter-spacing: 0.1em;
 }
 
-.chapterItem.active .chNum { color: var(--purple); }
+.chapterItem.active .chNum { color: var(--accent); }
 
 .chTitle {
   font-size: 12.5px;
@@ -90,7 +90,7 @@
   font-family: 'Cinzel', serif;
   font-size: 9px;
   letter-spacing: 0.13em;
-  color: rgba(201, 162, 39, 0.5);
+  color: rgba(191,123,32,0.50);
   padding: 0 12px 6px;
   text-transform: uppercase;
 }
@@ -102,7 +102,7 @@
   gap: 7px;
 }
 
-.draftItem:hover { background: rgba(83, 74, 183, 0.06); }
+.draftItem:hover { background: rgba(46,107,48,0.07); }
 
 .draftItem i {
   font-size: 13px;
@@ -147,8 +147,8 @@
 }
 
 .tbBtn:hover {
-  background: var(--purple-soft);
-  color: var(--purple);
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 
 .sep {
@@ -162,7 +162,7 @@
   font-family: 'Cinzel', serif;
   font-size: 18px;
   font-weight: 500;
-  color: var(--purple-deep);
+  color: var(--accent-deep);
   border: none;
   background: transparent;
   padding: 18px 24px 8px;
@@ -171,7 +171,7 @@
   letter-spacing: 0.03em;
 }
 
-.chapterTitle::placeholder { color: rgba(83, 74, 183, 0.25); }
+.chapterTitle::placeholder { color: rgba(46,107,48,0.22); }
 
 .editor {
   flex: 1;
@@ -188,7 +188,7 @@
 }
 
 .editor::placeholder {
-  color: rgba(83, 74, 183, 0.25);
+  color: rgba(46,107,48,0.22);
   font-style: italic;
 }
 

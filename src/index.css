@@ -5,26 +5,23 @@
 }
 
 :root {
-  --ink: #0e0b1a;
-  --surface: #f4f2fb;
-  --surface-mid: #ece8f7;
-  --surface-dark: #e4dfef;
-  --gold: #c9a227;
-  --gold-light: #e8c95a;
-  --gold-dim: rgba(201, 162, 39, 0.22);
-  --purple: #534ab7;
-  --purple-deep: #26215c;
-  --purple-soft: #eeedfe;
-  --purple-mid: #7f77dd;
-  --blue: #185fa5;
-  --blue-soft: #e6f1fb;
-  --blue-mid: #378add;
-  --border: rgba(83, 74, 183, 0.18);
-  --border-gold: rgba(201, 162, 39, 0.28);
-  --sidebar-bg: #13102a;
-  --sidebar-text: #c9c3f0;
-  --muted: #6b5fa8;
-  --text-main: #0e0b1a;
+  /* Tokens estáticos (fallback — sobrescritos pelo tema do gênero) */
+  --primary:        #bf7b20;
+  --primary-light:  #d9982a;
+  --primary-dim:    rgba(191,123,32,0.18);
+  --primary-border: rgba(191,123,32,0.30);
+  --accent:         #2e6b30;
+  --accent-deep:    #1a3d1c;
+  --accent-soft:    #eaf3e8;
+  --accent-mid:     #4a8a4d;
+  --sidebar-bg:     #15100a;
+  --sidebar-text:   #c8b48a;
+  --surface:        #f7f3eb;
+  --surface-mid:    #ede4d0;
+  --surface-dark:   #dfd3b8;
+  --text-main:      #28190a;
+  --muted:          #7a6040;
+  --border:         rgba(120,90,40,0.18);
 }
 
 html, body, #root {
@@ -36,7 +33,7 @@ html, body, #root {
 
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(83, 74, 183, 0.2); border-radius: 2px; }
+::-webkit-scrollbar-thumb { background: var(--primary-dim); border-radius: 2px; }
 
 button { cursor: pointer; font-family: 'Crimson Pro', serif; }
 input, select, textarea { font-family: 'Crimson Pro', serif; }

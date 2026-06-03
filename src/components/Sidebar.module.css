@@ -1,4 +1,4 @@
-.sidebar {
+﻿.sidebar {
   width: 204px;
   background: var(--sidebar-bg);
   display: flex;
@@ -83,7 +83,7 @@
 }
 
 .item:hover {
-  background: rgba(127, 119, 221, 0.08);
+  background: rgba(74,138,77,0.08);
 }
 
 .item.active {
@@ -100,8 +100,8 @@
 .badge {
   margin-left: auto;
   font-size: 10px;
-  background: rgba(127, 119, 221, 0.18);
-  color: #a8a2e8;
+  background: rgba(74,138,77,0.18);
+  color: var(--accent-mid);
   padding: 1px 7px;
   border-radius: 10px;
   font-family: 'Cinzel', serif;

@@ -18,22 +18,22 @@ export const GENRES = {
       settings:   { label: 'Configurações',  icon: 'ti-settings' },
     },
     theme: {
-      '--primary':        '#c9a227',
-      '--primary-light':  '#e8c95a',
-      '--primary-dim':    'rgba(201,162,39,0.22)',
-      '--primary-border': 'rgba(201,162,39,0.28)',
-      '--accent':         '#534ab7',
-      '--accent-deep':    '#26215c',
-      '--accent-soft':    '#eeedfe',
-      '--accent-mid':     '#7f77dd',
-      '--sidebar-bg':     '#13102a',
-      '--sidebar-text':   '#c9c3f0',
-      '--surface':        '#f4f2fb',
-      '--surface-mid':    '#ece8f7',
-      '--surface-dark':   '#e4dfef',
-      '--text-main':      '#0e0b1a',
-      '--muted':          '#6b5fa8',
-      '--border':         'rgba(83,74,183,0.18)',
+      '--primary':        '#bf7b20',        /* âmbar queimado   */
+      '--primary-light':  '#d9982a',        /* âmbar claro      */
+      '--primary-dim':    'rgba(191,123,32,0.18)',
+      '--primary-border': 'rgba(191,123,32,0.30)',
+      '--accent':         '#2e6b30',        /* verde floresta   */
+      '--accent-deep':    '#1a3d1c',        /* floresta escura  */
+      '--accent-soft':    '#eaf3e8',        /* verde suave      */
+      '--accent-mid':     '#4a8a4d',        /* verde médio      */
+      '--sidebar-bg':     '#15100a',        /* terra escura     */
+      '--sidebar-text':   '#c8b48a',        /* areia quente     */
+      '--surface':        '#f7f3eb',        /* pergaminho       */
+      '--surface-mid':    '#ede4d0',        /* pergaminho médio */
+      '--surface-dark':   '#dfd3b8',        /* pergaminho escuro*/
+      '--text-main':      '#28190a',        /* marrom escuro    */
+      '--muted':          '#7a6040',        /* terra amuada     */
+      '--border':         'rgba(120,90,40,0.18)',
     },
   },
 
