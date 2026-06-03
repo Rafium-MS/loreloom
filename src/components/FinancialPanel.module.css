@@ -1,0 +1,528 @@
+.panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── Tabs ── */
+.tabs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-mid);
+  flex-shrink: 0;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 11px 16px;
+  font-size: 12px;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.05em;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  margin-bottom: -1px;
+  transition: color 0.15s;
+}
+
+.tab i { font-size: 14px; }
+.tab:hover { color: var(--accent); }
+
+.tabActive {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+  font-weight: 600;
+}
+
+.tabSpacer { flex: 1; }
+
+.tabMeta {
+  font-size: 11px;
+  color: var(--muted);
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.06em;
+}
+
+/* ── Body ── */
+.body {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.tabContent {
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Section headers ── */
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sectionTitle {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-deep);
+  letter-spacing: 0.04em;
+}
+
+.sectionHint {
+  font-size: 11px;
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* ── Buttons ── */
+.addBtn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  padding: 5px 12px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  border-radius: 4px;
+  color: #f0eeff;
+  font-weight: 500;
+}
+
+.addBtn:hover { opacity: 0.88; }
+.addBtn i { font-size: 14px; }
+
+.iconBtn {
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: var(--muted);
+  padding: 4px 6px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  transition: all 0.12s;
+}
+
+.iconBtn:hover { border-color: var(--border); color: var(--accent); }
+.iconBtn.danger:hover { border-color: #e53e3e; color: #e53e3e; }
+
+/* ── Currency cards ── */
+.currencyGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.currencyCard {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  transition: border-color 0.15s;
+}
+
+.currencyCard:hover { border-color: var(--primary-border); }
+
+.currencySymbol {
+  width: 44px;
+  height: 44px;
+  background: var(--primary-dim);
+  border: 1px solid var(--primary-border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+  color: var(--primary);
+}
+
+.currencyInfo { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+
+.currencyName {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-deep);
+}
+
+.currencyDesc {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.currencyBase {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 4px;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.04em;
+}
+
+.currencyBase strong { color: var(--primary); }
+
+.cardActions { display: flex; flex-direction: column; gap: 4px; }
+
+/* ── Calculator ── */
+.calculator {
+  background: var(--surface-mid);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 480px;
+}
+
+.calcTitle {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.calcRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.calcInput {
+  width: 90px;
+  font-family: 'Crimson Pro', serif;
+  font-size: 18px;
+  font-weight: 600;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: #fff;
+  color: var(--text-main);
+  outline: none;
+  text-align: right;
+}
+
+.calcInput:focus { border-color: var(--primary); }
+
+.calcSelect {
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: #fff;
+  color: var(--text-main);
+  outline: none;
+}
+
+.calcEquals {
+  font-size: 18px;
+  color: var(--muted);
+  padding: 0 4px;
+}
+
+.calcResults {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.calcResult {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+.calcResultSymbol {
+  width: 24px;
+  text-align: center;
+  color: var(--primary);
+  font-size: 15px;
+}
+
+.calcResultAmt {
+  font-family: 'Crimson Pro', serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-main);
+  flex: 1;
+  text-align: right;
+}
+
+.calcResultName {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+  min-width: 80px;
+}
+
+/* ── Exchange table ── */
+.tableWrap { overflow-x: auto; }
+
+.cambioTable {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 400px;
+}
+
+.cambioTable th, .cambioTable td {
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  text-align: center;
+  font-size: 13px;
+}
+
+.cambioTable th {
+  background: var(--surface-mid);
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.cornerCell { background: var(--surface-dark) !important; }
+
+.thSymbol { color: var(--primary); }
+
+.rowHeader {
+  background: var(--surface-mid);
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--accent-deep);
+  font-weight: 600;
+  text-align: left !important;
+  white-space: nowrap;
+}
+
+.rowHeader span { color: var(--primary); margin-right: 4px; }
+
+.diagCell {
+  background: var(--surface-dark);
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.rateCell {
+  color: var(--text-main);
+  font-family: 'Crimson Pro', serif;
+  font-size: 14px;
+}
+
+/* ── Market ── */
+.catFilters {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.filterBtn {
+  font-size: 11px;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--muted);
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.04em;
+  transition: all 0.15s;
+}
+
+.filterBtn:hover { border-color: var(--primary); color: var(--primary); }
+
+.filterActive {
+  background: var(--primary-dim);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.marketTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.marketTable th {
+  font-family: 'Cinzel', serif;
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  text-transform: uppercase;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  background: var(--surface);
+  position: sticky;
+  top: 0;
+}
+
+.marketRow { transition: background 0.12s; }
+.marketRow:hover { background: var(--surface-mid); }
+
+.marketRow td {
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+.itemName {
+  font-family: 'Cinzel', serif;
+  font-size: 12.5px !important;
+  font-weight: 500;
+  color: var(--accent-deep);
+}
+
+.catTag {
+  font-size: 9.5px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--primary-dim);
+  color: var(--primary);
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.itemPrice {
+  font-family: 'Crimson Pro', serif;
+  font-size: 15px !important;
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+}
+
+.itemDesc { color: var(--muted); font-size: 13px !important; }
+
+.itemActions { display: flex; gap: 4px; justify-content: flex-end; }
+
+.emptyRow {
+  text-align: center;
+  color: var(--muted);
+  font-style: italic;
+  padding: 28px 0 !important;
+  font-size: 13px;
+}
+
+/* ── Forms ── */
+.formCard {
+  background: var(--surface-mid);
+  border: 1px solid var(--primary-border);
+  border-radius: 8px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 560px;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.fg { display: flex; flex-direction: column; gap: 4px; }
+.full { grid-column: 1 / -1; }
+
+.fg label {
+  font-size: 10px;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.fg input, .fg select {
+  font-family: 'Crimson Pro', serif;
+  font-size: 14px;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 4px;
+  color: var(--text-main);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.fg input:focus, .fg select:focus { border-color: var(--primary); }
+
+.baseHint {
+  font-size: 11px;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.formActions { display: flex; gap: 8px; justify-content: flex-end; }
+
+.cancelBtn {
+  font-size: 12px;
+  padding: 5px 14px;
+  border: 1px solid var(--border);
+  background: transparent;
+  border-radius: 4px;
+  color: var(--muted);
+}
+
+.cancelBtn:hover { background: var(--surface-dark); }
+
+.saveBtn {
+  font-size: 12px;
+  padding: 5px 14px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  border-radius: 4px;
+  color: #f0eeff;
+  font-weight: 500;
+}
+
+.saveBtn:hover:not(:disabled) { opacity: 0.88; }
+.saveBtn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── Misc ── */
+.emptyHint {
+  font-size: 12px;
+  color: var(--muted);
+  font-style: italic;
+  padding: 8px 0;
+}
+
+.emptyState {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  color: var(--muted);
+  padding: 60px 0;
+}
+
+.emptyState i { font-size: 40px; opacity: 0.3; }
+.emptyState p { font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: 0.04em; }
+
+.muted { color: var(--muted); }
