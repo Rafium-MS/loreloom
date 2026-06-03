@@ -25,6 +25,49 @@
   --sidebar-text: #c9c3f0;
   --muted: #6b5fa8;
   --text-main: #0e0b1a;
+  /* structural defaults (overridden per genre) */
+  --ui-radius: 6px;
+  --tag-radius: 12px;
+  --shadow-hard: none;
+  --shadow-btn: none;
+  --border-w: 1px;
+}
+
+/* ── Cyberpunk palette overrides ── */
+[data-genre="scifi"] {
+  --gold:         #ffe600;
+  --gold-light:   #fff066;
+  --gold-dim:     rgba(255, 230, 0, 0.15);
+  --purple:       #ff0066;
+  --purple-deep:  #8b0038;
+  --purple-soft:  #ffe0ef;
+  --purple-mid:   #ff3d82;
+  --blue:         #00ffcc;
+  --blue-soft:    #e0fff9;
+  --blue-mid:     #00ccaa;
+  --border:       rgba(255, 0, 102, 0.28);
+  --border-gold:  rgba(255, 230, 0, 0.4);
+}
+
+/* ── Cyberpunk typography ── */
+[data-genre="scifi"] button,
+[data-genre="scifi"] input,
+[data-genre="scifi"] select,
+[data-genre="scifi"] textarea {
+  font-family: 'Space Mono', 'Courier New', monospace;
+}
+
+/* ── Neo-brutalist: sharp corners everywhere ── */
+[data-genre="scifi"] button,
+[data-genre="scifi"] input,
+[data-genre="scifi"] select,
+[data-genre="scifi"] textarea {
+  border-radius: 1px !important;
+}
+
+/* ── Cyberpunk scrollbar ── */
+[data-genre="scifi"] ::-webkit-scrollbar-thumb {
+  background: rgba(255, 0, 102, 0.35);
 }
 
 html, body, #root {
