@@ -66,7 +66,7 @@ export default function App() {
   const counts = { characters: characters.length, places: places.length, objects: objects.length }
 
   return (
-    <div className={appStyles.app}>
+    <div className={appStyles.app} data-genre={genreId}>
       <Sidebar activePanel={panel} onSwitch={setPanel} counts={counts} genre={genre} />
       <div className={appStyles.main}>
         <Topbar activePanel={panel} genre={genre} onChangeGenre={() => { localStorage.removeItem('ll_genre'); setGenreId(null) }} />

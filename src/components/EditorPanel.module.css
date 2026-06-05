@@ -136,10 +136,10 @@
   background: none;
   border: none;
   padding: 4px 7px;
-  border-radius: 3px;
+  border-radius: var(--ui-radius);
   font-size: 13px;
   color: var(--muted);
-  transition: all 0.15s;
+  transition: background 0.15s, box-shadow 0.1s, transform 0.1s;
   display: flex;
   align-items: center;
   font-family: 'Cinzel', serif;
@@ -149,6 +149,12 @@
 .tbBtn:hover {
   background: var(--purple-soft);
   color: var(--purple);
+  box-shadow: var(--shadow-btn);
+}
+
+.tbBtn:active {
+  box-shadow: none !important;
+  transform: translate(2px,2px);
 }
 
 .sep {

@@ -57,13 +57,13 @@
   padding: 36px 24px;
   background: rgba(255,255,255,0.03);
   border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 16px;
+  border-radius: 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
   cursor: pointer;
-  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s, box-shadow 0.15s;
   color: #e0d8ff;
 }
 
@@ -73,6 +73,13 @@
   transform: translateY(-3px);
 }
 
+/* cyberpunk card gets neo-brutalist hover */
+.card:last-child:hover {
+  border-color: rgba(255,0,102,0.7);
+  box-shadow: 4px 4px 0 rgba(255,0,102,0.5);
+  transform: translate(-2px,-2px);
+}
+
 .cardIcon {
   font-size: 36px;
   color: #c9a227;
@@ -80,7 +87,8 @@
 }
 
 .card:last-child .cardIcon {
-  color: #00b4d8;
+  color: #ff0066;
+  text-shadow: 0 0 12px rgba(255,0,102,0.7);
 }
 
 .cardLabel {

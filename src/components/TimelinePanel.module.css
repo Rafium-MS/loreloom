@@ -24,17 +24,20 @@
 .addBtn {
   font-size: 12px;
   padding: 5px 12px;
-  border: 1px solid var(--purple);
-  background: var(--purple);
-  border-radius: 4px;
-  color: #f0eeff;
+  border: var(--border-w) solid var(--primary);
+  background: var(--primary);
+  border-radius: var(--ui-radius);
+  color: #fff;
   display: flex;
   align-items: center;
   gap: 5px;
-  font-weight: 500;
+  font-weight: 700;
+  box-shadow: var(--shadow-hard);
+  transition: background 0.15s, box-shadow 0.1s, transform 0.1s;
 }
 
-.addBtn:hover { background: #443fa0; }
+.addBtn:hover { background: var(--primary-light); border-color: var(--primary-light); }
+.addBtn:active { box-shadow: none !important; transform: translate(3px,3px); }
 .addBtn i { font-size: 14px; }
 
 .filters {
@@ -46,9 +49,9 @@
 .filterBtn {
   font-size: 11px;
   padding: 5px 12px;
-  border: 1px solid var(--border);
+  border: var(--border-w) solid var(--border);
   background: transparent;
-  border-radius: 4px;
+  border-radius: var(--ui-radius);
   color: var(--muted);
   font-family: 'Crimson Pro', serif;
   transition: all 0.15s;
@@ -142,8 +145,8 @@
 .tag {
   font-size: 9px;
   padding: 2px 7px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--tag-radius);
   color: var(--muted);
   font-family: 'Cinzel', serif;
   background: var(--surface-mid);

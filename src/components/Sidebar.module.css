@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  border-right: 1px solid var(--primary-border);
+  border-right: var(--border-w) solid var(--primary-border);
   overflow-y: auto;
 }
 
@@ -20,14 +20,15 @@
   width: 32px;
   height: 32px;
   background: var(--primary-dim);
-  border: 1px solid var(--primary-border);
-  border-radius: 6px;
+  border: var(--border-w) solid var(--primary-border);
+  border-radius: var(--ui-radius);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--primary);
   font-size: 17px;
   flex-shrink: 0;
+  box-shadow: var(--shadow-btn);
 }
 
 .appName {
@@ -103,7 +104,7 @@
   background: rgba(127, 119, 221, 0.18);
   color: #a8a2e8;
   padding: 1px 7px;
-  border-radius: 10px;
+  border-radius: var(--tag-radius);
   font-family: 'Cinzel', serif;
 }
 

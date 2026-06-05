@@ -20,9 +20,10 @@
 }
 
 .stat {
-  border-radius: 6px;
+  border-radius: var(--ui-radius);
   padding: 14px;
-  border: 1px solid transparent;
+  border: var(--border-w) solid transparent;
+  box-shadow: var(--shadow-btn);
 }
 
 .stat.purple { background: var(--purple-soft); border-color: rgba(83,74,183,0.15); }
@@ -84,20 +85,20 @@
 .barTrack {
   height: 6px;
   background: rgba(83,74,183,0.1);
-  border-radius: 3px;
+  border-radius: var(--ui-radius);
   overflow: hidden;
 }
 
 .barFill {
   height: 100%;
   background: var(--purple-mid);
-  border-radius: 3px;
+  border-radius: var(--ui-radius);
   transition: width 0.4s ease;
 }
 
 .barFillGold {
   height: 100%;
   background: var(--gold);
-  border-radius: 3px;
+  border-radius: var(--ui-radius);
   transition: width 0.4s ease;
 }

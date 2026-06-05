@@ -21,32 +21,45 @@
 .btn {
   font-size: 12px;
   padding: 5px 12px;
-  border: 1px solid var(--border);
+  border: var(--border-w) solid var(--border);
   background: transparent;
-  border-radius: 4px;
+  border-radius: var(--ui-radius);
   color: var(--muted);
-  transition: all 0.15s;
+  transition: background 0.15s, box-shadow 0.1s, transform 0.1s;
   display: flex;
   align-items: center;
   gap: 5px;
+  box-shadow: var(--shadow-btn);
 }
 
 .btn:hover {
   background: var(--accent-soft);
   color: var(--accent);
-  border-color: var(--border);
+  border-color: var(--accent-mid);
+}
+
+.btn:active {
+  box-shadow: none !important;
+  transform: translate(2px, 2px);
 }
 
 .btn i { font-size: 14px; }
 
 .primary {
   background: var(--primary);
-  color: #0a0800;
+  color: #fff;
   border-color: var(--primary);
-  font-weight: 500;
+  font-weight: 700;
+  box-shadow: var(--shadow-hard);
 }
 
 .primary:hover {
   background: var(--primary-light);
   border-color: var(--primary-light);
+  box-shadow: var(--shadow-hard);
+}
+
+.primary:active {
+  box-shadow: none !important;
+  transform: translate(3px, 3px);
 }
